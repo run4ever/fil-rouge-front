@@ -19,6 +19,9 @@ import { MediaListComponent } from './media-list/media-list.component';
 import { DetailComponent } from './detail/detail.component';
 import { RegisterFormComponent } from './register-form/register-form.component';
 import { HomeComponent } from './home/home.component';
+// pour utiliser HttpClientModule
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { ApiInterceptor } from './shared/interceptors/api.interceptor';
 
 @NgModule({
   declarations: [
@@ -41,10 +44,12 @@ import { HomeComponent } from './home/home.component';
     MatSnackBarModule,
     MatProgressSpinnerModule,
     MatProgressBarModule,
-    MatInputModule
-
+    MatInputModule,
+    HttpClientModule
   ],
-  providers: [],
+  providers: [
+    {provide: HTTP_INTERCEPTORS, useClass: ApiInterceptor, multi: true},
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

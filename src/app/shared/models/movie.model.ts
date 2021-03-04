@@ -1,17 +1,11 @@
 export class Movie {
-    id: number;
+    idapiMovieId: string;
     title: string;
     desc: string;
-    image: string;
-    date: Date;
-    score: number;
- 
-    constructor(id: number, title: string, overview: string, backdrop: string, release_date: string, vote_average: number) {
-       this.id = id;
+   
+    constructor(idapiMovieId: string, title: string, desc: string) {
+       this.idapiMovieId = idapiMovieId;
        this.title = title;
-       this.desc = overview;
-       this.image = backdrop;
-       this.date = new Date(release_date);
-       this.score = vote_average;
+       this.desc = desc;
     }
  }
