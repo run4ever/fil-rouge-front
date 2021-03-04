@@ -1,1 +1,16 @@
-<p>media-list works!</p>
+<div class="list-body">
+    <h1>Mes films</h1>
+
+    <div class="row">
+        <div class="col-12 col-md-3 col-xl-2" *ngFor="let movie of movieslist">
+            <div [routerLink]="['/detail', movie.id, 'movies']" class="card">
+                <img [src]="movie.imageUrl" alt="">
+                <div class="card-body">
+                    <h2>{{movie.title}}</h2>
+                    <app-rating [rating]="movie.imdbRating/2"></app-rating>
+                </div>
+            </div>
+        </div>        
+    </div>
+
+</div>
