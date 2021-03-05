@@ -21,6 +21,7 @@ import { RegisterFormComponent } from './register-form/register-form.component';
 import { HomeComponent } from './home/home.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RatingComponent } from './shared/rating/rating.component';
 
 @NgModule({
   declarations: [
@@ -29,12 +30,14 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MediaListComponent,
     DetailComponent,
     RegisterFormComponent,
-    HomeComponent
+    HomeComponent,
+    RatingComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    HttpClientModule,
     /* Import des components MaterialAngular*/
     //MaterialModule
     MatButtonModule,
