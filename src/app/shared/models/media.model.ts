@@ -11,8 +11,9 @@ export class MediaModel {
     synopsis: string;
     imageUrl: string;
     type:string;
+    numberOfSeason:string;
  
-    constructor(id: number,imdbId: string,duration: number,releaseYear: string,averageRating: number,numberOfVotes: number,actors: string,category: string,title: string,description: string,imageUrl: string) {
+    constructor(id: number,imdbId: string,duration: number,releaseYear: string,averageRating: number,numberOfVotes: number,actors: string,category: string,title: string,description: string,imageUrl: string, numberOfSeason:string) {
         this.id = id;
         this.imdbId = imdbId;
         this.duration = duration;
@@ -24,6 +25,7 @@ export class MediaModel {
         this.title = title;
         this.synopsis = description;
         this.imageUrl = imageUrl;
+        this.numberOfSeason = numberOfSeason;
     }
 
 

@@ -17,7 +17,7 @@ export class MediaService {
   constructor(private http:HttpClient, private sanitizer: DomSanitizer) { }
 
   /*Load movies from backend*/
-  //exemple avec movies, mais remplacer par viewingMovie dans un service "media.service.ts"
+  //exemple avec movies, mais remplacer par viewingMovie
     getAllMovies(){
       this.http
       .get(this.API_URL+'/movie/list')
@@ -25,8 +25,19 @@ export class MediaService {
       .subscribe((response:any) => {
         console.log(response)
         this.medias$.next(response)
-    })
+      })
+    }
+
+//méthode pour les viewingserie, mettre le type valeur 'serie'
+getAllViewingSeries(){
+  this.http
+  .get(this.API_URL+'/viewingserie/superman%40world.com')
+  //ajouter un mapping qui viendra renseigner la donnée type avec valeur movie via constructeur (pipe / map)
+  //aplatir les objets d'objet (title = movieDto.title)
+  .subscribe((response:any) => {
+    console.log(response)
+    this.medias$.next(response)
+  })
 }
 
-//dupliquer cette méthode pour les viewingserie, en mettant le type valeur 'serie'
 }

@@ -17,7 +17,7 @@ export class MediaListComponent implements OnInit {
 
   ngOnInit(): void {
     this.isLoading = true;
-    this.mediaService.getAllMovies();
+    this.mediaService.getAllViewingSeries();
     this.mediaService.medias$.subscribe( (data: MediaModel[]) => {
       this.medialist = data;
       this.isLoading = false;
