@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { MovieModel } from '../shared/models/movie.model';
-import { MovieService } from '../shared/services/movie.service';
+import { MediaModel } from '../shared/models/media.model';
+import { MediaService } from '../shared/services/media.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -10,16 +10,16 @@ import { Router } from '@angular/router';
 })
 export class MediaListComponent implements OnInit {
 
-  movieslist:MovieModel[]; 
+  medialist:MediaModel[]; 
   isLoading:boolean;
 
-  constructor(private movieService: MovieService, private routeur:Router) { }
+  constructor(private mediaService: MediaService, private routeur:Router) { }
 
   ngOnInit(): void {
     this.isLoading = true;
-    this.movieService.getAllMovies();
-    this.movieService.movies$.subscribe( (data: MovieModel[]) => {
-      this.movieslist = data;
+    this.mediaService.getAllMovies();
+    this.mediaService.medias$.subscribe( (data: MediaModel[]) => {
+      this.medialist = data;
       this.isLoading = false;
     });
   }

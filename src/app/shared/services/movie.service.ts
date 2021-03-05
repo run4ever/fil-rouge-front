@@ -9,19 +9,6 @@ import { environment } from 'src/environments/environment';
 })
 export class MovieService {
 
-  private API_URL = environment.apis.API_BACK_URL;
   
-  movies$ = new BehaviorSubject([]);
 
-  constructor(private http:HttpClient, private sanitizer: DomSanitizer) { }
-
-  /*Load movies from backend*/
-    getAllMovies(){
-      this.http
-      .get(this.API_URL+'/movie/list')
-      .subscribe((response:any) => {
-        console.log(response)
-        this.movies$.next(response)
-    })
-}
 }

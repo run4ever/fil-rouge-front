@@ -1,4 +1,4 @@
-export class MovieModel {
+export class MediaModel {
     id: number;
     imdbId: string;
     duration: number;
@@ -10,6 +10,7 @@ export class MovieModel {
     title: string;
     synopsis: string;
     imageUrl: string;
+    type:string;
  
     constructor(id: number,imdbId: string,duration: number,releaseYear: string,averageRating: number,numberOfVotes: number,actors: string,category: string,title: string,description: string,imageUrl: string) {
         this.id = id;
