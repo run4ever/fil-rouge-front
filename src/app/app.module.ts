@@ -20,6 +20,7 @@ import { DetailComponent } from './detail/detail.component';
 import { RegisterFormComponent } from './register-form/register-form.component';
 import { HomeComponent } from './home/home.component';
 import { HttpClientModule } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RatingComponent } from './shared/rating/rating.component';
 
 @NgModule({
@@ -45,7 +46,9 @@ import { RatingComponent } from './shared/rating/rating.component';
     MatSnackBarModule,
     MatProgressSpinnerModule,
     MatProgressBarModule,
-    MatInputModule
+    MatInputModule,
+    HttpClientModule,
+    ReactiveFormsModule, FormsModule
 
   ],
   providers: [],
