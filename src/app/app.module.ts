@@ -19,6 +19,8 @@ import { MediaListComponent } from './media-list/media-list.component';
 import { DetailComponent } from './detail/detail.component';
 import { RegisterFormComponent } from './register-form/register-form.component';
 import { HomeComponent } from './home/home.component';
+import { HttpClientModule } from '@angular/common/http';
+import { RatingComponent } from './shared/rating/rating.component';
 
 @NgModule({
   declarations: [
@@ -27,12 +29,14 @@ import { HomeComponent } from './home/home.component';
     MediaListComponent,
     DetailComponent,
     RegisterFormComponent,
-    HomeComponent
+    HomeComponent,
+    RatingComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    HttpClientModule,
     /* Import des components MaterialAngular*/
     //MaterialModule
     MatButtonModule,
