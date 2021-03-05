@@ -19,7 +19,8 @@ import { MediaListComponent } from './media-list/media-list.component';
 import { DetailComponent } from './detail/detail.component';
 import { RegisterFormComponent } from './register-form/register-form.component';
 import { HomeComponent } from './home/home.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { ApiInterceptor } from './shared/interceptors/api.interceptor';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RatingComponent } from './shared/rating/rating.component';
 
@@ -47,11 +48,12 @@ import { RatingComponent } from './shared/rating/rating.component';
     MatProgressSpinnerModule,
     MatProgressBarModule,
     MatInputModule,
-    HttpClientModule,
-    ReactiveFormsModule, FormsModule
-
+    ReactiveFormsModule, FormsModule,
+    HttpClientModule
   ],
-  providers: [],
+  providers: [
+    {provide: HTTP_INTERCEPTORS, useClass: ApiInterceptor, multi: true},
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
