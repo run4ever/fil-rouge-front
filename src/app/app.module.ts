@@ -19,6 +19,8 @@ import { MediaListComponent } from './media-list/media-list.component';
 import { DetailComponent } from './detail/detail.component';
 import { RegisterFormComponent } from './register-form/register-form.component';
 import { HomeComponent } from './home/home.component';
+import { HttpClientModule } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -41,7 +43,9 @@ import { HomeComponent } from './home/home.component';
     MatSnackBarModule,
     MatProgressSpinnerModule,
     MatProgressBarModule,
-    MatInputModule
+    MatInputModule,
+    HttpClientModule,
+    ReactiveFormsModule, FormsModule
 
   ],
   providers: [],
