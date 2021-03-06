@@ -10,7 +10,13 @@
                     <h2>{{media.title}}</h2>
                     <app-rating [rating]="media.imdbRating/2"></app-rating>
                     <p *ngIf="media.typeMedia=='serie'">Saison : {{media.numberOfSeason}} <br>Année : {{media.startYear}}-{{media.endYear}}</p>
-                    <p *ngIf="media.typeMedia=='movie'">Durée : {{media.runtime}}minutes <br>Année : {{media.startYear}}</p>
+                    <p *ngIf="media.typeMedia=='movie'">Durée : {{media.runtime}} minutes <br>Année : {{media.startYear}}</p>
+                    <p><select (change)="updateStatusMedia(media.imdbId,media.typeMedia,$event.target.value)" name="status">
+                        <option *ngFor="let status of status_media" [selected]="status[0] === media.status" [value]="status[0]">{{status[1]}}</option>
+                        </select>
+                        <button mat-fab color="primary" (click)="deleteMedia(media.imdbId,media.typeMedia)" aria-label="delete movie ou serie"><mat-icon>delete</mat-icon></button>
+                    </p>
+                    
                 </div>
             </div>
         </div>        

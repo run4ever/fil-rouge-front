@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { BehaviorSubject } from 'rxjs';
@@ -74,5 +74,97 @@ getAllViewings(userEmail:string) {
   this.getAllViewingSeries(userEmail)
   this.getAllViewingMovie(userEmail)
   }
+
+//méthode pour mettre à jour status d'un film ou série dans ViewingSerie/ViewingMovie
+  updateStatusMediaByEmailAndIdMedia(userEmail:string,imdbId:string,typeMedia:string,status:string) {
+
+    let httpOptions = {headers: new HttpHeaders({ 'Content-Type': 'application/json' })}
+    //si dans email on a %40 alors update ne passe, il faut remplacer %40 par @
+    let userEmailTrt = userEmail.replace('%40','@')
+    let corpsBody = {"email":userEmailTrt,"imdbId":imdbId,"status":status}
+    console.log(corpsBody)
+    if(typeMedia === "serie") {
+      this.http
+      .put(this.API_URL+'/viewing-serie/update',JSON.stringify(corpsBody),httpOptions)
+      .subscribe(
+        ()=> { console.log('Change status serie terminé')},
+        (error)=> {console.log(error)}
+      )
+    }
+    else {
+      this.http
+      .put(this.API_URL+'/viewing-movie/update',JSON.stringify(corpsBody),httpOptions)
+      .subscribe(
+        ()=> { console.log('Change status movie terminé')},
+        (error)=> {console.log(error)}
+      )
+    }
+    
+  }
+
+//méthode pour supprimer Serie ou Movie de Viewings
+deleteMediaByEmailAndIdMedia(userEmail: string,imdbId: string,typeMedia: string) {
+      //si dans email on a %40 alors update ne passe, il faut remplacer %40 par @
+      let userEmailTrt = userEmail.replace('%40','@')
+      console.log("Email:"+userEmailTrt+" imbdId:"+imdbId+" typeMedia:"+typeMedia)
+
+      let deleteOK = 'KO'   //variable pour savori si la suppression est OK ou pas
+
+      //normalement pas besoin de passer status, saison et epison pour supprimer serie
+      let corpsBody = {"email":userEmailTrt,"imdbId":imdbId}
+      const httpOptions = {
+        headers: new HttpHeaders({ 'Content-Type': 'application/json' }), 
+        body:corpsBody
+      }
+
+    if(typeMedia === "serie") {
+      this.http.delete(this.API_URL+'/viewing-serie/delete',httpOptions)
+      .subscribe(
+        ()=> { console.log('Suppression série terminée')
+              //si la suppression est OK dans la base de données et on doit supprimer l'élément medias$
+              //**** code dupliqué !!!!!!!! */
+                //if(deleteOK=='OK') 
+                const tabMedias:any[] = this.medias$.getValue()  //récupérer les valeurs de medias$
+                tabMedias.forEach((item, index) => {
+                  //supprimer l'élément dans medias$
+                  if (item.imdbId === imdbId ) { tabMedias.splice(index, 1); }
+                  this.medias$.next(tabMedias)
+                })
+             
+              },
+        (error)=> {console.log(error)}
+      )
+    }
+    else {
+      this.http.delete(this.API_URL+'/viewing-movie/delete',httpOptions)
+      .subscribe(
+        ()=> { console.log('Suppression movie terminée')
+              //si la suppression est OK dans la base de données et on doit supprimer l'élément medias$
+              //**** code dupliqué !!!!!!!! */
+                //if(deleteOK=='OK') 
+                  const tabMedias:any[] = this.medias$.getValue()  //récupérer les valeurs de medias$
+                  tabMedias.forEach((item, index) => {
+                    //supprimer l'élément dans medias$
+                    if (item.imdbId === imdbId ) { tabMedias.splice(index, 1); }
+                    this.medias$.next(tabMedias)
+                  })
+                
+              },
+        (error)=> {console.log(error)}
+      )
+    }
+   /* =>> ça passe pas si je mets ici la suppresison dans medias$
+    //si la suppression est OK dans la base de données et on doit supprimer l'élément medias$
+    if(deleteOK=='OK') {
+      const tabMedias:any[] = this.medias$.getValue()  //récupérer les valeurs de medias$
+      tabMedias.forEach((item, index) => {
+        //supprimer l'élément dans medias$
+        if (item.imdbId === imdbId ) { tabMedias.splice(index, 1); }
+        this.medias$.next(tabMedias)
+      })
+    }
+    */
+    
+}
 
 }
