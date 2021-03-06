@@ -12,7 +12,7 @@ export class ApiInterceptor implements HttpInterceptor {
 
   //TOKEN devait être géré par Interceptor plus tard après l'authentification réussite
   //en attendant on met un token généré via swagger valable 5h, donc à modifier au bout de 5h
-  private TOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhcm5hdWRAdGNsLmNvbSIsImV4cCI6MTYxNTAwMDEyOSwiaWF0IjoxNjE0OTgyMTI5fQ.5h31kOLhD2iQcmGv8jMWGqKeyeOQa0h5UQn2ImaUtUtX08KfklOTmz9bxDCnzwHRMebPcEjWhbH0bdt4KxT62g";
+  private TOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJmYWJpZW5AdGNsLmNvbSIsImV4cCI6MTYxNTA1MjM5NCwiaWF0IjoxNjE1MDM0Mzk0fQ.aPaozgmW22Hh-7WLuAEAy1eIFQKG3xrFddhSCobbbIkrtm36kf71deRewZukeCppzUGbuWfrLtBJZ_MI-NfJ7w";
   
   cloneReq: HttpRequest<unknown>;
   constructor() {}

@@ -37,8 +37,7 @@ getAllViewingSeries(userEmail:string){
   .pipe(
     map(//serie
         (data:any)=> data.map(
-         s => new MediaModel('serie',s.status,
-                             s.serieDto.imdbId,s.serieDto.title,s.serieDto.description,s.serieDto.category,
+         s => new MediaModel('serie',s.status,s.serieDto.imdbId,s.serieDto.title,s.serieDto.description,s.serieDto.category,
                              s.serieDto.startYear,s.serieDto.imdbRating,s.serieDto.imdbVotes,s.serieDto.actors,
                              s.serieDto.imageUrl,0,s.serieDto.endYear,s.serieDto.numberOfSeason,s.serieDto.statusSerie)
         )
@@ -58,7 +57,7 @@ getAllViewingMovie(userEmail:string){
     map(//movie
         (data:any)=> data.map(
          m => new MediaModel('movie',m.status,m.movieDto.imdbId,m.movieDto.title,m.movieDto.description,m.movieDto.category,
-                             m.movieDto.startYear,m.movieDto.imdbRating,m.movieDto.imdbVotes,m.movieDto.actors,
+                             (m.movieDto.startYear).substring(0,4),m.movieDto.imdbRating,m.movieDto.imdbVotes,m.movieDto.actors,
                              m.movieDto.imageUrl,m.movieDto.runtime,null,null,null)
         )
     )
@@ -69,5 +68,11 @@ getAllViewingMovie(userEmail:string){
     this.medias$.next([...series, ...response]) //ajoute les series dans media$ avec les movies
   })
 }
+
+//méthode globale retourne une liste globale qui contient ViewingSerie et ViewingMovie
+getAllViewings(userEmail:string) {
+  this.getAllViewingSeries(userEmail)
+  this.getAllViewingMovie(userEmail)
+  }
 
 }
