@@ -23,6 +23,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ApiInterceptor } from './shared/interceptors/api.interceptor';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RatingComponent } from './shared/rating/rating.component';
+import { MatTabsModule } from '@angular/material/tabs';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ import { RatingComponent } from './shared/rating/rating.component';
     MatProgressBarModule,
     MatInputModule,
     ReactiveFormsModule, FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    MatTabsModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: ApiInterceptor, multi: true},

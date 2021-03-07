@@ -19,11 +19,4 @@ export class LoginFormComponent implements OnInit {
     this.userService.login(loginForm.value);
   }
 
-  // setForm(loginForm) {
-  //   console.log(loginForm.form.controls);
-  //   loginForm.form.controls.identifier.setValue('fred')
-  //   loginForm.form.controls.password.setValue('Fred2021')
-  // }
-
-
 }
