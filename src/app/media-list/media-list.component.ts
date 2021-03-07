@@ -42,9 +42,16 @@ export class MediaListComponent implements OnInit {
     this.mediaService.updateStatusMediaByEmailAndIdMedia(this.userEmail,imdbId,typeMedia,status)
   }
 
+  //méthode update la saison d'une série
+  updateSeason(imdbId:string,status:string,numSeason:number) {
+    console.log("imdbId="+imdbId+";status:"+status+"; nouveau num saison"+numSeason)
+    this.mediaService.updateSeasonSerieByEmailAndIdMedia(this.userEmail,imdbId,status,numSeason)
+  }
   //méthode pour supprimer Serie ou Movie de Viewings
   deleteMedia(imdbId: string,typeMedia: string){
     this.mediaService.deleteMediaByEmailAndIdMedia(this.userEmail,imdbId,typeMedia)
   }
+
+
 
 }

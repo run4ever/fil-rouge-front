@@ -39,7 +39,7 @@ getAllViewingSeries(userEmail:string){
         (data:any)=> data.map(
          s => new MediaModel('serie',s.status,s.serieDto.imdbId,s.serieDto.title,s.serieDto.description,s.serieDto.category,
                              s.serieDto.startYear,s.serieDto.imdbRating,s.serieDto.imdbVotes,s.serieDto.actors,
-                             s.serieDto.imageUrl,0,s.serieDto.endYear,s.serieDto.numberOfSeason,s.serieDto.statusSerie)
+                             s.serieDto.imageUrl,0,s.serieDto.endYear,s.serieDto.numberOfSeason,s.currentSeason,s.serieDto.statusSerie)
         )
     )
   )
@@ -58,7 +58,7 @@ getAllViewingMovie(userEmail:string){
         (data:any)=> data.map(
          m => new MediaModel('movie',m.status,m.movieDto.imdbId,m.movieDto.title,m.movieDto.description,m.movieDto.category,
                              (m.movieDto.startYear).substring(0,4),m.movieDto.imdbRating,m.movieDto.imdbVotes,m.movieDto.actors,
-                             m.movieDto.imageUrl,m.movieDto.runtime,null,null,null)
+                             m.movieDto.imageUrl,m.movieDto.runtime,null,null,null,null)
         )
     )
   )
@@ -102,6 +102,22 @@ getAllViewings(userEmail:string) {
     
   }
 
+  //méthode pour mettre à jour numéro saison d'une série
+  updateSeasonSerieByEmailAndIdMedia(userEmail:string,imdbId:string,status:string,numSeason:number) {
+    let httpOptions = {headers: new HttpHeaders({ 'Content-Type': 'application/json' })}
+    //si dans email on a %40 alors update ne passe, il faut remplacer %40 par @
+    let userEmailTrt = userEmail.replace('%40','@')
+    let corpsBody = {"email":userEmailTrt,"imdbId":imdbId,"status":status,"currentSeason":numSeason,"currentEpisode":1}
+    console.log(corpsBody)
+      this.http
+      .put(this.API_URL+'/viewing-serie/update',JSON.stringify(corpsBody),httpOptions)
+      .subscribe(
+        ()=> { console.log('Change saison pour une série terminé')},
+        (error)=> {console.log(error)}
+      )
+   
+  }
+
 //méthode pour supprimer Serie ou Movie de Viewings
 deleteMediaByEmailAndIdMedia(userEmail: string,imdbId: string,typeMedia: string) {
       //si dans email on a %40 alors update ne passe, il faut remplacer %40 par @
@@ -130,7 +146,6 @@ deleteMediaByEmailAndIdMedia(userEmail: string,imdbId: string,typeMedia: string)
                   if (item.imdbId === imdbId ) { tabMedias.splice(index, 1); }
                   this.medias$.next(tabMedias)
                 })
-             
               },
         (error)=> {console.log(error)}
       )
@@ -148,7 +163,6 @@ deleteMediaByEmailAndIdMedia(userEmail: string,imdbId: string,typeMedia: string)
                     if (item.imdbId === imdbId ) { tabMedias.splice(index, 1); }
                     this.medias$.next(tabMedias)
                   })
-                
               },
         (error)=> {console.log(error)}
       )
