@@ -4,6 +4,7 @@ import { MediaService } from '../shared/services/media.service';
 import { Router } from '@angular/router';
 import { stringify } from '@angular/compiler/src/util';
 import { UserService } from '../shared/services/user.service';
+import { MatTabChangeEvent } from '@angular/material/tabs';
 
 @Component({
   selector: 'app-media-list',
@@ -14,6 +15,7 @@ export class MediaListComponent implements OnInit {
 
   medialist:MediaModel[]
   isLoading:boolean
+  isMovies:boolean
   userEmail:string  //email à récupérer dans le jeton JWT
   //liste status
   status_media=[['TO_WATCH','A regader'],['IN_PROGRESS','En cours'],['WATCHED','Vu']]
@@ -22,6 +24,7 @@ export class MediaListComponent implements OnInit {
 
   ngOnInit(): void {
     this.isLoading = true;
+    this.isMovies = false;
    
     let jetonDecode=this.userService.getDecodeJWT()
     //userEmail est stocké dans le champ sub de jeton
@@ -62,4 +65,19 @@ export class MediaListComponent implements OnInit {
     this.mediaService.deleteMediaByEmailAndIdMedia(this.userEmail,imdbId,typeMedia)
   }
 
+  loadNextSeries() {
+    this.isLoading = true;
+    this.mediaService.getAllSeries();
+
+}
+
+  tabClick(event: MatTabChangeEvent){
+    if (event.tab.textLabel === "Séries") {
+      this.isMovies= false;
+    }
+    if (event.tab.textLabel === "Movies") {
+      this.isMovies= true;
+    }
+  }
+ 
 }
