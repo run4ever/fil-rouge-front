@@ -1,9 +1,19 @@
 <div class="list-body">
-    <h1>Mes films</h1>
-
+    <h1>Ma Liste</h1>
+    <mat-tab-group dynamicHeight>
+        <mat-tab label="Séries"> Mes séries </mat-tab>
+            
+        <mat-tab label="Films"> Mes films </mat-tab> 
+    </mat-tab-group>
+  
+    <div class="input-group sticky-top">
+        <input #inputElt (keyup)="searchSeries(inputElt.value)" placeholder="Rechercher..." type="text" class="form-control">
+        <span *ngIf="inputElt.value.length>0" (click)="deleteSearchText(inputElt)" class="input-group-text"
+        id="basic-addon1"><i class="fas fa-times"></i></span>
+    </div>
     <div class="row">
         <div class="col-12 col-md-3 col-xl-2" *ngFor="let media of medialist">
-            <!-- <div [routerLink]="['/detail', media.id, 'movies']" class="card"> -->
+            <!-- <div [routerLink]="['/detail', media.id, 'movie']" class="card"> -->
             <div class="card">
                 <img [src]="media.imageUrl" alt="">
                 <div class="card-body">

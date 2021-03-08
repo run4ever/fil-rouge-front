@@ -17,11 +17,25 @@ export class MediaListComponent implements OnInit {
 
   ngOnInit(): void {
     this.isLoading = true;
-    this.mediaService.getAllViewingSeries();
+    this.mediaService.getAllMovies();
+    this.mediaService.getAllSeries();
+    this.mediaService.getAllViewingSeries('youssta%40tcl.com');
     this.mediaService.medias$.subscribe( (data: MediaModel[]) => {
       this.medialist = data;
       this.isLoading = false;
     });
+
+    // this.mediaService.search$.subscribe(data => this.results = data)
+  }
+
+  searchSeries(searchText: string) {
+    console.log(searchText);
+    if (searchText.trim().length < 3) {
+      this.mediaService.search$.next([]);
+    }
+    else {
+      this.mediaService.getAllViewingSeries(searchText);
+    }
   }
 
 }

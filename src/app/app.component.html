@@ -5,7 +5,7 @@
     <span *ngIf="userService.isLogged()" class="ms-2">Hello 😎</span>
     <span *ngIf="userService.isLogged()" class="ms-2" [style.cursor]="'pointer'" (click)="logoutAction()">Logout</span> -->
     <span class="me-2" [style.cursor]="'pointer'" routerLink="/login">Login</span>
-    <span class="ms-2">Hello 😎</span>
+    <!-- <span class="ms-2">Hello 😎</span> -->
     <span class="ms-2" [style.cursor]="'pointer'" >Logout</span>
   </div>
 </mat-toolbar>
