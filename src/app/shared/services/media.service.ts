@@ -193,7 +193,6 @@ deleteMediaByEmailAndIdMedia(userEmail: string,imdbId: string,typeMedia: string)
     */
     
 }
-}
 
 }
 
