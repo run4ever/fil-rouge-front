@@ -3,6 +3,7 @@ import { MediaModel } from '../shared/models/media.model';
 import { MediaService } from '../shared/services/media.service';
 import { Router } from '@angular/router';
 import { stringify } from '@angular/compiler/src/util';
+import { UserService } from '../shared/services/user.service';
 
 @Component({
   selector: 'app-media-list',
@@ -13,17 +14,18 @@ export class MediaListComponent implements OnInit {
 
   medialist:MediaModel[]
   isLoading:boolean
-  //userEmail à récupérer quand authentification OK
-  userEmail="fabien%40tcl.com"
-
+  userEmail:string  //email à récupérer dans le jeton JWT
   //liste status
   status_media=[['TO_WATCH','A regader'],['IN_PROGRESS','En cours'],['WATCHED','Vu']]
   
-  constructor(private mediaService: MediaService, private routeur:Router) { }
+  constructor(private mediaService: MediaService, private routeur:Router, private userService:UserService) { }
 
   ngOnInit(): void {
     this.isLoading = true;
    
+    let jetonDecode=this.userService.getDecodeJWT()
+    //userEmail est stocké dans le champ sub de jeton
+    this.userEmail = jetonDecode.sub
     this.mediaService.getAllViewings(this.userEmail) //cette méthode retourne ViewingSerie/ViewingMovie dans medias$
 
     this.mediaService.medias$.subscribe( (data: MediaModel[]) => {
