@@ -2,32 +2,42 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import jwt_decode from 'jwt-decode';
+import { BehaviorSubject } from 'rxjs';
+import { environment } from 'src/environments/environment';
+import { UserModel } from '../models/user.model';
+import { AlertService } from './alert.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
 
-  
-  constructor(private http: HttpClient, private router: Router) { }
+  private URL_API_BASE = environment.apis.API_BACK_BASE
+  private URL_API_URL  = environment.apis.API_BACK_URL
+  user$ =new BehaviorSubject({lastname:'',firstname:'',birhdayDate:'',email:'',role:''})
+
+  constructor(private http: HttpClient, private router: Router, private alertService:AlertService) { }
 
   login(credentials) {
     console.log(credentials);
-    this.http.post('http://localhost:8080/authenticate', credentials)
+    this.http.post(this.URL_API_BASE+'/authenticate', credentials)
       .subscribe(
         (response: any) => {
           localStorage.setItem('token', response.token);
- //         this.alertService.show('Vous êtes connecté(e)');
+          this.alertService.show('Vous êtes connecté(e)');
+          this.getUserInfos(credentials.username)
           this.router.navigate(['/mylist']);
         },
-        err => console.log(err));
+        err =>{console.log(err)
+          this.alertService.show('Email ou mot passe erroné !!!'); }
+        );
   }
 
   
   logout() {
     localStorage.clear();
     this.router.navigate(['login']);
-//    this.alertService.show('Vous êtes déconnecté(e)')
+    this.alertService.show('Vous êtes déconnecté(e)')
   }
 
   isLogged(): boolean {
@@ -43,4 +53,12 @@ export class UserService {
     let decodeJWT = jwt_decode(jetonJWT)
     return decodeJWT
   }
+
+  getUserInfos(userEmail:string):any {
+    this.http.get(this.URL_API_URL+'/appuser/'+userEmail)
+    .subscribe(
+              (response:any)=> this.user$.next(response)
+    )
+  }
+
 }
