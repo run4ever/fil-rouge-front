@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import jwt_decode from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root'
@@ -34,5 +35,12 @@ export class UserService {
       return true;
     }
     return false;
+  }
+
+  //méthode pour décrypter le jeton JWT
+  getDecodeJWT():any{
+    let jetonJWT = localStorage.getItem('token')  
+    let decodeJWT = jwt_decode(jetonJWT)
+    return decodeJWT
   }
 }
