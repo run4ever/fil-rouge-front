@@ -18,7 +18,7 @@ export class UserService {
         (response: any) => {
           localStorage.setItem('token', response.token);
  //         this.alertService.show('Vous êtes connecté(e)');
-          this.router.navigate(['/']);
+          this.router.navigate(['/mylist']);
         },
         err => console.log(err));
   }
