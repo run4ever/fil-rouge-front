@@ -12,16 +12,17 @@ export class UserService {
 
   login(credentials) {
     console.log(credentials);
-    this.http.post('http://localhost:8080/auth/local', credentials)
+    this.http.post('http://localhost:8080/authenticate', credentials)
       .subscribe(
         (response: any) => {
-          localStorage.setItem('token', response.jwt);
+          localStorage.setItem('token', response.token);
  //         this.alertService.show('Vous êtes connecté(e)');
           this.router.navigate(['/']);
         },
         err => console.log(err));
   }
 
+  
   logout() {
     localStorage.clear();
     this.router.navigate(['login']);

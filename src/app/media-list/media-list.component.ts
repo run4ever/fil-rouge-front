@@ -17,22 +17,30 @@ export class MediaListComponent implements OnInit {
   userEmail="fabien%40tcl.com"
 
   //liste status
-  status_media=[['TO_WATCH','A regader'],['IN_PROGRESS','En cours'],['WATCHED','Vu'],['FINISHED','terminé']]
+  status_media=[['TO_WATCH','A regader'],['IN_PROGRESS','En cours'],['WATCHED','Vu']]
   
-
   constructor(private mediaService: MediaService, private routeur:Router) { }
 
   ngOnInit(): void {
     this.isLoading = true;
    
-
-   // this.mediaService.getAllViewingSeries('fabien%40tcl.com');//liste ViewingSerie
-   // this.mediaService.getAllViewingMovie('fabien%40tcl.com');//liste ViewingMovie
     this.mediaService.getAllViewings(this.userEmail) //cette méthode retourne ViewingSerie/ViewingMovie dans medias$
+
     this.mediaService.medias$.subscribe( (data: MediaModel[]) => {
       this.medialist = data;
       this.isLoading = false;
     });
+
+  }
+
+  searchSeries(searchText: string) {
+    console.log(searchText);
+    if (searchText.trim().length < 3) {
+      this.mediaService.search$.next([]);
+    }
+    else {
+      this.mediaService.getAllViewingSeries(searchText);
+    }
   }
 
   //méthode pour MAJ status de Serie ou Movie, la requete d'accès à API est dans media.service
@@ -51,7 +59,5 @@ export class MediaListComponent implements OnInit {
   deleteMedia(imdbId: string,typeMedia: string){
     this.mediaService.deleteMediaByEmailAndIdMedia(this.userEmail,imdbId,typeMedia)
   }
-
-
 
 }

@@ -21,8 +21,9 @@ import { RegisterFormComponent } from './register-form/register-form.component';
 import { HomeComponent } from './home/home.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ApiInterceptor } from './shared/interceptors/api.interceptor';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RatingComponent } from './shared/rating/rating.component';
+import { MatTabsModule } from '@angular/material/tabs';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import { RatingComponent } from './shared/rating/rating.component';
     RegisterFormComponent,
     HomeComponent,
     RatingComponent
+    
   ],
   imports: [
     BrowserModule,
@@ -49,10 +51,13 @@ import { RatingComponent } from './shared/rating/rating.component';
     MatProgressBarModule,
     MatInputModule,
     ReactiveFormsModule, FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    MatTabsModule
+  
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: ApiInterceptor, multi: true},
+    
   ],
   bootstrap: [AppComponent]
 })

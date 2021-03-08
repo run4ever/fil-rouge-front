@@ -14,14 +14,15 @@ export class MediaService {
   private API_URL = environment.apis.API_BACK_URL;
   
   medias$ = new BehaviorSubject([]);
+  search$ = new BehaviorSubject<MediaModel[]>([]);
 
   constructor(private http:HttpClient, private sanitizer: DomSanitizer) { }
 
   /*Load movies from backend*/
   //exemple avec movies, mais remplacer par viewingMovie
-    getAllMovies(){
+  getAllMovies(){
       this.http
-      .get(this.API_URL+'/movie/list')
+      .get(this.API_URL+'/movie/list/all')
       //ajouter un mapping qui viendra renseigner la donnée type avec valeur movie via constructeur
       .subscribe((response:any) => {
         console.log(response)
@@ -29,6 +30,16 @@ export class MediaService {
       })
     }
 
+  getAllSeries(){
+    this.http
+      .get(this.API_URL+'/serie/list/all')
+      //ajouter un mapping qui viendra renseigner la donnée type avec valeur movie via constructeur
+      .subscribe((response:any) => {
+        console.log(response)
+        this.medias$.next(response)
+      })
+
+  }
 //méthode pour les viewingserie, mettre le type valeur 'serie'
 getAllViewingSeries(userEmail:string){
   this.http
@@ -59,6 +70,7 @@ getAllViewingMovie(userEmail:string){
          m => new MediaModel('movie',m.status,m.movieDto.imdbId,m.movieDto.title,m.movieDto.description,m.movieDto.category,
                              (m.movieDto.startYear).substring(0,4),m.movieDto.imdbRating,m.movieDto.imdbVotes,m.movieDto.actors,
                              m.movieDto.imageUrl,m.movieDto.runtime,null,null,null,null)
+
         )
     )
   )
@@ -67,6 +79,7 @@ getAllViewingMovie(userEmail:string){
     let series = this.medias$.getValue() //récupérer les résultats Seris 
     this.medias$.next([...series, ...response]) //ajoute les series dans media$ avec les movies
   })
+
 }
 
 //méthode globale retourne une liste globale qui contient ViewingSerie et ViewingMovie
@@ -180,5 +193,7 @@ deleteMediaByEmailAndIdMedia(userEmail: string,imdbId: string,typeMedia: string)
     */
     
 }
+}
 
 }
+
