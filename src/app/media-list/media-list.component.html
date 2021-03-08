@@ -5,7 +5,6 @@
             
         <mat-tab label="Films"> Mes films </mat-tab> 
     </mat-tab-group>
-  
     <div class="input-group sticky-top">
         <input #inputElt (keyup)="searchSeries(inputElt.value)" placeholder="Rechercher..." type="text" class="form-control">
         <span *ngIf="inputElt.value.length>0" (click)="deleteSearchText(inputElt)" class="input-group-text"
@@ -15,11 +14,27 @@
         <div class="col-12 col-md-3 col-xl-2" *ngFor="let media of medialist">
             <!-- <div [routerLink]="['/detail', media.id, 'movie']" class="card"> -->
             <div class="card">
-                <img [src]="media.imageUrl" alt="">
+                <img [src]="media.imageUrl" alt="image du film ou série">
                 <div class="card-body">
                     <h2>{{media.title}}</h2>
                     <app-rating [rating]="media.imdbRating/2"></app-rating>
-                    saison : {{media.numberOfSeason}}
+                    <p *ngIf="media.typeMedia=='serie'">Saison total : {{media.numberOfSeason}} 
+                        <br>Ma saison : 
+                        <select (change)="updateSeason(media.imdbId,media.status,$event.target.value)" name="saison_encours" id="saison_encours">
+                                <option *ngFor="let item of [].constructor(media.numberOfSeason); let i=index"
+                                [selected] ="media.userSeason == (i+1)"
+                                [value]="i+1">
+                                {{i+1}}</option>
+                        </select>
+                        <br>Année : {{media.startYear}}-{{media.endYear}}</p>
+                    <p *ngIf="media.typeMedia=='movie'">Durée : {{media.runtime}} minutes <br>Année : {{media.startYear}}</p>
+                    <p>
+                        <select (change)="updateStatusMedia(media.imdbId,media.typeMedia,$event.target.value)" name="status">
+                            <option *ngFor="let status of status_media" [selected]="status[0] === media.status" [value]="status[0]">{{status[1]}}</option>
+                            </select>
+                        <button mat-mini-fab color="primary" (click)="deleteMedia(media.imdbId,media.typeMedia)" aria-label="delete movie ou serie"><mat-icon>delete</mat-icon></button>
+                    </p>
+                    
                 </div>
             </div>
         </div>        

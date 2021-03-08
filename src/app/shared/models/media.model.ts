@@ -13,10 +13,10 @@ export class MediaModel {
     runtime: number;
     endYear: number
     numberOfSeason: number;	
+    userSeason:number;
     statusSerie: string;
     
- 
-    constructor(typeMedia: string,status:string,imdbId: string,title: string,description: string, category: string, startYear: number, imdbRating: number, imdbVotes:number,actors: string, imageUrl: string,runtime: number, endYear:number,numberOfSeason: number,statusSerie: string) {
+    constructor(typeMedia: string,status:string,imdbId: string,title: string,description: string, category: string, startYear: number, imdbRating: number, imdbVotes:number,actors: string, imageUrl: string,runtime: number, endYear:number,numberOfSeason: number,userSeason:number,statusSerie: string) {
         this.typeMedia      = typeMedia     ;
         this.status         = status        ;
         this.imdbId         = imdbId        ;
@@ -31,9 +31,7 @@ export class MediaModel {
         this.runtime        = runtime       ;
         this.endYear        = endYear       ;
         this.numberOfSeason = numberOfSeason;
+        this.userSeason     = userSeason    ;
         this.statusSerie    = statusSerie   ;
-        
     }
-
-
  }
