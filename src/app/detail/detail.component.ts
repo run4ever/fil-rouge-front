@@ -20,18 +20,21 @@ export class DetailComponent implements OnInit {
     this.mediaType = this.route.snapshot.params.type
     
     this.media = this.mediaService.medias$.getValue()
-                    .find( m => {
-                      console.log(m.imdbId+this.mediaId)
-                      console.log(m.typeMedia+this.mediaType)
-                                 m.imdbId == this.mediaId
-                                && m.typeMedia == this.mediaType
-                                })
-
-                                console.log(this.media)
+                    .find( m => m.imdbId == this.mediaId)
+    console.log(this.media)
   }
 
 
   goToMylistPage() {
+    let selectedIndex 
+    if(this.mediaType==='serie') {
+      selectedIndex=0
+    }
+    if(this.mediaType==='movie') {
+      selectedIndex=1
+    }
+      //choixIndex sera utilisé par media-list pour afficher Serie ou Movie
+      this.mediaService.indexTab$.next({choixIndex:selectedIndex})
       this.router.navigate(['/mylist'])
   }
 }

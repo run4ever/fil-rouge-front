@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MediaModel } from '../shared/models/media.model';
 import { MediaService } from '../shared/services/media.service';
 import { Router } from '@angular/router';
 import { UserService } from '../shared/services/user.service';
+import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-media-list',
@@ -11,6 +13,8 @@ import { UserService } from '../shared/services/user.service';
 })
 export class MediaListComponent implements OnInit {
 
+  //gestion selectedIndex pour gérer le retour de detail vers mylist
+  selectedIndex:number
   results:MediaModel[];
   movies:MediaModel[];
   series:MediaModel[];
@@ -44,6 +48,15 @@ export class MediaListComponent implements OnInit {
       this.series = this.medialist.filter(movie => movie.typeMedia==='serie');
     });
 
+    //gestion selectdIndex pour passage detail vers mylist
+    this.mediaService.indexTab$.subscribe(
+                      (data:any) => 
+                          {
+                            this.selectedIndex = data.choixIndex
+                            console.log("selectedIndex=>"+this.selectedIndex)
+                          }
+    )
+    
     // on s'abonne à la source de données search$
     this.mediaService.search$.subscribe(data => this.results = data)
 

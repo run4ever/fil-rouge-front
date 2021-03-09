@@ -16,6 +16,9 @@ export class MediaService {
   
   medias$ = new BehaviorSubject([]);
   search$ = new BehaviorSubject<MediaModel[]>([]);
+  
+  //gestion selectedIndex pour gérer le retour de detail vers mylist
+  indexTab$ = new BehaviorSubject({choixIndex:0})    //par défaut on affiche Série (tab)
   seachInProgress$ = new BehaviorSubject({value:false});
 
   constructor(private http:HttpClient, private sanitizer: DomSanitizer) { }
@@ -265,12 +268,8 @@ deleteMediaByEmailAndIdMedia(userEmail: string,imdbId: string,typeMedia: string)
         null,
         null,
         item.alreadyInUserList
-      )
-      
+      ) 
     }
-
-    
   }
-
 }
 

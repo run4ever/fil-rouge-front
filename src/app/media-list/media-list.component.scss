@@ -1,3 +1,30 @@
+.card {
+    margin: 5px;
+    margin-bottom: 50px;
+    .card-body {
+        h2 {
+            //si trop long le titre on coupe et ajoute ...
+            text-overflow: ellipsis;
+            overflow: hidden; // cache le texte si ça dépasse
+            white-space: nowrap; //titre reste sur une ligne
+            font-size: 1.1rem;
+        }
+    }
+    img {
+        max-width: 100%;
+        height: 350px;
+    }
+}
+// changer la taille de carte
+.card:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+}
+
+// flouter image au survol
+.card:hover img {
+    filter: blur(0.6px)
+}
 .search-result:hover{
     cursor: pointer;
 }
@@ -9,5 +36,3 @@
 .list-group-item:hover {
     background: #cdcdcd !important;
  }
-
-
