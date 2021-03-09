@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MediaModel } from '../shared/models/media.model';
 import { MediaService } from '../shared/services/media.service';
 import { Router } from '@angular/router';
 import { stringify } from '@angular/compiler/src/util';
 import { UserService } from '../shared/services/user.service';
-import { MatTabChangeEvent } from '@angular/material/tabs';
+import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-media-list',
@@ -12,6 +13,10 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
   styleUrls: ['./media-list.component.scss']
 })
 export class MediaListComponent implements OnInit {
+
+  //gestion selectedIndex pour gérer le retour de detail vers mylist
+  //indexTab$ = new BehaviorSubject([{choixIndex:1}])    //par défaut on affiche Série (tab)
+  selectedIndex:number
 
   movies:MediaModel[];
   series:MediaModel[];
@@ -40,6 +45,15 @@ export class MediaListComponent implements OnInit {
       this.series = this.medialist.filter(movie => movie.typeMedia==='serie');
     });
 
+    //gestion selectdIndex pour passage detail vers mylist
+    this.mediaService.indexTab$.subscribe(
+                      (data:any) => 
+                          {
+                            this.selectedIndex = data.choixIndex
+                            console.log("selectedIndex=>"+this.selectedIndex)
+                          }
+    )
+    
   }
 
   searchSeries(searchText: string) {

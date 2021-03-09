@@ -15,6 +15,8 @@ export class MediaService {
   
   medias$ = new BehaviorSubject([]);
   search$ = new BehaviorSubject<MediaModel[]>([]);
+  //gestion selectedIndex pour gérer le retour de detail vers mylist
+  indexTab$ = new BehaviorSubject({choixIndex:0})    //par défaut on affiche Série (tab)
 
   constructor(private http:HttpClient, private sanitizer: DomSanitizer) { }
 

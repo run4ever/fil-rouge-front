@@ -1,5 +1,6 @@
 <div class="list-body" class="container-fluid">
-    <mat-tab-group #tabGroup dynamicHeight>
+    <!--  -->
+    <mat-tab-group #tabGroup [selectedIndex]="selectedIndex" dynamicHeight>
         <mat-tab label="Séries">
             <span class="me-2" [style.cursor]="'pointer'"></span>
         </mat-tab>
@@ -21,9 +22,10 @@
         <!-- <div *ngFor="let media of medialist"  class="col-12 col-lg-3 col-xl-2">                     -->
         <!-- <div [routerLink]="['/detail', media.id, 'movie']" class="card"> -->
         <!-- TEMPLATE SERIES-->
+      <p *ngIf="series.length == 0">Vous n'avez pas de séries dans votre liste</p>
         <div class="col-12 col-md-3 col-xl-2" *ngFor="let media of series">
-            <div [routerLink]="['/detail',media.imdbId,media.typeMedia]" class="card">
-                <img [src]="media.imageUrl" alt="image du film ou série">
+            <div class="card">
+                <img [routerLink]="['/detail',media.imdbId,media.typeMedia]" [src]="media.imageUrl" alt="image du film ou série">
                 <div class="card-body">
                     <h2>{{media.title}}</h2>
                     <app-rating [rating]="media.imdbRating/2"></app-rating>
@@ -57,9 +59,11 @@
 
     <!-- TEMPLATE MOVIES-->
     <div *ngIf="this.tabGroup.selectedIndex == 1" class="row">
+      <p *ngIf="movies.length == 0">Vous n'avez pas de films dans votre liste</p>
         <div class="col-12 col-md-3 col-xl-2" *ngFor="let media of movies">
-          <div [routerLink]="['/detail',media.imdbId,media.typeMedia]" class="card">
-                <img [src]="media.imageUrl" alt="image du film ou série">
+         
+          <div class="card">
+                <img [routerLink]="['/detail',media.imdbId,media.typeMedia]" [src]="media.imageUrl" alt="image du film ou série">
                 <div class="card-body">
                     <h2>{{media.title}}</h2>
                     <app-rating [rating]="media.imdbRating/2"></app-rating>
