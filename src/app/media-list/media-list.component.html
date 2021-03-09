@@ -1,26 +1,23 @@
 <div class="list-body" class="container-fluid">
-    <mat-tab-group dynamicHeight mat-stretch-tabs (selectedTabChange)="tabClick($event)">
+    <mat-tab-group #tabGroup dynamicHeight>
         <mat-tab label="Séries">
-
             <span class="me-2" [style.cursor]="'pointer'"></span>
         </mat-tab>
         <mat-tab label="Movies">
             <span class="me-2" [style.cursor]="'pointer'"></span>
-
         </mat-tab>
-
     </mat-tab-group>
 
 
     <div class="input-group sticky-top">
-        <input #inputElt (keyup)="searchSeries(inputElt.value)" placeholder="Rechercher..." type="text"
+        <input #inputElt (keyup)="searchApiAndUserList(this.tabGroup.selectedIndex, inputElt.value)" placeholder="Rechercher..." type="text"
             class="form-control">
         <span *ngIf="inputElt.value.length>0" (click)="deleteSearchText(inputElt)" class="input-group-text"
             id="basic-addon1"><i class="fas fa-times"></i></span>
     </div>
 
     <!-- TEMPLATE SERIES-->
-    <div *ngIf="this.isMovies==false" class="row">
+    <div *ngIf="this.tabGroup.selectedIndex == 0" class="row">
         <!-- <div *ngFor="let media of medialist"  class="col-12 col-lg-3 col-xl-2">                     -->
         <!-- <div [routerLink]="['/detail', media.id, 'movie']" class="card"> -->
         <!-- TEMPLATE SERIES-->
@@ -59,7 +56,7 @@
     <!-- FIN TEMPLATE SERIES-->
 
     <!-- TEMPLATE MOVIES-->
-    <div *ngIf="this.isMovies==true" class="row">
+    <div *ngIf="this.tabGroup.selectedIndex == 1" class="row">
         <div class="col-12 col-md-3 col-xl-2" *ngFor="let media of movies">
             <div class="card">
                 <img [src]="media.imageUrl" alt="image du film ou série">
