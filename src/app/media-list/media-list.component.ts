@@ -13,10 +13,12 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 })
 export class MediaListComponent implements OnInit {
 
-  medialist: MediaModel[]
-  isLoading: boolean
-  isMovies: boolean
-  userEmail: string  //email à récupérer dans le jeton JWT
+  movies:MediaModel[];
+  series:MediaModel[];
+  medialist:MediaModel[]
+  isLoading:boolean
+  userEmail:string  //email à récupérer dans le jeton JWT
+
   //liste status
   status_media = [['TO_WATCH', 'A regader'], ['IN_PROGRESS', 'En cours'], ['WATCHED', 'Vu']]
 
@@ -24,9 +26,8 @@ export class MediaListComponent implements OnInit {
 
   ngOnInit(): void {
     this.isLoading = true;
-    this.isMovies = false;
-
     let jetonDecode = this.userService.getDecodeJWT()
+
     //userEmail est stocké dans le champ sub de jeton
     this.userEmail = jetonDecode.sub
     this.mediaService.getAllViewings(this.userEmail) //cette méthode retourne ViewingSerie/ViewingMovie dans medias$
@@ -34,6 +35,9 @@ export class MediaListComponent implements OnInit {
     this.mediaService.medias$.subscribe((data: MediaModel[]) => {
       this.medialist = data;
       this.isLoading = false;
+      console.log(this.medialist);
+      this.movies = this.medialist.filter(movie => movie.typeMedia==='movie');
+      this.series = this.medialist.filter(movie => movie.typeMedia==='serie');
     });
 
   }
@@ -71,13 +75,19 @@ export class MediaListComponent implements OnInit {
 
   }
 
-  tabClick(event: MatTabChangeEvent) {
-    if (event.tab.textLabel === "Séries") {
-      this.isMovies = false;
-    }
-    if (event.tab.textLabel === "Movies") {
-      this.isMovies = true;
-    }
+
+ // search user text in Api and in his movie / serie list
+ searchApiAndUserList(activeTab:number, searchText: string) {
+   
+ }
+
+/**
+   * Delete search text on userClickEvent
+   * @param inputElt 
+   */
+  deleteSearchText(inputElt) {
+    inputElt.value = '';
+    this.mediaService.search$.next([]);
   }
 
 }
