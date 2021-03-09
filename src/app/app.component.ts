@@ -18,7 +18,16 @@ export class AppComponent implements OnInit {
     this.userService.user$.subscribe(
       (data:any)=> {this.userFirstname=data.firstname}
     )
+    //console.log(this.userService.user$.getValue())
+    if(this.userService.user$.getValue().firstname === '') {
+      if(this.userService.isLogged()) {
+        let token = this.userService.getDecodeJWT()
+        this.userService.getUserInfos(token.sub);
+      }
+    }
   }
+
+
 
   logoutAction() {
     this.userService.logout()

@@ -54,7 +54,7 @@ getAllViewingSeries(userEmail:string){
     )
   )
   .subscribe((response:any) => {
-    console.log(response)
+    //console.log(response)
     this.medias$.next(response)
   })
 }
@@ -74,7 +74,7 @@ getAllViewingMovie(userEmail:string){
       )
     )
     .subscribe((response:any) => {
-      console.log(response)
+      //console.log(response)
       let series = this.medias$.getValue() //récupérer les résultats Seris 
       this.medias$.next([...series, ...response]) //ajoute les series dans media$ avec les movies
       })
@@ -98,7 +98,7 @@ getAllViewings(userEmail:string) {
       .subscribe(
         ()=> { console.log('Change status terminé')
                 const tabMedias:any[] = this.medias$.getValue()  //récupérer les valeurs de medias$
-                console.log(tabMedias)
+               // console.log(tabMedias)
                 tabMedias.forEach((item, index) => {
                   //mettre à jour status dans l'élément dans medias$
                   if (item.imdbId === imdbId ) { item.status=status }
@@ -119,7 +119,7 @@ getAllViewings(userEmail:string) {
       .subscribe(
         ()=> { console.log('Change saison pour une série terminé')
                 const tabMedias:any[] = this.medias$.getValue()  //récupérer les valeurs de medias$
-                console.log(tabMedias)
+                //console.log(tabMedias)
                 tabMedias.forEach((item, index) => {
                   //mettre à jour Num saison dans l'élément dans medias$
                   if (item.imdbId === imdbId ) { 

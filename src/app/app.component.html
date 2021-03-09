@@ -1,9 +1,6 @@
 <mat-toolbar class="d-flex justify-content-between" color="primary">
-  <span>My Media List</span>
+  <span routerLink="/">My Media List</span>
   <div>
-    <!-- <span *ngIf="!userService.isLogged()" class="me-2" [style.cursor]="'pointer'" routerLink="/login">Login</span>
-    <span *ngIf="userService.isLogged()" class="ms-2">Hello 😎</span>
-    <span *ngIf="userService.isLogged()" class="ms-2" [style.cursor]="'pointer'" (click)="logoutAction()">Logout</span> -->
     <span *ngIf="userService.isLogged()" class="ms-2">Hello {{userFirstname}} !    </span>
     <span *ngIf="!userService.isLogged()" class="me-2" [style.cursor]="'pointer'" routerLink="/login">Login</span>
     <span class="ms-2" [style.cursor]="'pointer'" (click)="logoutAction()">Logout</span>

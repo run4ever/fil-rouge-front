@@ -13,25 +13,25 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 })
 export class MediaListComponent implements OnInit {
 
-  medialist:MediaModel[]
-  isLoading:boolean
-  isMovies:boolean
-  userEmail:string  //email à récupérer dans le jeton JWT
+  medialist: MediaModel[]
+  isLoading: boolean
+  isMovies: boolean
+  userEmail: string  //email à récupérer dans le jeton JWT
   //liste status
-  status_media=[['TO_WATCH','A regader'],['IN_PROGRESS','En cours'],['WATCHED','Vu']]
-  
-  constructor(private mediaService: MediaService, private routeur:Router, private userService:UserService) { }
+  status_media = [['TO_WATCH', 'A regader'], ['IN_PROGRESS', 'En cours'], ['WATCHED', 'Vu']]
+
+  constructor(private mediaService: MediaService, private routeur: Router, private userService: UserService) { }
 
   ngOnInit(): void {
     this.isLoading = true;
     this.isMovies = false;
-   
-    let jetonDecode=this.userService.getDecodeJWT()
+
+    let jetonDecode = this.userService.getDecodeJWT()
     //userEmail est stocké dans le champ sub de jeton
     this.userEmail = jetonDecode.sub
     this.mediaService.getAllViewings(this.userEmail) //cette méthode retourne ViewingSerie/ViewingMovie dans medias$
 
-    this.mediaService.medias$.subscribe( (data: MediaModel[]) => {
+    this.mediaService.medias$.subscribe((data: MediaModel[]) => {
       this.medialist = data;
       this.isLoading = false;
     });
@@ -49,35 +49,35 @@ export class MediaListComponent implements OnInit {
   }
 
   //méthode pour MAJ status de Serie ou Movie, la requete d'accès à API est dans media.service
-  updateStatusMedia(imdbId:string,typeMedia:string,status:string) {
+  updateStatusMedia(imdbId: string, typeMedia: string, status: string) {
     //appel le service pour mettre à jour status de film ou serie
-    console.log("imdbId="+imdbId+";typeMedia:"+typeMedia+";status:"+status)
-    this.mediaService.updateStatusMediaByEmailAndIdMedia(this.userEmail,imdbId,typeMedia,status)
+    //console.log("imdbId="+imdbId+";typeMedia:"+typeMedia+";status:"+status)
+    this.mediaService.updateStatusMediaByEmailAndIdMedia(this.userEmail, imdbId, typeMedia, status)
   }
 
   //méthode update la saison d'une série
-  updateSeason(imdbId:string,status:string,numSeason:number) {
-    console.log("imdbId="+imdbId+";status:"+status+"; nouveau num saison"+numSeason)
-    this.mediaService.updateSeasonSerieByEmailAndIdMedia(this.userEmail,imdbId,status,numSeason)
+  updateSeason(imdbId: string, status: string, numSeason: number) {
+    // console.log("imdbId="+imdbId+";status:"+status+"; nouveau num saison"+numSeason)
+    this.mediaService.updateSeasonSerieByEmailAndIdMedia(this.userEmail, imdbId, status, numSeason)
   }
   //méthode pour supprimer Serie ou Movie de Viewings
-  deleteMedia(imdbId: string,typeMedia: string){
-    this.mediaService.deleteMediaByEmailAndIdMedia(this.userEmail,imdbId,typeMedia)
+  deleteMedia(imdbId: string, typeMedia: string) {
+    this.mediaService.deleteMediaByEmailAndIdMedia(this.userEmail, imdbId, typeMedia)
   }
 
   loadNextSeries() {
     this.isLoading = true;
     this.mediaService.getAllSeries();
 
-}
+  }
 
-  tabClick(event: MatTabChangeEvent){
+  tabClick(event: MatTabChangeEvent) {
     if (event.tab.textLabel === "Séries") {
-      this.isMovies= false;
+      this.isMovies = false;
     }
     if (event.tab.textLabel === "Movies") {
-      this.isMovies= true;
+      this.isMovies = true;
     }
   }
- 
+
 }

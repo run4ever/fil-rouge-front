@@ -22,7 +22,7 @@
         <div *ngFor="let media of medialist">                    
             <!-- <div [routerLink]="['/detail', media.id, 'movie']" class="card"> -->
              <div *ngIf="this.isMovies==false && media.typeMedia=='serie'">
-                <div class="card">
+                <div [routerLink]="['/detail',media.imdbId,media.typeMedia]" class="card">
                     <img [src]="media.imageUrl" alt="image du film ou série">
                     <div class="card-body">
                         <h2>{{media.title}}</h2>
@@ -47,7 +47,7 @@
                 </div>
             </div>
             <div *ngIf="this.isMovies==true && media.typeMedia=='movie'">
-                <div class="card">
+                <div [routerLink]="['/detail',media.imdbId,media.typeMedia]" class="card">
                     <img [src]="media.imageUrl" alt="image du film ou série">
                     <div class="card-body">
                         <h2>{{media.title}}</h2>

@@ -6,22 +6,25 @@ import {
   HttpInterceptor
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class ApiInterceptor implements HttpInterceptor {
+  
+  private URL_API_BASE = environment.apis.API_BACK_BASE
   
   cloneReq: HttpRequest<unknown>;
   constructor() {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    console.log(request);
-    if (request.url.includes('http://localhost:8080')) {
-      if (request.url !== 'http://localhost:8080/authenticate') {
+    //console.log(request);
+    if (request.url.includes(this.URL_API_BASE)) {
+      if (request.url !== this.URL_API_BASE+'/authenticate') {
       this.cloneReq = request.clone({ 
         headers: request.headers.set('Authorization', 'Bearer ' +localStorage.getItem('token')) 
       });
-      console.log("après ajout JWT dans header")
-      console.log(this.cloneReq)
+     // console.log("après ajout JWT dans header")
+     // console.log(this.cloneReq)
       }
       else {
         this.cloneReq = request;
