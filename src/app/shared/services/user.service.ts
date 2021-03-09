@@ -11,6 +11,7 @@ import { AlertService } from './alert.service';
   providedIn: 'root'
 })
 export class UserService {
+  
 
   private URL_API_BASE = environment.apis.API_BACK_BASE
   private URL_API_URL  = environment.apis.API_BACK_URL

@@ -1,23 +1,18 @@
-.card {
-    margin: 5px;
-    margin-bottom: 50px;
-    .card-body {
-        h2 {
-            //si trop long le titre on coupe et ajoute ...
-            text-overflow: ellipsis;
-            overflow: hidden; // cache le texte si ça dépasse
-            white-space: nowrap; //titre reste sur une ligne
-            font-size: 1.2rem;
-        }
-    }
-}
-// changer la taille de carte
-.card:hover {
-    transform: scale(1.08);
-    cursor: pointer;
-}
+.card{
 
-// flouter image au survol
-.card:hover img {
-    filter: blur(0.6px)
+    width: 200px;
+    border:1px solid #ccc;
+    padding: 10px 20px;
+    background: slategrey;
+    border-radius: 5px;
+    /* je positionne div.card pour pouvoir positionner son enfant image 
+    en position absolute */
+    position:relative;
+ 
+}
+.div{
+
+    display:flex;
+    justify-content: space-between;
+    flex-wrap:wrap
 }
