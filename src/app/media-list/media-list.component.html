@@ -16,6 +16,13 @@
     </div>
 
     <div class="list-group">
+        <div *ngIf="this.nbResults>-1" class="row list-group-item"> 
+            
+        <div *ngIf="isLoadingResults" class="d-flex justify-content-center align-items-center loader">
+            <div class="spinner-border" role="status"></div>
+         </div>
+            {{nbResults}} resultat(s)<span *ngIf="this.nbResults>10"><small><em>(seuls les 10 premiers vous sont proposés)</em></small></span></div>
+
         <div class="row list-group-item d-flex" *ngFor="let result of results">
             <div class="col-6 search-result">
                 <img [src]="result.imageUrl">
@@ -39,24 +46,6 @@
 
         </div>
     </div> 
-    <!-- <ul class="list-group results-list">
-        <li *ngFor="let result of results"
-           class="list-group-item">
-
-           <span [routerLink]="['/detail', result.imdbId, 'results']">{{result.title}}</span>
- 
-           <button *ngIf="result.alreadyInUserList" mat-mini-fab color="primary" (click)="deleteMedia(result.imdbId,result.typeMedia, inputElt)"
-                            aria-label="delete from my list">
-                            <mat-icon>delete</mat-icon>
-                        </button>
-
-           <button *ngIf="!result.alreadyInUserList" mat-mini-fab color="primary" (click)="addMedia(result.imdbId,result.typeMedia, inputElt)"
-                            aria-label="delete from my list">
-                            <mat-icon>add_circle</mat-icon>
-                        </button>
-
-        </li>
-     </ul>  -->
 
     <!-- TEMPLATE SERIES-->
     <div *ngIf="this.tabGroup.selectedIndex == 0" class="row">

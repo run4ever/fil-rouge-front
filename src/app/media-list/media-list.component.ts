@@ -18,6 +18,9 @@ export class MediaListComponent implements OnInit {
   isLoading:boolean
   userEmail:string  //email à récupérer dans le jeton JWT
   activeTabLabel:string
+  nbResults:number
+  isLoadingResults: boolean;
+
 
   //liste status
   status_media = [['TO_WATCH', 'A regader'], ['IN_PROGRESS', 'En cours'], ['WATCHED', 'Vu']]
@@ -26,6 +29,7 @@ export class MediaListComponent implements OnInit {
 
   ngOnInit(): void {
     this.isLoading = true;
+    //this.isLoadingResults = false;
     let jetonDecode = this.userService.getDecodeJWT()
 
     //userEmail est stocké dans le champ sub de jeton
@@ -42,6 +46,12 @@ export class MediaListComponent implements OnInit {
 
     // on s'abonne à la source de données search$
     this.mediaService.search$.subscribe(data => this.results = data)
+
+    this.mediaService.seachInProgress$.subscribe(
+      (data:any) => {
+        this.isLoadingResults = data.value
+      }
+    )
 
   }
 
@@ -87,10 +97,15 @@ export class MediaListComponent implements OnInit {
 
  // search user text in Api and in his movie / serie list
  searchApiAndUserList(activeTab:number, searchText: string) {
+  this.mediaService.search$.next([]);
   if (searchText.trim().length < 3) {
     this.mediaService.search$.next([]);
   }
   else {
+    //this.isLoadingResults = true;
+    this.mediaService.seachInProgress$.next({value:true})
+
+    console.log('entree search: ', this.isLoadingResults);
     switch (activeTab) {
       case 1:
         this.activeTabLabel = 'movie'
@@ -100,8 +115,11 @@ export class MediaListComponent implements OnInit {
         this.activeTabLabel = 'serie'
         break;
     }
-    this.mediaService.getNbResults(searchText, this.activeTabLabel);
+    this.mediaService.getNbResults(searchText, this.activeTabLabel).subscribe(data => {this.nbResults = data;});
     this.mediaService.getSearchResults(this.userEmail, searchText, this.activeTabLabel);
+
+    console.log('sortie search: ', this.isLoadingResults);
+
   }
 }
 
@@ -112,6 +130,7 @@ export class MediaListComponent implements OnInit {
   deleteSearchText(inputElt) {
     inputElt.value = '';
     this.mediaService.search$.next([]);
+    this.nbResults = -1;
   }
 
 }

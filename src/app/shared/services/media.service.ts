@@ -5,6 +5,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { map } from 'rxjs/operators';
 import { MediaModel } from '../models/media.model';
+import { MediaListComponent } from 'src/app/media-list/media-list.component';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,7 @@ export class MediaService {
   
   medias$ = new BehaviorSubject([]);
   search$ = new BehaviorSubject<MediaModel[]>([]);
+  seachInProgress$ = new BehaviorSubject({value:false});
 
   constructor(private http:HttpClient, private sanitizer: DomSanitizer) { }
 
@@ -164,8 +166,9 @@ deleteMediaByEmailAndIdMedia(userEmail: string,imdbId: string,typeMedia: string)
         title: searchText
       }
     });
-    return this.http.get(this.API_URL + '/' + mediaType + '/external/search-nb-results', { params })
-    .pipe(map((apiResponse: any) => apiResponse.results))
+
+    return this.http.get<string>(this.API_URL + '/' + mediaType + '/external/search-nb-results', { params }) //.pipe(map(data => {return data;}));
+
   }
 
   getSearchResults(userEmail: string, searchText:string, mediaType:string): void {
@@ -186,8 +189,17 @@ deleteMediaByEmailAndIdMedia(userEmail: string,imdbId: string,typeMedia: string)
       .subscribe(response => {
         console.log(response);
         this.search$.next(response);
-      })
+        this.seachInProgress$.next({value:false})
+
+      },
+      (error) => this.seachInProgress$.next({value:false})
+      )
+    
+      
+
   }
+
+  
 
   addMediaByEmailAndIdMedia(userEmail: string,imdbId: string,typeMedia: string) {
     let body = {"email":userEmail,
