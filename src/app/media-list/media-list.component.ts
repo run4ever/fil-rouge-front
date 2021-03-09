@@ -13,6 +13,8 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 })
 export class MediaListComponent implements OnInit {
 
+  movies:MediaModel[];
+  series:MediaModel[];
   medialist:MediaModel[]
   isLoading:boolean
   isMovies:boolean
@@ -34,6 +36,9 @@ export class MediaListComponent implements OnInit {
     this.mediaService.medias$.subscribe( (data: MediaModel[]) => {
       this.medialist = data;
       this.isLoading = false;
+      console.log(this.medialist);
+      this.movies = this.medialist.filter(movie => movie.typeMedia==='movie');
+      this.series = this.medialist.filter(movie => movie.typeMedia==='serie');
     });
 
   }
