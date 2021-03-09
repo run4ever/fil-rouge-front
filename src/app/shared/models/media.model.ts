@@ -27,7 +27,8 @@ export class MediaModel {
         this.imdbRating     = imdbRating    ;
         this.imdbVotes      = imdbVotes     ;
         this.actors         = actors        ;
-        this.imageUrl       = imageUrl      ;
+        if(imageUrl==null) {this.imageUrl="https://japan-impact.ch/wp-content/uploads/2020/02/nophoto.jpg"}
+        else this.imageUrl  = imageUrl      ;
         this.runtime        = runtime       ;
         this.endYear        = endYear       ;
         this.numberOfSeason = numberOfSeason;

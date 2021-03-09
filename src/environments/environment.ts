@@ -5,7 +5,8 @@
 export const environment = {
   production: false,
   apis: {
-    API_BACK_URL:'http://localhost:8080/api/v1'
+    API_BACK_URL:'http://localhost:8080/api/v1',
+    API_BACK_BASE : 'http://localhost:8080'
   }
 
 };
