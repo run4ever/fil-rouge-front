@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MediaService } from '../shared/services/media.service';
 
 @Component({
   selector: 'app-detail',
@@ -7,9 +9,29 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DetailComponent implements OnInit {
 
-  constructor() { }
+  mediaId:string
+  mediaType:string
+  media
+
+  constructor(private router:Router,private route:ActivatedRoute,private mediaService:MediaService) { }
 
   ngOnInit(): void {
+    this.mediaId = this.route.snapshot.params.id
+    this.mediaType = this.route.snapshot.params.type
+    
+    this.media = this.mediaService.medias$.getValue()
+                    .find( m => {
+                      console.log(m.imdbId+this.mediaId)
+                      console.log(m.typeMedia+this.mediaType)
+                                 m.imdbId == this.mediaId
+                                && m.typeMedia == this.mediaType
+                                })
+
+                                console.log(this.media)
   }
 
+
+  goToMylistPage() {
+      this.router.navigate(['/mylist'])
+  }
 }

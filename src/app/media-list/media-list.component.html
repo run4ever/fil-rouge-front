@@ -22,7 +22,7 @@
         <!-- <div [routerLink]="['/detail', media.id, 'movie']" class="card"> -->
         <!-- TEMPLATE SERIES-->
         <div class="col-12 col-md-3 col-xl-2" *ngFor="let media of series">
-            <div class="card">
+            <div [routerLink]="['/detail',media.imdbId,media.typeMedia]" class="card">
                 <img [src]="media.imageUrl" alt="image du film ou série">
                 <div class="card-body">
                     <h2>{{media.title}}</h2>
@@ -58,7 +58,7 @@
     <!-- TEMPLATE MOVIES-->
     <div *ngIf="this.tabGroup.selectedIndex == 1" class="row">
         <div class="col-12 col-md-3 col-xl-2" *ngFor="let media of movies">
-            <div class="card">
+          <div [routerLink]="['/detail',media.imdbId,media.typeMedia]" class="card">
                 <img [src]="media.imageUrl" alt="image du film ou série">
                 <div class="card-body">
                     <h2>{{media.title}}</h2>
@@ -75,7 +75,6 @@
                             <mat-icon>delete</mat-icon>
                         </button>
                     </p>
-
                 </div>
             </div>
         </div>
