@@ -1,70 +1,90 @@
-<div class="list-body">
-    <mat-tab-group dynamicHeight  mat-stretch-tabs (selectedTabChange)="tabClick($event)">
-        <mat-tab label="Séries"> 
-            
-                <span class="me-2" [style.cursor]="'pointer'" ></span> 
-        </mat-tab> 
-        <mat-tab label="Movies">
-                <span class="me-2" [style.cursor]="'pointer'" ></span>  
-           
-        </mat-tab>
-                  
-     </mat-tab-group>
+<div class="list-body" class="container-fluid">
+    <mat-tab-group dynamicHeight mat-stretch-tabs (selectedTabChange)="tabClick($event)">
+        <mat-tab label="Séries">
 
-   
+            <span class="me-2" [style.cursor]="'pointer'"></span>
+        </mat-tab>
+        <mat-tab label="Movies">
+            <span class="me-2" [style.cursor]="'pointer'"></span>
+
+        </mat-tab>
+
+    </mat-tab-group>
+
+
     <div class="input-group sticky-top">
-        <input #inputElt (keyup)="searchSeries(inputElt.value)" placeholder="Rechercher..." type="text" class="form-control">
+        <input #inputElt (keyup)="searchSeries(inputElt.value)" placeholder="Rechercher..." type="text"
+            class="form-control">
         <span *ngIf="inputElt.value.length>0" (click)="deleteSearchText(inputElt)" class="input-group-text"
-        id="basic-addon1"><i class="fas fa-times"></i></span>
+            id="basic-addon1"><i class="fas fa-times"></i></span>
     </div>
-    <div class="row" class= "col-12 col-md-3 col-xl-2">
-        <!-- <div class="col-12 col-md-3 col-xl-2" *ngFor="let media of medialist"> -->
-        <div *ngFor="let media of medialist">                    
-            <!-- <div [routerLink]="['/detail', media.id, 'movie']" class="card"> -->
-             <div *ngIf="this.isMovies==false && media.typeMedia=='serie'">
-                <div class="card">
-                    <img [src]="media.imageUrl" alt="image du film ou série">
-                    <div class="card-body">
-                        <h2>{{media.title}}</h2>
-                        <app-rating [rating]="media.imdbRating/2"></app-rating>
-                        <p>Saison total : {{media.numberOfSeason}} 
-                            <br>Ma saison : 
-                            <select (change)="updateSeason(media.imdbId,media.status,$event.target.value)" name="saison_encours" id="saison_encours">
-                                    <option *ngFor="let item of [].constructor(media.numberOfSeason); let i=index"
-                                    [selected] ="media.userSeason == (i+1)"
-                                    [value]="i+1">
-                                    {{i+1}}</option>
-                            </select>
-                            <br>Année : {{media.startYear}}-{{media.endYear}}</p>
-                        <p>
-                            <select (change)="updateStatusMedia(media.imdbId,media.typeMedia,$event.target.value)" name="status">
-                                <option *ngFor="let status of status_media" [selected]="status[0] === media.status" [value]="status[0]">{{status[1]}}</option>
-                                </select>
-                            <button mat-mini-fab color="primary" (click)="deleteMedia(media.imdbId,media.typeMedia)" aria-label="delete movie ou serie"><mat-icon>delete</mat-icon></button>
-                        </p>
-                        
-                    </div>
+
+    <!-- TEMPLATE SERIES-->
+    <div *ngIf="this.isMovies==false" class="row">
+        <!-- <div *ngFor="let media of medialist"  class="col-12 col-lg-3 col-xl-2">                     -->
+        <!-- <div [routerLink]="['/detail', media.id, 'movie']" class="card"> -->
+        <!-- TEMPLATE SERIES-->
+        <div class="col-12 col-md-3 col-xl-2" *ngFor="let media of series">
+            <div class="card">
+                <img [src]="media.imageUrl" alt="image du film ou série">
+                <div class="card-body">
+                    <h2>{{media.title}}</h2>
+                    <app-rating [rating]="media.imdbRating/2"></app-rating>
+                    <p>Saison total : {{media.numberOfSeason}}
+                        <br>Ma saison :
+                        <select (change)="updateSeason(media.imdbId,media.status,$event.target.value)"
+                            name="saison_encours" id="saison_encours">
+                            <option *ngFor="let item of [].constructor(media.numberOfSeason); let i=index"
+                                [selected]="media.userSeason == (i+1)" [value]="i+1">
+                                {{i+1}}</option>
+                        </select>
+                        <br>Année : {{media.startYear}}-{{media.endYear}}
+                    </p>
+                    <p>
+                        <select (change)="updateStatusMedia(media.imdbId,media.typeMedia,$event.target.value)"
+                            name="status">
+                            <option *ngFor="let status of status_media" [selected]="status[0] === media.status"
+                                [value]="status[0]">{{status[1]}}</option>
+                        </select>
+                        <button mat-mini-fab color="primary" (click)="deleteMedia(media.imdbId,media.typeMedia)"
+                            aria-label="delete movie ou serie">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </p>
+
                 </div>
             </div>
-            <div *ngIf="this.isMovies==true && media.typeMedia=='movie'">
-                <div class="card">
-                    <img [src]="media.imageUrl" alt="image du film ou série">
-                    <div class="card-body">
-                        <h2>{{media.title}}</h2>
-                        <app-rating [rating]="media.imdbRating/2"></app-rating>
-                        <p>Durée : {{media.runtime}} minutes <br>Année : {{media.startYear}}</p>
-                        <p>
-                            <select (change)="updateStatusMedia(media.imdbId,media.typeMedia,$event.target.value)" name="status">
-                                <option *ngFor="let status of status_media" [selected]="status[0] === media.status" [value]="status[0]">{{status[1]}}</option>
-                                </select>
-                            <button mat-mini-fab color="primary" (click)="deleteMedia(media.imdbId,media.typeMedia)" aria-label="delete movie ou serie"><mat-icon>delete</mat-icon></button>
-                        </p>
-                        
-                    </div>
+        </div>
+    </div>
+    <!-- FIN TEMPLATE SERIES-->
+
+    <!-- TEMPLATE MOVIES-->
+    <div *ngIf="this.isMovies==true" class="row">
+        <div class="col-12 col-md-3 col-xl-2" *ngFor="let media of movies">
+            <div class="card">
+                <img [src]="media.imageUrl" alt="image du film ou série">
+                <div class="card-body">
+                    <h2>{{media.title}}</h2>
+                    <app-rating [rating]="media.imdbRating/2"></app-rating>
+                    <p>Durée : {{media.runtime}} minutes <br>Année : {{media.startYear}}</p>
+                    <p>
+                        <select (change)="updateStatusMedia(media.imdbId,media.typeMedia,$event.target.value)"
+                            name="status">
+                            <option *ngFor="let status of status_media" [selected]="status[0] === media.status"
+                                [value]="status[0]">{{status[1]}}</option>
+                        </select>
+                        <button mat-mini-fab color="primary" (click)="deleteMedia(media.imdbId,media.typeMedia)"
+                            aria-label="delete movie ou serie">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </p>
+
                 </div>
             </div>
-        </div>        
+        </div>
     </div>
+    <!-- FIN TEMPLATE MOVIES-->
+
     <div class="fixed-bottom bg-info text-center p-2">
         <button (click)="loadNextSeries()" class="btn btn-light">Films suivants</button>
     </div>

@@ -1,0 +1,13 @@
+.card{
+
+    width: 200px;
+    border:1px solid #ccc;
+    padding: 10px 20px;
+    background: slategrey;
+    border-radius: 5px;
+    /* je positionne div.card pour pouvoir positionner son enfant image 
+    en position absolute */
+    display: inline;
+    
+    
+}
