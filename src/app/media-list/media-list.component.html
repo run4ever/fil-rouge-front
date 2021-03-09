@@ -1,13 +1,12 @@
 <div class="list-body" class="container-fluid">
-    <mat-tab-group #tabGroup dynamicHeight>
-        <mat-tab label="Séries">
-            <span class="me-2" [style.cursor]="'pointer'"></span>
+    <mat-tab-group #tabGroup dynamicHeight (click)="deleteSearchText(inputElt)">
+        <mat-tab label="Series">
+            <!-- <span class="me-2" [style.cursor]="'pointer'"></span> -->
         </mat-tab>
         <mat-tab label="Movies">
-            <span class="me-2" [style.cursor]="'pointer'"></span>
+            <!-- <span class="me-2" [style.cursor]="'pointer'"></span> -->
         </mat-tab>
     </mat-tab-group>
-
 
     <div class="input-group sticky-top">
         <input #inputElt (keyup)="searchApiAndUserList(this.tabGroup.selectedIndex, inputElt.value)" placeholder="Rechercher..." type="text"
@@ -15,6 +14,38 @@
         <span *ngIf="inputElt.value.length>0" (click)="deleteSearchText(inputElt)" class="input-group-text"
             id="basic-addon1"><i class="fas fa-times"></i></span>
     </div>
+
+    <div class="list-group">
+        <div *ngIf="this.nbResults>-1" class="row list-group-item"> 
+            
+        <div *ngIf="isLoadingResults" class="d-flex justify-content-center align-items-center loader">
+            <div class="spinner-border" role="status"></div>
+         </div>
+            {{nbResults}} resultat(s)<span *ngIf="this.nbResults>10"><small><em>(seuls les 10 premiers vous sont proposés)</em></small></span></div>
+
+        <div class="row list-group-item d-flex" *ngFor="let result of results">
+            <div class="col-6 search-result">
+                <img [src]="result.imageUrl">
+                {{result.title}}
+            </div>
+            <div class="col-4 search-result">
+                <span *ngIf="result.alreadyInUserList" [routerLink]="['/detail', result.imdbId, result.typeMedia]">voir le détail</span>
+            </div>
+            <div class="col-2" *ngIf="result.alreadyInUserList">
+                <button mat-mini-fab color="warn" (click)="deleteMedia(result.imdbId,result.typeMedia, inputElt)"
+                                 aria-label="delete from my list">
+                                 <mat-icon>delete</mat-icon>
+                             </button>
+            </div>
+            <div class="col-2" *ngIf="!result.alreadyInUserList" >
+                <button mat-mini-fab color="primary" (click)="addMedia(result.imdbId,result.typeMedia, inputElt)"
+                                 aria-label="add to my list">
+                                 <mat-icon>add_circle</mat-icon>
+                             </button>
+            </div>
+
+        </div>
+    </div> 
 
     <!-- TEMPLATE SERIES-->
     <div *ngIf="this.tabGroup.selectedIndex == 0" class="row">

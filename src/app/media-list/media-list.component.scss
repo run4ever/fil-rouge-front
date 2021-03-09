@@ -1,4 +1,13 @@
+.search-result:hover{
+    cursor: pointer;
+}
 
+.search-result>img {
+    max-height: 50px;
+}
 
+.list-group-item:hover {
+    background: #cdcdcd !important;
+ }
 
 
