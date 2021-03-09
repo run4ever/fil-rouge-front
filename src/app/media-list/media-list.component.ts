@@ -17,6 +17,7 @@ export class MediaListComponent implements OnInit {
   medialist:MediaModel[]
   isLoading:boolean
   userEmail:string  //email à récupérer dans le jeton JWT
+  activeTabLabel:string
 
   //liste status
   status_media = [['TO_WATCH', 'A regader'], ['IN_PROGRESS', 'En cours'], ['WATCHED', 'Vu']]
@@ -92,17 +93,15 @@ export class MediaListComponent implements OnInit {
   else {
     switch (activeTab) {
       case 1:
-        console.log('onglet actif: films');
-        this.mediaService.getSearchResults(this.userEmail, searchText, 'movie');
+        this.activeTabLabel = 'movie'
         break;
     
       default:
-        console.log('onglet actif: séries');
-        this.mediaService.getSearchResults(this.userEmail, searchText, 'serie');
+        this.activeTabLabel = 'serie'
         break;
     }
-
-    
+    this.mediaService.getNbResults(searchText, this.activeTabLabel);
+    this.mediaService.getSearchResults(this.userEmail, searchText, this.activeTabLabel);
   }
 }
 

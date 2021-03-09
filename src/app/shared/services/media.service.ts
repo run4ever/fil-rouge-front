@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { map } from 'rxjs/operators';
 import { MediaModel } from '../models/media.model';
@@ -156,6 +156,16 @@ deleteMediaByEmailAndIdMedia(userEmail: string,imdbId: string,typeMedia: string)
               },
         (error)=> {console.log(error)}
       )
+  }
+
+  getNbResults(searchText:string, mediaType:string): Observable<any> {
+    const params = new HttpParams({
+      fromObject: {
+        title: searchText
+      }
+    });
+    return this.http.get(this.API_URL + '/' + mediaType + '/external/search-nb-results', { params })
+    .pipe(map((apiResponse: any) => apiResponse.results))
   }
 
   getSearchResults(userEmail: string, searchText:string, mediaType:string): void {
