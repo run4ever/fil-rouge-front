@@ -2,14 +2,16 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import jwt_decode from 'jwt-decode';
+import { AlertService } from './alert.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
+  
 
   
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private http: HttpClient, private alertService: AlertService ,private router: Router) { }
 
   login(credentials) {
     console.log(credentials);
@@ -17,7 +19,7 @@ export class UserService {
       .subscribe(
         (response: any) => {
           localStorage.setItem('token', response.token);
- //         this.alertService.show('Vous êtes connecté(e)');
+          this.alertService.show('Vous êtes connecté(e)');
           this.router.navigate(['/mylist']);
         },
         err => console.log(err));
@@ -27,7 +29,7 @@ export class UserService {
   logout() {
     localStorage.clear();
     this.router.navigate(['login']);
-//    this.alertService.show('Vous êtes déconnecté(e)')
+    this.alertService.show('Vous êtes déconnecté(e)')
   }
 
   isLogged(): boolean {
