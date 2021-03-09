@@ -25,3 +25,14 @@
 .card:hover img {
     filter: blur(0.6px)
 }
+.search-result:hover{
+    cursor: pointer;
+}
+
+.search-result>img {
+    max-height: 50px;
+}
+
+.list-group-item:hover {
+    background: #cdcdcd !important;
+ }

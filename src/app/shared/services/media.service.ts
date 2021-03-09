@@ -1,10 +1,11 @@
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { map } from 'rxjs/operators';
 import { MediaModel } from '../models/media.model';
+import { MediaListComponent } from 'src/app/media-list/media-list.component';
 
 @Injectable({
   providedIn: 'root'
@@ -15,8 +16,10 @@ export class MediaService {
   
   medias$ = new BehaviorSubject([]);
   search$ = new BehaviorSubject<MediaModel[]>([]);
+  
   //gestion selectedIndex pour gérer le retour de detail vers mylist
   indexTab$ = new BehaviorSubject({choixIndex:0})    //par défaut on affiche Série (tab)
+  seachInProgress$ = new BehaviorSubject({value:false});
 
   constructor(private http:HttpClient, private sanitizer: DomSanitizer) { }
 
@@ -51,7 +54,7 @@ getAllViewingSeries(userEmail:string){
         (data:any)=> data.map(
          s => new MediaModel('serie',s.status,s.serieDto.imdbId,s.serieDto.title,s.serieDto.description,s.serieDto.category,
                              s.serieDto.startYear,s.serieDto.imdbRating,s.serieDto.imdbVotes,s.serieDto.actors,
-                             s.serieDto.imageUrl,0,s.serieDto.endYear,s.serieDto.numberOfSeason,s.currentSeason,s.serieDto.statusSerie)
+                             s.serieDto.imageUrl,0,s.serieDto.endYear,s.serieDto.numberOfSeason,s.currentSeason,s.serieDto.statusSerie, null)
         )
     )
   )
@@ -70,7 +73,7 @@ getAllViewingMovie(userEmail:string){
           (data:any)=> data.map(
           m => new MediaModel('movie',m.status,m.movieDto.imdbId,m.movieDto.title,m.movieDto.description,m.movieDto.category,
                               (m.movieDto.startYear).substring(0,4),m.movieDto.imdbRating,m.movieDto.imdbVotes,m.movieDto.actors,
-                              m.movieDto.imageUrl,m.movieDto.runtime,null,null,null,null)
+                              m.movieDto.imageUrl,m.movieDto.runtime,null,null,null,null, null)
 
           )
       )
@@ -111,14 +114,6 @@ getAllViewings(userEmail:string) {
       )
   }
 
-  /* POST*/
-  // https://angular.io/guide/http#making-a-post-request
-  /*
-  postData() {
-    this.http.post(url, {});
-  }
-  */
-
   //méthode pour mettre à jour numéro saison d'une série
   updateSeasonSerieByEmailAndIdMedia(userEmail:string,imdbId:string,status:string,numSeason:number) {
     let httpOptions = {headers: new HttpHeaders({ 'Content-Type': 'application/json' })}
@@ -156,7 +151,7 @@ deleteMediaByEmailAndIdMedia(userEmail: string,imdbId: string,typeMedia: string)
 
       this.http.delete(this.API_URL+'/viewing-'+typeMedia+'/delete',httpOptions)
       .subscribe(
-        ()=> { console.log('Suppression série terminée')
+        ()=> { console.log('Suppression terminée')
                 const tabMedias:any[] = this.medias$.getValue()  //récupérer les valeurs de medias$
                 tabMedias.forEach((item, index) => {
                   //supprimer l'élément dans medias$
@@ -166,8 +161,115 @@ deleteMediaByEmailAndIdMedia(userEmail: string,imdbId: string,typeMedia: string)
               },
         (error)=> {console.log(error)}
       )
-      
   }
 
+  getNbResults(searchText:string, mediaType:string): Observable<any> {
+    const params = new HttpParams({
+      fromObject: {
+        title: searchText
+      }
+    });
+
+    return this.http.get<string>(this.API_URL + '/' + mediaType + '/external/search-nb-results', { params }) //.pipe(map(data => {return data;}));
+
+  }
+
+  getSearchResults(userEmail: string, searchText:string, mediaType:string): void {
+    const body = {"email": userEmail,
+                  "title": searchText,
+                  "page": '1'};
+
+    const httpOptions = {
+       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+    };
+
+    // On fait la requête http.post(url, body) 
+    this.http.post(this.API_URL + '/viewing-' + mediaType + '/search', JSON.stringify(body), httpOptions)
+      .pipe(map(
+        (apiResponse: any) =>
+          apiResponse.map(movie => this.createMedia(movie, mediaType))
+      ))
+      .subscribe(response => {
+        console.log(response);
+        this.search$.next(response);
+        this.seachInProgress$.next({value:false})
+
+      },
+      (error) => this.seachInProgress$.next({value:false})
+      )
+    
+      
+
+  }
+
+  
+
+  addMediaByEmailAndIdMedia(userEmail: string,imdbId: string,typeMedia: string) {
+    let body = {"email":userEmail,
+                "imdbId":imdbId,
+                "status":'TO_WATCH'}
+    const httpOptions = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' }), 
+    }
+    this.http.post(this.API_URL+'/viewing-'+typeMedia+'/create',JSON.stringify(body), httpOptions)
+    .subscribe((response:any) => {
+      let myMedias = this.medias$.getValue()  
+      this.medias$.next([...myMedias, ...response]) 
+      })
+    
+  }
+
+  /**
+   * Instanciate movie
+   * @param movie:any 
+   * @returns MovieModel 
+   */
+  createMedia(item: any, type:string): MediaModel {
+
+    if (type == 'movie') {
+
+      return new MediaModel(
+        'movie',
+        item.status,
+        item.movieDto.imdbId,
+        item.movieDto.title,
+        item.movieDto.description,
+        item.movieDto.category,
+        item.movieDto.startYear,
+        item.movieDto.imdbRating,
+        item.movieDto.imdbVotes,
+        item.movieDto.actors,
+        item.movieDto.imageUrl,
+        item.movieDto.runtime,
+        null,
+        null,
+        null,
+        null,
+        item.alreadyInUserList
+      )
+      
+    } else {
+
+      return new MediaModel(
+        'serie',
+        item.status,
+        item.serieDto.imdbId,
+        item.serieDto.title,
+        item.serieDto.description,
+        item.serieDto.category,
+        item.serieDto.startYear,
+        item.serieDto.imdbRating,
+        item.serieDto.imdbVotes,
+        item.serieDto.actors,
+        item.serieDto.imageUrl,
+        item.serieDto.runtime,
+        null,
+        null,
+        null,
+        null,
+        item.alreadyInUserList
+      ) 
+    }
+  }
 }
 
