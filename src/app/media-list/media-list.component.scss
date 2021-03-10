@@ -25,12 +25,18 @@
 .card:hover img {
     filter: blur(0.6px)
 }
+
+.search-result {
+    vertical-align: middle;
+}
+
 .search-result:hover{
     cursor: pointer;
 }
 
 .search-result>img {
     max-height: 50px;
+    max-width: 35px;
 }
 
 .list-group-item:hover {
@@ -54,3 +60,34 @@
 .fa-search-plus {
      color: rgba(54, 54, 218, 0.863);
  }
+
+.see-details {
+    margin: 9px 15px;
+ }
+
+.see-details:hover {
+    color:#3f51b5;
+    
+ }
+
+.change-status {
+    margin: 5px 0px;
+}
+
+.del-from-list, .add-to-my-list {
+    margin: 9px 15px;
+}
+
+.add-to-my-list {
+    color:green;
+}
+
+.del-from-list:hover {
+    color:red;
+    cursor: pointer;
+}
+
+.add-to-my-list:hover {
+    color:#3f51b5;
+    cursor: pointer;
+}
