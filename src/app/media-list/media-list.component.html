@@ -7,15 +7,15 @@
     </mat-tab-group>
 
     <div class="input-group sticky-top">
-        <input #inputElt (keyup)="searchApiAndUserList(this.tabGroup.selectedIndex, inputElt.value)" placeholder="search..." type="text"
+        <input #inputElt (keyup)="searchApiAndUserList(this.tabGroup.selectedIndex, inputElt.value)" placeholder="search movie or serie to add..." type="text"
             class="form-control">
         <span *ngIf="inputElt.value.length>0" (click)="deleteSearchText(inputElt)" class="input-group-text"
             id="basic-addon1"><i class="fas fa-times"></i></span>
     </div>
 
     <div class="list-group">
-        <div *ngIf="this.nbResults>-1" class="row list-group-item"> 
-            
+        <div *ngIf="this.nbResults>-1" class="row list-group-item">
+
         <div *ngIf="isLoadingResults" class="d-flex justify-content-center align-items-center loader">
             <div class="spinner-border" role="status"></div>
          </div>
@@ -43,13 +43,13 @@
             </div>
 
         </div>
-    </div> 
+    </div>
 
     <!-- TEMPLATE SERIES-->
     <div *ngIf="this.tabGroup.selectedIndex == 0" class="row">
         <!-- TEMPLATE SERIES-->
       <p *ngIf="series.length == 0">You dont' have serie in your list.</p>
-        <div class="col-12 col-md-3 col-xl-2" *ngFor="let media of series">
+        <div class="col-12 col-md-3 col-xl-2" *ngFor="let media of series | paginate: { itemsPerPage: pageSize, currentPage: page, totalItems:countItemSeries };">
             <div class="card">
                 <img [routerLink]="['/detail',media.imdbId,media.typeMedia]" [src]="media.imageUrl" alt="image du film ou série">
                 <div class="card-body">
@@ -86,8 +86,8 @@
     <!-- TEMPLATE MOVIES-->
     <div *ngIf="this.tabGroup.selectedIndex == 1" class="row">
       <p *ngIf="movies.length == 0">You dont' have movie in your list.</p>
-        <div class="col-12 col-md-3 col-xl-2" *ngFor="let media of movies">
-         
+        <div class="col-12 col-md-3 col-xl-2" *ngFor="let media of movies | paginate: { itemsPerPage: pageSize, currentPage: page, totalItems:countItemMovies };">
+
           <div class="card">
                 <img [routerLink]="['/detail',media.imdbId,media.typeMedia]" [src]="media.imageUrl" alt="image du film ou série">
                 <div class="card-body">
@@ -112,26 +112,21 @@
     <!-- <div class="fixed-bottom bg-info text-center p-2">
         <button (click) ="loadNextMedia()"  class="btn btn-light">previous </button>
         <button (click) ="loadLastMedia()"  class="btn btn-light">next </button>
-                           
+
      </div>   -->
     <!-- Pagination -->
-    <div class="fixed-bottom bg-info text-center p-2">
-        <tr *ngFor="let media of movies  | paginate:
-        { itemsPerPage: 5, currentPage: page, totalItems:100 };
-        let i = index" [class.active]="i == currentIndex" >
-        </tr>
-        
-     
+
+
         <pagination-controls
-            responsive="true" 
-            previousLabel="Prev" 
-            nextLabel="Next" 
-            (pageChange)="onPageChanged($event)">
-        </pagination-controls> 
-     
+            responsive="true"
+            previousLabel="Prev"
+            nextLabel="Next"
+            (pageChange)="onPageChanged($event, this.tabGroup.selectedIndex)">
+        </pagination-controls>
+
 
     <!-- FIN TEMPLATE MOVIES-->
-    
-          
+
+
 
 
