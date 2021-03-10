@@ -1,46 +1,55 @@
-<div class="subnav">
+<!-- <div class="subnav">
     <button color="primary" routerLink="/register" mat-icon-button aria-label="navigate to User list">
-       <!-- <mat-icon>navigate_before</mat-icon> -->
     </button>
-    <h1>Sign up</h1>
- </div>
+ </div> -->
+ <div class="container">
+   <div class="row">
+      <div class="col-lg-3"></div>
+      <div class="col-lg-6 border-form">
+         <h1>Create my account</h1>
+
  <form [formGroup]="newUserForm" (ngSubmit)= "onSubmit(newUserForm)">
+   <div class="mb-2">
+      <label class="form-label">Email</label>
+      <input formControlName="email" type="text" class="form-control">
+      <p *ngIf="newUserForm.get('email').hasError('email') && newUserForm.get('email').touched" class="form-error">
+         Email address is invalid
+      </p>
+   </div>
     <div class="mb-2">
-       <label class="form-label">Firstname</label>
+       <label class="form-label">Username</label>
        <input formControlName="firstname" type="text" class="form-control">
        <p *ngIf="newUserForm.get('firstname').hasError('minlength') && newUserForm.get('firstname').touched" class="form-error">
           Min. 2 characters
        </p>
     </div>
-    <div class="mb-2">
+    <!-- <div class="mb-2">
        <label class="form-label">Lastname</label>
        <input formControlName="lastname" type="text" class="form-control">
        <p *ngIf="(newUserForm.get('lastname').hasError('minlength') && newUserForm.get('lastname').touched)" class="form-error">
           Min. 2 characters
        </p>
-    </div>
-    <div class="mb-2">
+    </div> -->
+    <!-- <div class="mb-2">
        <label class="form-label">Birthday</label>
        <input formControlName="birthdayDate" type="text" class="form-control">
        <p *ngIf="newUserForm.get('birthdayDate').hasError('required') && newUserForm.get('birthdayDate').touched" class="form-error">
          Birthday date is required
        </p>
-    </div>
-    <div class="mb-2">
-       <label class="form-label">Email</label>
-       <input formControlName="email" type="text" class="form-control">
-       <p *ngIf="newUserForm.get('email').hasError('email') && newUserForm.get('email').touched" class="form-error">
-          Email address is invalid
-       </p>
-    </div>
+    </div> -->
     <div class="mb-2">
       <label class="form-label">Password</label>
-      <input formControlName="password" type="text" class="form-control">
-      <p *ngIf="newUserForm.get('password').hasError('email') && newUserForm.get('password').touched" class="form-error">
-         
+      <input formControlName="password" type="password" class="form-control">
+      <p *ngIf="newUserForm.get('password').hasError('password') && newUserForm.get('password').touched" class="form-error">
+         8 characters min.
       </p>
    </div>
     <div class="mt-3">
-       <button type="submit" mat-flat-button color="primary" type="submit">OK</button>
+       <button type="submit" mat-flat-button color="primary" type="submit">Create my account</button>
     </div>
  </form>
+ <p style="margin-top: 20px">To connect to your account, <a href='/login'>click here</a></p>
+</div>
+<div class="col-lg-3"></div>
+</div>
+</div>

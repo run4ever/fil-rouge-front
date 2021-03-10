@@ -1,16 +1,30 @@
-<mat-toolbar class="d-flex justify-content-between" color="primary">
-  <span routerLink="/">My Media List</span>
-  <div>
-    <span *ngIf="userService.isLogged()" class="ms-2">Hello {{userFirstname}} ! </span>
-    <span *ngIf="userService.isLogged()" class="ms-2" [style.cursor]="'pointer'" (click)="logoutAction()"><i class="fas fa-door-open"></i></span>
-    <span *ngIf="!userService.isLogged()" class="me-2" [style.cursor]="'pointer'" routerLink="/login">Login</span>
-    <span *ngIf="!userService.isLogged()" class="me-2" [style.cursor]="'pointer'" routerLink="/register">Register</span>
-  </div>
-</mat-toolbar>
+<div id="behind-top-bar"></div>
+<!-- ======= Header ======= -->
+  <header id="header" class="fixed-top d-flex align-items-center">
+    <div class="container">
+      <div class="header-container d-flex align-items-center justify-content-between">
+        <div class="logo">
+          <h1 class="text-light"><a href="/"><span>My Media List</span></a></h1>
+        </div>
+        <nav id="navbar" class="navbar">
+          <ul>
+            <li *ngIf="!userService.isLogged()" class="big-only"><a class="nav-link scrollto active" href="#hero">Home</a></li>
+            <li *ngIf="userService.isLogged()" class="big-only">Hello {{userFirstname}} !</li>
+            <li *ngIf="!userService.isLogged()" class="big-only"><a class="nav-link scrollto big-only" href="#about">About</a></li>
+            <li *ngIf="!userService.isLogged()" class="big-only"><a class="nav-link scrollto " href="#portfolio">Portfolio</a></li>
+            <li *ngIf="!userService.isLogged()" class="big-only"><a class="nav-link scrollto " href="#testimonials">Testimonials</a></li>
+            <li *ngIf="!userService.isLogged()" class="big-only"><a class="nav-link scrollto mr-30" href="#team">Team</a></li>
+            <li *ngIf="!userService.isLogged()"><a class="getstarted scrollto" href="/login">Login</a></li>
+            <li *ngIf="!userService.isLogged()"><a class="getstarted scrollto" href="/register">Register</a></li>
+            <li *ngIf="userService.isLogged()"><a class="getstarted scrollto" href="/mylist">My Lists</a></li>
+            <li *ngIf="userService.isLogged()"><a class="getout scrollto" href="/logout" (click)="logoutAction()"><i class="fas fa-door-open" style="padding-right:10px;"></i>Logout</a></li>
+          </ul>
+          <!-- <i class="bi bi-list mobile-nav-toggle"></i> -->
+        </nav><!-- .navbar -->
 
-<!-- <mat-progress-bar color="accent" [style.opacity]="(loaderService.isLoadingObs | async)?'1':'0'" mode="indeterminate">
-</mat-progress-bar> -->
-
+      </div><!-- End Header Container -->
+    </div>
+  </header><!-- End Header -->
 
 <div class="d-flex">
 
