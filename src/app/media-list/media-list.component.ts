@@ -27,7 +27,7 @@ export class MediaListComponent implements OnInit {
 
 
   //liste status
-  status_media = [['TO_WATCH', 'A regader'], ['IN_PROGRESS', 'En cours'], ['WATCHED', 'Vu']]
+  status_media = [['TO_WATCH', 'To watch'], ['IN_PROGRESS', 'In progress'], ['WATCHED', 'Watched']]
 
   constructor(private mediaService: MediaService, private routeur: Router, private userService: UserService) { }
 

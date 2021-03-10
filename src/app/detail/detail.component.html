@@ -1,6 +1,6 @@
 <div class="d-flex">
     <!-- retour sur le component list -->
-    <button (click)="goToMylistPage()" class="btn">Back</button>
+    <button (click)="goToMylistPage()" class="btn"><i class="far fa-arrow-alt-circle-left"></i>Back</button>
 </div>
 <div class="row">
     <div class="card">
@@ -10,14 +10,14 @@
             <h1>{{media.title | uppercase}}</h1>
             <img [src]="media.imageUrl" alt="image de movie ou série">
             <div *ngIf="media.typeMedia=='serie'">
-                <p>Année : {{media.startYear}}-{{media.endYear}}</p>
-                <p>Nombre de saisons : {{media.numberOfSeason}}</p>
+                <p>Year : {{media.startYear}}-{{media.endYear}}</p>
+                <p>Number of seasons : {{media.numberOfSeason}}</p>
             </div> 
             <div *ngIf="media.typeMedia=='movie'">
-                <p>Année : {{media.startYear}}</p>
-                <p>Durée : {{media.runtime}} minutes</p>
+                <p>Year : {{media.startYear}}</p>
+                <p>Duration : {{media.runtime}} minutes</p>
             </div>
-            <p>Acteurs : {{media.actors}}</p>
+            <p>Actors : {{media.actors}}</p>
             <p>Description : {{media.description}}</p>
         </div>
     </div>
