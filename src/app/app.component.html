@@ -9,7 +9,7 @@
         <nav id="navbar" class="navbar">
           <ul>
             <li *ngIf="!userService.isLogged()" class="big-only"><a class="nav-link scrollto active" href="#hero">Home</a></li>
-            <li *ngIf="userService.isLogged()" class="big-only">Hello {{userFirstname}} !</li>
+            <li *ngIf="userService.isLogged()" class="big-only"><span class="hello-you">Hello {{userFirstname}} !</span></li>
             <li *ngIf="!userService.isLogged()" class="big-only"><a class="nav-link scrollto big-only" href="#about">About</a></li>
             <li *ngIf="!userService.isLogged()" class="big-only"><a class="nav-link scrollto " href="#portfolio">Portfolio</a></li>
             <li *ngIf="!userService.isLogged()" class="big-only"><a class="nav-link scrollto " href="#testimonials">Testimonials</a></li>
@@ -26,9 +26,10 @@
     </div>
   </header><!-- End Header -->
 
-<div class="d-flex">
+<!-- <div class="d-flex"> -->
 
-  <div class="interface container-fluid">
+  <!-- <div class="interface container-fluid"> -->
+  <div class="container-fluid">
     <router-outlet></router-outlet>
   </div>
-</div>
+<!-- </div> -->

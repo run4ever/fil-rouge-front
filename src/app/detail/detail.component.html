@@ -1,24 +1,31 @@
-<div class="d-flex">
-    <!-- retour sur le component list -->
-    <button (click)="goToMylistPage()" class="btn"><i class="far fa-arrow-alt-circle-left"></i>Back</button>
-</div>
-<div class="row">
-    <div class="card">
-        <div class="card-body">
-            <!-- | appliquer une transformation avec la fonction qui prend paramètre en entrée -->
-            <!-- ici movie.title c'est paramètre en entrée et uppercase c'est la focntion de transformation -->
-            <h1>{{media.title | uppercase}}</h1>
-            <img [src]="media.imageUrl" alt="image de movie ou série">
-            <div *ngIf="media.typeMedia=='serie'">
-                <p>Year : {{media.startYear}}-{{media.endYear}}</p>
-                <p>Number of seasons : {{media.numberOfSeason}}</p>
-            </div> 
-            <div *ngIf="media.typeMedia=='movie'">
-                <p>Year : {{media.startYear}}</p>
-                <p>Duration : {{media.runtime}} minutes</p>
+    <!-- <div class="d-flex">
+        <button (click)="goToMylistPage()" class="btn"><i class="far fa-arrow-alt-circle-left"></i>Back</button>
+    </div> -->
+    
+
+    <div class="row d-flex">
+        <div class="col-lg-2"></div>
+        <div class="col-lg-8 detail-fiche">
+            <div class="row d-flex">
+                <div class="col-lg-12 text-center">
+                    <button (click)="goToMylistPage()" class="btn" style="margin: 20px 0px;"><i class="far fa-arrow-alt-circle-left"></i> Back to my {{this.mediaType}} list</button>
+                </div>
             </div>
-            <p>Actors : {{media.actors}}</p>
-            <p>Description : {{media.description}}</p>
+            <div class="row d-flex">
+                <div class="col-lg-5 detail-img"><img [src]="media.imageUrl" alt="{{media.title}}"></div>
+                <div class="col-lg-5 detail-txt">
+                    <h1>{{media.title}}</h1>
+                    <p>{{media.startYear}} <span *ngIf="media.typeMedia=='serie'"> - {{media.endYear}}</span> / 
+                        <span *ngIf="media.typeMedia=='movie'">{{media.runtime}} min. / </span>
+                        <span *ngIf="media.typeMedia=='serie'">{{media.numberOfSeason}} seasons / </span>
+                            {{media.category | lowercase}}</p>
+                    
+                    <p><strong>With :</strong> {{media.actors}}</p>
+                    <app-rating [rating]="media.imdbRating/2" [votes]="media.imdbVotes"></app-rating>
+                    <div class="synopsis-title">Synopsis :</div>
+                    <div class="synopsis-content">{{media.description}}</div>
+                </div>
+            </div>
         </div>
+        <div class="col-lg-2"></div>
     </div>
-</div>

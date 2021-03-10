@@ -3,4 +3,23 @@
 @import '@angular/material/prebuilt-themes/indigo-pink.css';
 
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+body {
+    margin: 0; 
+    font-family: Roboto, "Helvetica Neue", sans-serif; 
+    background: #f1f0f2;
+}
+
+.cdk-overlay-container {
+    z-index: 2000 !important;
+}
+
+.form-error{
+    color: red;
+    padding-top: 1px;
+    font-size:85%
+}
+.form-help{
+    padding-top: 1px;
+    font-size:85%
+}

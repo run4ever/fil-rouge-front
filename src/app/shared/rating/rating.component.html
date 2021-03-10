@@ -1,1 +1,7 @@
-<p><i *ngFor="let star of stars" class="fas fa-star"></i></p>
+<div class="rating-bloc">
+    <span class="public">Spectactors</span>
+    <i *ngFor="let star of stars" class="fas fa-star yellow-star"></i>
+    <i *ngFor="let star of greyStars" class="fas fa-star gery-star"></i>
+    <span class="notation">{{this.rating}}</span>
+    <span class="votes">{{this.votes}} votes</span>
+</div>
