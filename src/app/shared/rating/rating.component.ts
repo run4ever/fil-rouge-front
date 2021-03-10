@@ -15,7 +15,7 @@ export class RatingComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    console.log(this.rating);
+ //   console.log(this.rating);
     let roundedScore = Math.round(this.rating);
     this.stars = new Array(roundedScore).fill(1);
   }

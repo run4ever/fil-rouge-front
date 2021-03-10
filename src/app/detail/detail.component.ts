@@ -18,10 +18,16 @@ export class DetailComponent implements OnInit {
   ngOnInit(): void {
     this.mediaId = this.route.snapshot.params.id
     this.mediaType = this.route.snapshot.params.type
+    if(this.mediaType=== 'serie') {
+      this.media = this.mediaService.series$.getValue()
+      .find( m => m.imdbId == this.mediaId)
+    }
+    else {
+      this.media = this.mediaService.movies$.getValue()
+      .find( m => m.imdbId == this.mediaId)
+    }
     
-    this.media = this.mediaService.medias$.getValue()
-                    .find( m => m.imdbId == this.mediaId)
-    console.log(this.media)
+    //console.log(this.media)
   }
 
 
@@ -35,6 +41,8 @@ export class DetailComponent implements OnInit {
     }
       //choixIndex sera utilisé par media-list pour afficher Serie ou Movie
       this.mediaService.indexTab$.next({choixIndex:selectedIndex})
+      //vider le résultats de search de mylist
+      this.mediaService.search$.next([])
       this.router.navigate(['/mylist'])
   }
 }
