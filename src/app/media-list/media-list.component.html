@@ -36,7 +36,7 @@
                              </button>
             </div>
             <div class="col-2" *ngIf="!result.alreadyInUserList" >
-                <button mat-mini-fab color="primary" (click)="addMedia(result.imdbId,result.typeMedia, inputElt)"
+                <button mat-mini-fab color="primary" (click)="addMedia(result.imdbId,result.typeMedia, inputElt, result.numberOfSeason)"
                                  aria-label="add to my list">
                                  <mat-icon>add_circle</mat-icon>
                              </button>
