@@ -8,9 +8,9 @@ export class AlertService {
 
   constructor(private _snackBar: MatSnackBar) { }
 
-  show(message, action = 'Fermer') {
+  show(message, action = 'Close') {
     this._snackBar.open(message, action, {
-      duration: 1500,
+      duration: 2500,
       verticalPosition: 'top'
     });
   }

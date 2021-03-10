@@ -1,16 +1,24 @@
 <div class="d-flex">
     <!-- retour sur le component list -->
-    <button (click)="goToMylistPage()" class="btn">Back</button>
-    <h1>Titre</h1>
+    <button (click)="goToMylistPage()" class="btn"><i class="far fa-arrow-alt-circle-left"></i>Back</button>
 </div>
+<div class="row">
     <div class="card">
-            <div class="card-body">
-                <!-- | appliquer une transformation avec la fonction qui prend paramètre en entrée -->
-                <!-- ici movie.title c'est paramètre en entrée et uppercase c'est la focntion de transformation -->
-                <!-- <h1>{{media.title | uppercase}}</h1>   -->
-                <!-- on veut formatter la date avec option 'dd/MM/yyyy' -->
-                <!--<p>Date de sortie :{{movie.date | date:'dd/MM/yyyy'}}</p>  -->
-                <!-- cuttext créé par nous meme -->
-                <!--<p>{{movie.desc | cuttext}}</p>  -->
+        <div class="card-body">
+            <!-- | appliquer une transformation avec la fonction qui prend paramètre en entrée -->
+            <!-- ici movie.title c'est paramètre en entrée et uppercase c'est la focntion de transformation -->
+            <h1>{{media.title | uppercase}}</h1>
+            <img [src]="media.imageUrl" alt="image de movie ou série">
+            <div *ngIf="media.typeMedia=='serie'">
+                <p>Year : {{media.startYear}}-{{media.endYear}}</p>
+                <p>Number of seasons : {{media.numberOfSeason}}</p>
+            </div> 
+            <div *ngIf="media.typeMedia=='movie'">
+                <p>Year : {{media.startYear}}</p>
+                <p>Duration : {{media.runtime}} minutes</p>
             </div>
+            <p>Actors : {{media.actors}}</p>
+            <p>Description : {{media.description}}</p>
+        </div>
     </div>
+</div>

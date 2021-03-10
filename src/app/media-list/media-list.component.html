@@ -1,39 +1,69 @@
 <div class="list-body" class="container-fluid">
-    <mat-tab-group #tabGroup dynamicHeight>
-        <mat-tab label="Séries">
-            <span class="me-2" [style.cursor]="'pointer'"></span>
+    <mat-tab-group #tabGroup dynamicHeight [selectedIndex]="selectedIndex" (click)="deleteSearchText(inputElt)">
+        <mat-tab label="Series">
         </mat-tab>
         <mat-tab label="Movies">
-            <span class="me-2" [style.cursor]="'pointer'"></span>
         </mat-tab>
     </mat-tab-group>
 
-
     <div class="input-group sticky-top">
-        <input #inputElt (keyup)="searchApiAndUserList(this.tabGroup.selectedIndex, inputElt.value)" placeholder="Rechercher..." type="text"
+        <input #inputElt (keyup)="searchApiAndUserList(this.tabGroup.selectedIndex, inputElt.value)" placeholder="search..." type="text"
             class="form-control">
         <span *ngIf="inputElt.value.length>0" (click)="deleteSearchText(inputElt)" class="input-group-text"
             id="basic-addon1"><i class="fas fa-times"></i></span>
     </div>
 
+    <div class="list-group">
+        <div *ngIf="this.nbResults>-1" class="row list-group-item"> 
+            
+        <div *ngIf="isLoadingResults" class="d-flex justify-content-center align-items-center loader">
+            <div class="spinner-border" role="status"></div>
+         </div>
+            {{nbResults}} resultat(s)<span *ngIf="this.nbResults>10"><small><em>(seuls les 10 premiers vous sont proposés)</em></small></span></div>
+
+        <div class="row list-group-item d-flex" *ngFor="let result of results">
+            <div class="col-6 search-result">
+                <img [src]="result.imageUrl">
+                {{result.title}}
+            </div>
+            <div class="col-4 search-result">
+                <span *ngIf="result.alreadyInUserList" [routerLink]="['/detail', result.imdbId, result.typeMedia]">voir le détail</span>
+            </div>
+            <div class="col-2" *ngIf="result.alreadyInUserList">
+                <button mat-mini-fab color="warn" (click)="deleteMedia(result.imdbId,result.typeMedia, inputElt)"
+                                 aria-label="delete from my list">
+                                 <mat-icon>delete</mat-icon>
+                             </button>
+            </div>
+            <div class="col-2" *ngIf="!result.alreadyInUserList" >
+                <button mat-mini-fab color="primary" (click)="addMedia(result.imdbId,result.typeMedia, inputElt)"
+                                 aria-label="add to my list">
+                                 <mat-icon>add_circle</mat-icon>
+                             </button>
+            </div>
+
+        </div>
+    </div> 
+
     <!-- TEMPLATE SERIES-->
     <div *ngIf="this.tabGroup.selectedIndex == 0" class="row">
-      
+        <!-- TEMPLATE SERIES-->
+      <p *ngIf="series.length == 0">You dont' have serie in your list.</p>
         <div class="col-12 col-md-3 col-xl-2" *ngFor="let media of series">
-            <div [routerLink]="['/detail',media.imdbId,media.typeMedia]" class="card">
-                <img [src]="media.imageUrl" alt="image du film ou série">
+            <div class="card">
+                <img [routerLink]="['/detail',media.imdbId,media.typeMedia]" [src]="media.imageUrl" alt="image du film ou série">
                 <div class="card-body">
                     <h2>{{media.title}}</h2>
                     <app-rating [rating]="media.imdbRating/2"></app-rating>
-                    <p>Saison total : {{media.numberOfSeason}}
-                        <br>Ma saison :
+                    <p>Number of seasons : {{media.numberOfSeason}}
+                        <br>My season :
                         <select (change)="updateSeason(media.imdbId,media.status,$event.target.value)"
                             name="saison_encours" id="saison_encours">
                             <option *ngFor="let item of [].constructor(media.numberOfSeason); let i=index"
                                 [selected]="media.userSeason == (i+1)" [value]="i+1">
                                 {{i+1}}</option>
                         </select>
-                        <br>Année : {{media.startYear}}-{{media.endYear}}
+                        <br>Year : {{media.startYear}}-{{media.endYear}}
                     </p>
                     <p>
                         <select (change)="updateStatusMedia(media.imdbId,media.typeMedia,$event.target.value)"
@@ -55,13 +85,15 @@
 
     <!-- TEMPLATE MOVIES-->
     <div *ngIf="this.tabGroup.selectedIndex == 1" class="row">
+      <p *ngIf="movies.length == 0">You dont' have movie in your list.</p>
         <div class="col-12 col-md-3 col-xl-2" *ngFor="let media of movies">
-          <div [routerLink]="['/detail',media.imdbId,media.typeMedia]" class="card">
-                <img [src]="media.imageUrl" alt="image du film ou série">
+         
+          <div class="card">
+                <img [routerLink]="['/detail',media.imdbId,media.typeMedia]" [src]="media.imageUrl" alt="image du film ou série">
                 <div class="card-body">
                     <h2>{{media.title}}</h2>
                     <app-rating [rating]="media.imdbRating/2"></app-rating>
-                    <p>Durée : {{media.runtime}} minutes <br>Année : {{media.startYear}}</p>
+                    <p>Duration : {{media.runtime}} minutes <br>Year : {{media.startYear}}</p>
                     <p>
                         <select (change)="updateStatusMedia(media.imdbId,media.typeMedia,$event.target.value)"
                             name="status">
@@ -89,8 +121,7 @@
         let i = index" [class.active]="i == currentIndex" >
         </tr>
         
-       
-    
+     
         <pagination-controls
             responsive="true" 
             previousLabel="Prev" 
@@ -98,8 +129,6 @@
             (pageChange)="onPageChanged($event)">
         </pagination-controls> 
      
-
-
 
     <!-- FIN TEMPLATE MOVIES-->
     
