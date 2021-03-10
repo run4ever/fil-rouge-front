@@ -26,9 +26,22 @@
                 <img [src]="result.imageUrl">
                 {{result.title}}
             </div>
-            <div class="col-4 search-result">
-                <span *ngIf="result.alreadyInUserList" [routerLink]="['/detail', result.imdbId, result.typeMedia]">voir le détail</span>
+            <div class="col-2 search-result">
+                <span *ngIf="result.alreadyInUserList" [routerLink]="['/detail', result.imdbId, result.typeMedia]">
+                    <i class="fas fa-search-plus fa-2x"></i></span>
             </div>
+
+            
+            <div class="col-2 search-result">
+                    <span *ngIf="result.alreadyInUserList">
+                            <select name="status" (change)="updateStatusMedia(result.imdbId,result.typeMedia,$event.target.value)">
+                                <option *ngFor="let status of status_media" 
+                                        [selected]="status[0]==result.status"
+                                        [value]="status[0]">{{status[1]}}</option>
+                            </select>
+                    </span>
+            </div>
+            
             <div class="col-2" *ngIf="result.alreadyInUserList">
                 <button mat-mini-fab color="warn" (click)="deleteMedia(result.imdbId,result.typeMedia, inputElt)"
                                  aria-label="delete from my list">
