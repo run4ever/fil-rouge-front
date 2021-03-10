@@ -15,6 +15,8 @@ export class MediaService {
   private API_URL = environment.apis.API_BACK_URL;
   
   medias$ = new BehaviorSubject([]);
+  series$ = new BehaviorSubject([]);
+  movies$ = new BehaviorSubject([]);
   search$ = new BehaviorSubject<MediaModel[]>([]);
   
   //gestion selectedIndex pour gérer le retour de detail vers mylist
@@ -24,26 +26,7 @@ export class MediaService {
   constructor(private http:HttpClient, private sanitizer: DomSanitizer) { }
 
   /*Load movies from backend*/
-  //exemple avec movies, mais remplacer par viewingMovie
-  getAllMovies(){
-      this.http
-      .get(this.API_URL+'/movie/list/all')
-      //ajouter un mapping qui viendra renseigner la donnée type avec valeur movie via constructeur
-      .subscribe((response:any) => {
-        console.log(response)
-        this.medias$.next(response)
-      })
-    }
 
-  getAllSeries(){
-    this.http
-      .get(this.API_URL+'/serie/list/all')
-      //ajouter un mapping qui viendra renseigner la donnée type avec valeur movie via constructeur
-      .subscribe((response:any) => {
-        console.log(response)
-        this.medias$.next(response)
-      })
-  }
 //méthode pour les viewingserie, mettre le type valeur 'serie'
 getAllViewingSeries(userEmail:string){
   this.http
@@ -60,12 +43,13 @@ getAllViewingSeries(userEmail:string){
   )
   .subscribe((response:any) => {
     //console.log(response)
-    this.medias$.next(response)
+    //this.medias$.next(response)
+    this.series$.next(response)
   })
 }
 
 //méthode pour les viewingmovie, mettre le type valeur 'movie'
-getAllViewingMovie(userEmail:string){
+getAllViewingMovies(userEmail:string){
     this.http
     .get(this.API_URL+'/viewing-movie/'+userEmail)
     .pipe(
@@ -80,8 +64,9 @@ getAllViewingMovie(userEmail:string){
     )
     .subscribe((response:any) => {
       //console.log(response)
-      let series = this.medias$.getValue() //récupérer les résultats Seris 
-      this.medias$.next([...series, ...response]) //ajoute les series dans media$ avec les movies
+      //let series = this.medias$.getValue() //récupérer les résultats Seris 
+      //this.medias$.next([...series, ...response]) //ajoute les series dans media$ avec les movies
+      this.movies$.next(response)
       })
 
   }
@@ -89,7 +74,7 @@ getAllViewingMovie(userEmail:string){
 //méthode globale retourne une liste globale qui contient ViewingSerie et ViewingMovie
 getAllViewings(userEmail:string) {
   this.getAllViewingSeries(userEmail)
-  this.getAllViewingMovie(userEmail)
+  this.getAllViewingMovies(userEmail)
   }
 
 //méthode pour mettre à jour status d'un film ou série dans ViewingSerie/ViewingMovie
