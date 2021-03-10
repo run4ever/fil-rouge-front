@@ -87,7 +87,8 @@ export class MediaListComponent implements OnInit {
                             console.log("selectedIndex=>"+this.selectedIndex)
                           }
     )
-    
+    //on vide d'abord search$
+    this.mediaService.search$.next([])
     // on s'abonne à la source de données search$
     this.mediaService.search$.subscribe(data => this.results = data)
 
@@ -129,8 +130,15 @@ export class MediaListComponent implements OnInit {
   }
   
   //méthode pour ajouter Serie ou Movie dans Viewings
-  addMedia(imdbId: string, typeMedia: string, inputElt) {
-    this.mediaService.addMediaByEmailAndIdMedia(this.userEmail, imdbId, typeMedia);
+  addMedia(imdbId: string, typeMedia: string, inputElt,numSeason: number) {
+    //changement : appel addSerieByEmailAndIdMedia ou addMovieByEmailAndIdMedia
+    //this.mediaService.addMediaByEmailAndIdMedia(this.userEmail, imdbId, typeMedia);
+    if(typeMedia==='serie') {
+      this.mediaService.addSerieByEmailAndIdMedia(this.userEmail,imdbId,numSeason)
+    }
+    if(typeMedia==='movie') {
+      this.mediaService.addMovieByEmailAndIdMedia(this.userEmail,imdbId)
+    }
     this.deleteSearchText(inputElt);
   }
 

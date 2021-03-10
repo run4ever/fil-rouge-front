@@ -29,14 +29,14 @@ export class RegisterFormComponent implements OnInit {
     console.log(form)
     console.log (form.get('firstname').hasError('minlength'));
     console.log(form.value);
-    if (form.status === 'VALID') {
+  //  if (form.status === 'VALID') {
       console.log('Ok valid');
       this.newUserService.postUser(form.value)
-    }
+  //  }
   
-    else {
-      this.alertService.show('Oups...Corrigez vos erreurs !');
-  }
+  //  else {
+  //    this.alertService.show('Oups...Corrigez vos erreurs !');
+  //}
   
 
   }
