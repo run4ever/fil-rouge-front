@@ -21,7 +21,7 @@ export class MediaListComponent implements OnInit {
   countItemMovies: number = 100;
   beginRange: number;
   endRange: number;
-  pageSize: number = 5;
+  pageSize: number = 6;
 
   //gestion selectedIndex pour gérer le retour de detail vers mylist
   selectedIndex:number
@@ -74,7 +74,15 @@ export class MediaListComponent implements OnInit {
       (dataMovies: MediaModel[]) => {
                                       this.movies = dataMovies;
                                       this.countItemMovies = this.movies.length;
-                                      this.movies.splice(this.beginRange, this.endRange);
+                                      this.movies.splice(0, this.beginRange);
+                                      let countAfterSplice = this.movies.length;
+                                      let nbToDelete = countAfterSplice - this.pageSize;
+                                      if (nbToDelete > 0) {
+                                        this.movies.splice(this.pageSize, nbToDelete);
+                                        console.log('nb éléments supprimés : ' + nbToDelete);
+                                      } else {
+                                        this.movies.splice(this.pageSize, countAfterSplice);
+                                      }
                                       console.log(this.movies);
                                     }
     );
@@ -194,6 +202,7 @@ export class MediaListComponent implements OnInit {
   deleteSearchText(inputElt) {
     inputElt.value = '';
     this.mediaService.search$.next([]);
+    this.page = 1;
     this.nbResults = -1;
   }
 
