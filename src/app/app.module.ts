@@ -24,7 +24,6 @@ import { ApiInterceptor } from './shared/interceptors/api.interceptor';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RatingComponent } from './shared/rating/rating.component';
 import { MatTabsModule } from '@angular/material/tabs';
-import { FilterMediaPipe } from './shared/pipes/filter-media.pipe';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {NgxPaginationModule} from 'ngx-pagination'; 
 
@@ -38,10 +37,7 @@ import {NgxPaginationModule} from 'ngx-pagination';
     DetailComponent,
     RegisterFormComponent,
     HomeComponent,
-    RatingComponent,
-    FilterMediaPipe,
-    
-        
+    RatingComponent
   ],
   imports: [
     BrowserModule,
