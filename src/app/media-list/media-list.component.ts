@@ -52,8 +52,25 @@ export class MediaListComponent implements OnInit {
 
     //userEmail est stocké dans le champ sub de jeton
     this.userEmail = jetonDecode.sub
-    this.mediaService.getAllViewings(this.userEmail) //cette méthode retourne ViewingSerie/ViewingMovie dans medias$
 
+    this.mediaService.series$.subscribe(
+      (dataSeries:MediaModel[]) => {
+                                    this.series = dataSeries
+                                    console.log(this.series)
+                                    }
+    )
+
+    this.mediaService.getAllViewingSeries(this.userEmail)  //récupérer les séries
+
+    this.mediaService.movies$.subscribe(
+      (dataMovies:MediaModel[]) => {
+                                      this.movies = dataMovies
+                                      console.log(this.movies)
+                                    }
+    )
+    this.mediaService.getAllViewingMovies(this.userEmail)  //récupérer les movies
+    /*
+    this.mediaService.getAllViewings(this.userEmail) //cette méthode retourne ViewingSerie/ViewingMovie dans medias$
     this.mediaService.medias$.subscribe((data: MediaModel[]) => {
       this.medialist = data;
       this.isLoading = false;
@@ -61,7 +78,7 @@ export class MediaListComponent implements OnInit {
       this.movies = this.medialist.filter(movie => movie.typeMedia==='movie');
       this.series = this.medialist.filter(movie => movie.typeMedia==='serie');
     });
-
+    */
     //gestion selectdIndex pour passage detail vers mylist
     this.mediaService.indexTab$.subscribe(
                       (data:any) => 
@@ -117,10 +134,12 @@ export class MediaListComponent implements OnInit {
     this.deleteSearchText(inputElt);
   }
 
+  /*
   loadNextMedia() {
     this.isLoading = true;
-    this.mediaService.getAllSeries();
+   // this.mediaService.g();
   }
+  */
 
   // search user text in Api and in his movie / serie list
  searchApiAndUserList(activeTab:number, searchText: string) {
@@ -165,7 +184,7 @@ onPageChanged(pageEvent: any) {
  this.page = pageEvent;
  console.log("page event", pageEvent);
  this.isLoading = true;
- this.mediaService.getAllViewingMovie(this.userEmail);
+ this.mediaService.getAllViewingMovies(this.userEmail);
 }
   
 }
