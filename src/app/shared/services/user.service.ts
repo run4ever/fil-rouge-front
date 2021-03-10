@@ -33,11 +33,10 @@ export class UserService {
           this.alertService.show('Email or password is correct !!!'); }
         );
   }
-
   
   logout() {
     localStorage.clear();
-    this.router.navigate(['login']);
+    this.router.navigate(['/']);
     this.alertService.show('you are disconnected')
   }
 

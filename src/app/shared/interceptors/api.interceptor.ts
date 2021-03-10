@@ -12,19 +12,17 @@ import { environment } from 'src/environments/environment';
 export class ApiInterceptor implements HttpInterceptor {
   
   private URL_API_BASE = environment.apis.API_BACK_BASE
+  private URL_API_URL = environment.apis.API_BACK_URL
   
   cloneReq: HttpRequest<unknown>;
   constructor() {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    //console.log(request);
     if (request.url.includes(this.URL_API_BASE)) {
-      if (request.url !== this.URL_API_BASE+'/authenticate') {
+      if (request.url !== this.URL_API_BASE+'/authenticate' && request.url !== this.URL_API_URL+'/appuser/add') {
       this.cloneReq = request.clone({ 
         headers: request.headers.set('Authorization', 'Bearer ' +localStorage.getItem('token')) 
       });
-     // console.log("après ajout JWT dans header")
-     // console.log(this.cloneReq)
       }
       else {
         this.cloneReq = request;

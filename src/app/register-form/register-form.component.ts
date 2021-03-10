@@ -17,9 +17,7 @@ export class RegisterFormComponent implements OnInit {
     ngOnInit(): void {
       this.newUserForm= this.fb.group({
         firstname: ['', Validators.minLength(2)],
-        lastname: ['', Validators.minLength(2)],
         email: ['', Validators.email],
-        birthdayDate: ['', Validators.required],
         password: ['', Validators.minLength(8)]
       })
     }
@@ -29,14 +27,14 @@ export class RegisterFormComponent implements OnInit {
     console.log(form)
     console.log (form.get('firstname').hasError('minlength'));
     console.log(form.value);
+    console.log(form.status);
     if (form.status === 'VALID') {
       console.log('Ok valid');
-      this.newUserService.postUser(form.value)
+      this.newUserService.postUser(form.value);
     }
-  
     else {
-      this.alertService.show('Oups...Corrigez vos erreurs !');
-  }
+       this.alertService.show('Oups...Corrigez vos erreurs !');
+    }
   
 
   }

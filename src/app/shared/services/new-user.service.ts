@@ -4,17 +4,16 @@ import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { UserModel } from '../models/user.model';
+import { AlertService } from './alert.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NewUserService {
   private API_URL = environment.apis.API_BACK_URL;
-  newUsers$ = new BehaviorSubject<UserModel[]>([]);
   newUser$ = new  BehaviorSubject<UserModel>({ firstname: '', lastname: '', birthdayDate: '', email: '',password:'' });
 
-  constructor(private http: HttpClient, private router: Router) { }
-
+  constructor(private http: HttpClient, private router: Router, private alertService: AlertService) { }
 
   /**
    * Get user from database
@@ -29,8 +28,6 @@ export class NewUserService {
       });
   }
 
-
-
   /**
    * Create contact to api
    * 
@@ -38,15 +35,13 @@ export class NewUserService {
    * @param contactObj 
    */
   postUser(UserObj: UserModel) {
-    let headers = new HttpHeaders({ Authorization: 'Bearer ' + localStorage.getItem('token') })
+    console.log('entree avec ', UserObj);
     this.http.post(this.API_URL+'/appuser/add', UserObj).subscribe((responseApi: any) => {
       console.log(responseApi);
       if (responseApi.email) {
-        // Ajouter le contact dans contacts$
-        this.newUsers$.next([...this.newUsers$.getValue(), responseApi]);
-        // Message et navigation vers la page /contacts
-        // this.alertService.show('contact ajouté');
-        this.router.navigate(['/appuser/add']);
+        this.router.navigate(['/login']);
+        this.alertService.show('Your account has been created. You can now connect to your account.');
+
       }
     });
   }
