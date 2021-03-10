@@ -1,3 +1,19 @@
-.row {
-    align-items: center;
+.detail-fiche {
+    background: white;
+    height: 100vh;
+    padding-top: 10px;
+}
+
+.synopsis-title {
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.detail-img {
+    text-align: end;
+    margin-left: 10px;
+}
+
+.detail-text {
+    vertical-align: top;
 }

@@ -16,9 +16,9 @@ export class RegisterFormComponent implements OnInit {
 
     ngOnInit(): void {
       this.newUserForm= this.fb.group({
-        firstname: ['', Validators.minLength(2)],
-        email: ['', Validators.email],
-        password: ['', Validators.minLength(8)]
+        firstname: ['', Validators.minLength(4)],
+        email: ['', Validators.required, Validators.email],
+        password: ['', Validators.required, Validators.minLength(8)]
       })
     }
   
@@ -28,9 +28,7 @@ export class RegisterFormComponent implements OnInit {
       this.newUserService.postUser(form.value);
     }
     else {
-       this.alertService.show('Oups...Corrigez vos erreurs !');
+       this.alertService.show('Oops... Please verify information');
     }
   }
 }
-
-

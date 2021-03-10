@@ -87,15 +87,25 @@ getAllViewings(userEmail:string) {
       .put(this.API_URL+'/viewing-'+typeMedia+'/update',JSON.stringify(corpsBody),httpOptions)
       .subscribe(
         ()=> { console.log('Change status terminé')
-                const tabMedias:any[] = this.movies$.getValue()  //récupérer les valeurs de movies$
-               // console.log(tabMedias)
-                tabMedias.forEach((item, index) => {
-                  //mettre à jour status dans l'élément dans movies$
-                  if (item.imdbId === imdbId ) { item.status=status }
-                  this.movies$.next(tabMedias)
-                })
+                if(typeMedia==='serie') {
+                      const tabMedias:any[] = this.series$.getValue()  //récupérer les valeurs de movies$
+                      tabMedias.forEach((item, index) => {
+                        //mettre à jour status dans l'élément dans series
+                        if (item.imdbId === imdbId ) { item.status=status }
+                        this.series$.next(tabMedias)
+                      })
+                }
+                else {
+                      const tabMedias:any[] = this.movies$.getValue()  //récupérer les valeurs de movies$
+                      tabMedias.forEach((item, index) => {
+                        //mettre à jour status dans l'élément dans movies$
+                        if (item.imdbId === imdbId ) { item.status=status }
+                        this.movies$.next(tabMedias)
+                      })
+                }
+                
              },
-        (error)=> {console.log(error)}
+             (error)=> {console.log(error)}
       )
   }
 
@@ -186,13 +196,9 @@ deleteMediaByEmailAndIdMedia(userEmail: string,imdbId: string,typeMedia: string)
         console.log(response);
         this.search$.next(response);
         this.seachInProgress$.next({value:false})
-
-      },
-      (error) => this.seachInProgress$.next({value:false})
-      )
-    
-      
-
+              },
+                (error) => this.seachInProgress$.next({value:false})
+               )
   }
 
   
