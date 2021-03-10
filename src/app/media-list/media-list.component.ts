@@ -3,6 +3,7 @@ import { MediaModel } from '../shared/models/media.model';
 import { MediaService } from '../shared/services/media.service';
 import { Router } from '@angular/router';
 import { UserService } from '../shared/services/user.service';
+import { PageEvent } from '@angular/material/paginator';
 import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
 import { BehaviorSubject } from 'rxjs';
 
@@ -12,6 +13,18 @@ import { BehaviorSubject } from 'rxjs';
   styleUrls: ['./media-list.component.scss']
 })
 export class MediaListComponent implements OnInit {
+
+  //pagination
+  pageEvent: PageEvent;
+  page:number;
+  // datasource: null;
+  pageIndex:number = 0;
+  pageSize:number = 1;
+  // length:number= 100;
+  // pageSizeOptions= [5, 10, 25, 100];
+  // pageNo:number =0;
+  // postPerPage:number = 50;
+  // pageNumber:number;
 
   //gestion selectedIndex pour gérer le retour de detail vers mylist
   selectedIndex:number
@@ -33,6 +46,7 @@ export class MediaListComponent implements OnInit {
 
   ngOnInit(): void {
     this.isLoading = true;
+    this.page = 1;
     //this.isLoadingResults = false;
     let jetonDecode = this.userService.getDecodeJWT()
 
@@ -103,12 +117,12 @@ export class MediaListComponent implements OnInit {
     this.deleteSearchText(inputElt);
   }
 
-  loadNextSeries() {
+  loadNextMedia() {
     this.isLoading = true;
     this.mediaService.getAllSeries();
   }
 
- // search user text in Api and in his movie / serie list
+  // search user text in Api and in his movie / serie list
  searchApiAndUserList(activeTab:number, searchText: string) {
   this.mediaService.search$.next([]);
   if (searchText.trim().length < 3) {
@@ -146,4 +160,12 @@ export class MediaListComponent implements OnInit {
     this.nbResults = -1;
   }
 
+onPageChanged(pageEvent: any) {
+
+ this.page = pageEvent;
+ console.log("page event", pageEvent);
+ this.isLoading = true;
+ this.mediaService.getAllViewingMovie(this.userEmail);
+}
+  
 }

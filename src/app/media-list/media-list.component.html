@@ -109,9 +109,29 @@
             </div>
         </div>
     </div>
-    <!-- FIN TEMPLATE MOVIES-->
-
+    <!-- <div class="fixed-bottom bg-info text-center p-2">
+        <button (click) ="loadNextMedia()"  class="btn btn-light">previous </button>
+        <button (click) ="loadLastMedia()"  class="btn btn-light">next </button>
+                           
+     </div>   -->
+    <!-- Pagination -->
     <div class="fixed-bottom bg-info text-center p-2">
-        <button (click)="loadNextSeries()" class="btn btn-light">Films suivants</button>
-    </div>
-</div>
+        <tr *ngFor="let media of movies  | paginate:
+        { itemsPerPage: 5, currentPage: page, totalItems:100 };
+        let i = index" [class.active]="i == currentIndex" >
+        </tr>
+        
+     
+        <pagination-controls
+            responsive="true" 
+            previousLabel="Prev" 
+            nextLabel="Next" 
+            (pageChange)="onPageChanged($event)">
+        </pagination-controls> 
+     
+
+    <!-- FIN TEMPLATE MOVIES-->
+    
+          
+
+
