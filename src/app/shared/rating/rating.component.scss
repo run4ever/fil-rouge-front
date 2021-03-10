@@ -1,0 +1,30 @@
+.rating-bloc {
+    margin: 5px 0px;
+}
+.votes {
+    white-space: normal;
+    font-size: .6875rem;
+    display: block;
+}
+
+.notation {
+    padding-left:5px;
+    color:#fecc00;
+}
+
+.yellow-star {
+    color:#fecc00;
+}
+
+.gery-star {
+    color:#cdcdcd;
+}
+
+.public {
+    display: block;
+    font-size: .6875rem;
+    line-height: 1.2;
+    margin-bottom: .3125rem;
+    text-transform: uppercase;
+    font-weight: bold;
+}
