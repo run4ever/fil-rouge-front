@@ -25,12 +25,12 @@ export class UserService {
       .subscribe(
         (response: any) => {
           localStorage.setItem('token', response.token);
-          this.alertService.show('Vous êtes connecté(e)');
+          this.alertService.show('You are connected');
           this.getUserInfos(credentials.username)
           this.router.navigate(['/mylist']);
         },
         err =>{console.log(err)
-          this.alertService.show('Email ou mot passe erroné !!!'); }
+          this.alertService.show('Email or password is correct !!!'); }
         );
   }
 
@@ -38,7 +38,7 @@ export class UserService {
   logout() {
     localStorage.clear();
     this.router.navigate(['login']);
-    this.alertService.show('Vous êtes déconnecté(e)')
+    this.alertService.show('you are disconnected')
   }
 
   isLogged(): boolean {

@@ -7,7 +7,7 @@
     </mat-tab-group>
 
     <div class="input-group sticky-top">
-        <input #inputElt (keyup)="searchApiAndUserList(this.tabGroup.selectedIndex, inputElt.value)" placeholder="Rechercher..." type="text"
+        <input #inputElt (keyup)="searchApiAndUserList(this.tabGroup.selectedIndex, inputElt.value)" placeholder="search..." type="text"
             class="form-control">
         <span *ngIf="inputElt.value.length>0" (click)="deleteSearchText(inputElt)" class="input-group-text"
             id="basic-addon1"><i class="fas fa-times"></i></span>
@@ -47,25 +47,23 @@
 
     <!-- TEMPLATE SERIES-->
     <div *ngIf="this.tabGroup.selectedIndex == 0" class="row">
-        <!-- <div *ngFor="let media of medialist"  class="col-12 col-lg-3 col-xl-2">                     -->
-        <!-- <div [routerLink]="['/detail', media.id, 'movie']" class="card"> -->
         <!-- TEMPLATE SERIES-->
-      <p *ngIf="series.length == 0">Vous n'avez pas de séries dans votre liste</p>
+      <p *ngIf="series.length == 0">You dont' have serie in your list.</p>
         <div class="col-12 col-md-3 col-xl-2" *ngFor="let media of series">
             <div class="card">
                 <img [routerLink]="['/detail',media.imdbId,media.typeMedia]" [src]="media.imageUrl" alt="image du film ou série">
                 <div class="card-body">
                     <h2>{{media.title}}</h2>
                     <app-rating [rating]="media.imdbRating/2"></app-rating>
-                    <p>Saison total : {{media.numberOfSeason}}
-                        <br>Ma saison :
+                    <p>Number of seasons : {{media.numberOfSeason}}
+                        <br>My season :
                         <select (change)="updateSeason(media.imdbId,media.status,$event.target.value)"
                             name="saison_encours" id="saison_encours">
                             <option *ngFor="let item of [].constructor(media.numberOfSeason); let i=index"
                                 [selected]="media.userSeason == (i+1)" [value]="i+1">
                                 {{i+1}}</option>
                         </select>
-                        <br>Année : {{media.startYear}}-{{media.endYear}}
+                        <br>Year : {{media.startYear}}-{{media.endYear}}
                     </p>
                     <p>
                         <select (change)="updateStatusMedia(media.imdbId,media.typeMedia,$event.target.value)"
@@ -87,7 +85,7 @@
 
     <!-- TEMPLATE MOVIES-->
     <div *ngIf="this.tabGroup.selectedIndex == 1" class="row">
-      <p *ngIf="movies.length == 0">Vous n'avez pas de films dans votre liste</p>
+      <p *ngIf="movies.length == 0">You dont' have movie in your list.</p>
         <div class="col-12 col-md-3 col-xl-2" *ngFor="let media of movies">
          
           <div class="card">
@@ -95,7 +93,7 @@
                 <div class="card-body">
                     <h2>{{media.title}}</h2>
                     <app-rating [rating]="media.imdbRating/2"></app-rating>
-                    <p>Durée : {{media.runtime}} minutes <br>Année : {{media.startYear}}</p>
+                    <p>Duration : {{media.runtime}} minutes <br>Year : {{media.startYear}}</p>
                     <p>
                         <select (change)="updateStatusMedia(media.imdbId,media.typeMedia,$event.target.value)"
                             name="status">
