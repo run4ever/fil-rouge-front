@@ -109,14 +109,6 @@ getAllViewings(userEmail:string) {
       )
   }
 
-  /* POST*/
-  // https://angular.io/guide/http#making-a-post-request
-  /*
-  postData() {
-    this.http.post(url, {});
-  }
-  */
-
   //méthode pour mettre à jour numéro saison d'une série
   updateSeasonSerieByEmailAndIdMedia(userEmail:string,imdbId:string,status:string,numSeason:number) {
     let httpOptions = {headers: new HttpHeaders({ 'Content-Type': 'application/json' })}

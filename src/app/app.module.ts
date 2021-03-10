@@ -24,6 +24,11 @@ import { ApiInterceptor } from './shared/interceptors/api.interceptor';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RatingComponent } from './shared/rating/rating.component';
 import { MatTabsModule } from '@angular/material/tabs';
+import { FilterMediaPipe } from './shared/pipes/filter-media.pipe';
+import {MatPaginatorModule} from '@angular/material/paginator';
+import {NgxPaginationModule} from 'ngx-pagination'; 
+
+
 
 @NgModule({
   declarations: [
@@ -33,8 +38,10 @@ import { MatTabsModule } from '@angular/material/tabs';
     DetailComponent,
     RegisterFormComponent,
     HomeComponent,
-    RatingComponent
+    RatingComponent,
+    FilterMediaPipe,
     
+        
   ],
   imports: [
     BrowserModule,
@@ -50,9 +57,12 @@ import { MatTabsModule } from '@angular/material/tabs';
     MatProgressSpinnerModule,
     MatProgressBarModule,
     MatInputModule,
+    MatPaginatorModule,
     ReactiveFormsModule, FormsModule,
     HttpClientModule,
-    MatTabsModule
+    MatTabsModule,
+    NgxPaginationModule
+    
   
   ],
   providers: [

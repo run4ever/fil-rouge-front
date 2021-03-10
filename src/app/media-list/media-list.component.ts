@@ -5,6 +5,8 @@ import { Router } from '@angular/router';
 import { stringify } from '@angular/compiler/src/util';
 import { UserService } from '../shared/services/user.service';
 import { MatTabChangeEvent } from '@angular/material/tabs';
+import { PageEvent } from '@angular/material/paginator';
+
 
 @Component({
   selector: 'app-media-list',
@@ -12,6 +14,21 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
   styleUrls: ['./media-list.component.scss']
 })
 export class MediaListComponent implements OnInit {
+
+  //pagination
+  pageEvent: PageEvent;
+  page:number;
+  // datasource: null;
+  pageIndex:number = 0;
+  pageSize:number = 1;
+  // length:number= 100;
+  // pageSizeOptions= [5, 10, 25, 100];
+  // pageNo:number =0;
+  // postPerPage:number = 50;
+  // pageNumber:number;
+
+
+  
 
   movies:MediaModel[];
   series:MediaModel[];
@@ -26,7 +43,8 @@ export class MediaListComponent implements OnInit {
 
   ngOnInit(): void {
     this.isLoading = true;
-    let jetonDecode = this.userService.getDecodeJWT()
+    let jetonDecode = this.userService.getDecodeJWT();
+    this.page = 1;
 
     //userEmail est stocké dans le champ sub de jeton
     this.userEmail = jetonDecode.sub
@@ -69,9 +87,13 @@ export class MediaListComponent implements OnInit {
     this.mediaService.deleteMediaByEmailAndIdMedia(this.userEmail, imdbId, typeMedia)
   }
 
-  loadNextSeries() {
+  loadNextMedia() {
     this.isLoading = true;
     this.mediaService.getAllSeries();
+
+  }
+
+  loadLastMedia(){
 
   }
 
@@ -90,4 +112,16 @@ export class MediaListComponent implements OnInit {
     this.mediaService.search$.next([]);
   }
 
+  
+
+
+onPageChanged(pageEvent: any) {
+
+ this.page = pageEvent;
+ console.log("page event", pageEvent);
+ this.isLoading = true;
+ this.mediaService.getAllViewingMovie(this.userEmail);
+
+ 
+}
 }
