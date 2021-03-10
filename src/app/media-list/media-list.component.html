@@ -12,8 +12,7 @@
     </div>
 
     <div class="input-group sticky-top">
-        <input #inputElt (keyup)="searchApiAndUserList(this.tabGroup.selectedIndex, inputElt.value)" placeholder="search movie or serie to add..." type="text"
-            class="form-control">
+        <input #inputElt (keyup)="searchApiAndUserList(this.tabGroup.selectedIndex, inputElt.value)" placeholder="search..." type="text" class="form-control">
         <span *ngIf="inputElt.value.length>0" (click)="deleteSearchText(inputElt)" class="input-group-text"
             id="basic-addon1"><i class="fas fa-times"></i></span>
     </div>
@@ -65,8 +64,6 @@
 
     <!-- TEMPLATE SERIES-->
     <div *ngIf="this.tabGroup.selectedIndex == 0" class="row">
-        <!-- TEMPLATE SERIES-->
-        <div class="col-12 col-md-3 col-xl-2" *ngFor="let media of series | paginate: { itemsPerPage: pageSize, currentPage: page, totalItems:countItemSeries };">
         <div *ngIf="series.length == 0" class="row">
             <div class="col-12 empty-list">
                 <p>Your <b>serie list is empty !</b></p>
@@ -74,6 +71,8 @@
                 <p>Start searching a serie then add it in your list</p>
             </div>
         </div>
+        <!-- TEMPLATE SERIES-->
+        <div class="col-12 col-md-3 col-xl-2" *ngFor="let media of series | paginate: { itemsPerPage: pageSize, currentPage: page, totalItems:countItemSeries };">
             <div class="card">
                 <img [routerLink]="['/detail',media.imdbId,media.typeMedia]" [src]="media.imageUrl" alt="image du film ou série">
                 <div class="card-body">
