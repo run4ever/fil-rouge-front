@@ -153,14 +153,15 @@
 
     <!-- TEMPLATE MOVIES-->
     <div *ngIf="this.tabGroup.selectedIndex == 1" class="row">
-        <div class="col-12 col-md-3 col-xl-2" *ngFor="let media of movies | paginate: { itemsPerPage: pageSize, currentPage: page, totalItems:countItemMovies };">
-      <div *ngIf="movies.length == 0" class="row">
-        <div class="col-12 empty-list">
-            <p>Your <b>movie list is empty !</b></p>
-            <p>Don't panic ! <i class="fas fa-smile empty-smile"></i></p>
-            <p>Start searching a movie then add it in your list</p>
+        <div *ngIf="movies.length == 0" class="row">
+            <div class="col-12 empty-list">
+                <p>Your <b>movie list is empty !</b></p>
+                <p>Don't panic ! <i class="fas fa-smile empty-smile"></i></p>
+                <p>Start searching a movie then add it in your list</p>
+            </div>
         </div>
-    </div>
+    
+        <div class="col-12 col-md-3 col-xl-2" *ngFor="let media of movies | paginate: { itemsPerPage: pageSize, currentPage: page, totalItems:countItemMovies };">
        
           <div class="card">
                 <img [routerLink]="['/detail',media.imdbId,media.typeMedia]" [src]="media.imageUrl" alt="image du film ou série">
