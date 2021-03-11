@@ -25,7 +25,8 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { RatingComponent } from './shared/rating/rating.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import {MatPaginatorModule} from '@angular/material/paginator';
-import {NgxPaginationModule} from 'ngx-pagination'; 
+import {NgxPaginationModule} from 'ngx-pagination';
+import { DelunderscorePipe } from './shared/mypipes/delunderscore.pipe'; 
 
 
 
@@ -37,7 +38,8 @@ import {NgxPaginationModule} from 'ngx-pagination';
     DetailComponent,
     RegisterFormComponent,
     HomeComponent,
-    RatingComponent
+    RatingComponent,
+    DelunderscorePipe
   ],
   imports: [
     BrowserModule,

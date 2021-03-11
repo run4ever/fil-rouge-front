@@ -42,7 +42,6 @@ getAllViewingSeries(userEmail:string){
     )
   )
   .subscribe((response:any) => {
-    //console.log(response)
     //this.medias$.next(response)
     this.series$.next(response)
   })
@@ -201,23 +200,6 @@ deleteMediaByEmailAndIdMedia(userEmail: string,imdbId: string,typeMedia: string)
                )
   }
 
-  
-/* méthode remplacer par les 2 méthodes en bas addSerieByEmailAndIdMedia et addMovieByEmailAndIdMedia
-  addMediaByEmailAndIdMedia(userEmail: string,imdbId: string,typeMedia: string) {
-    let body = {"email":userEmail,
-                "imdbId":imdbId,
-                "status":'TO_WATCH'}
-    const httpOptions = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json' }), 
-    }
-    this.http.post(this.API_URL+'/viewing-'+typeMedia+'/create',JSON.stringify(body), httpOptions)
-    .subscribe((response:any) => {
-      let myMedias = this.medias$.getValue()  
-      this.medias$.next([...myMedias, ...response]) 
-      })
-    
-  }
-*/
   //ajouter serie dans ViewingSerie
   addSerieByEmailAndIdMedia(userEmail: string,imdbId: string,numSeason: number){
     let body = {"email":userEmail,"imdbId":imdbId,"status":'TO_WATCH',"currentSeason":numSeason}
@@ -248,6 +230,11 @@ deleteMediaByEmailAndIdMedia(userEmail: string,imdbId: string,typeMedia: string)
                    },
                    (error)=> {console.log(error)}
                    )
+    }
+
+    //recupérer données d'une video sur API
+    getVideoDataFromApi(imdbId: string, mediaType: string){
+      return this.http.get(this.API_URL + '/' + mediaType + '/external/show?externalId=' + imdbId);
     }
 
   /**
