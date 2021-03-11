@@ -78,12 +78,15 @@
     margin: 9px 15px;
 }
 
+.del-from-list {
+    color:tomato;
+}
+
 .add-to-my-list {
     color:green;
 }
 
 .del-from-list:hover {
-    color:red;
     cursor: pointer;
 }
 
