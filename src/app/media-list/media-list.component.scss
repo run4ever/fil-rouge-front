@@ -15,6 +15,19 @@
         height: 350px;
     }
 }
+
+.onglets{
+    margin-top: 20px;
+}
+
+.searchdiv {
+    margin-bottom: 20px;
+}
+
+@media screen and (max-width: 576px) {
+ .card img{height: auto;}
+}
+
 // changer la taille de carte
 .card:hover {
     transform: scale(1.05);

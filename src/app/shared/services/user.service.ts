@@ -20,17 +20,15 @@ export class UserService {
   constructor(private http: HttpClient, private router: Router, private alertService:AlertService) { }
 
   login(credentials) {
-    console.log(credentials);
     this.http.post(this.URL_API_BASE+'/authenticate', credentials)
       .subscribe(
         (response: any) => {
           localStorage.setItem('token', response.token);
-          this.alertService.show('You are connected');
           this.getUserInfos(credentials.username)
           this.router.navigate(['/mylist']);
         },
         err =>{console.log(err)
-          this.alertService.show('Email or password is correct !!!'); }
+          this.alertService.show('Email or password is incorrect !!!'); }
         );
   }
   

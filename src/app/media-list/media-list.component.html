@@ -1,29 +1,37 @@
 <div class="list-body" class="container-fluid">
-
-    
+    <!-- tabs -->
+    <div class="row onglets">
+        <div class="col-12">
             <mat-tab-group #tabGroup mat-stretch-tabs dynamicHeight [selectedIndex]="selectedIndex" (click)="deleteSearchText(inputElt)">
                 <mat-tab label="Series">
                 </mat-tab>
                 <mat-tab label="Movies">
                 </mat-tab>
             </mat-tab-group>
-       
+        </div>
+    </div>
 
-    <div class="input-group sticky-top">
+    <!-- search field -->
+    <div class="input-group sticky-top searchdiv">
         <input #inputElt (keyup)="searchApiAndUserList(this.tabGroup.selectedIndex, inputElt.value)" placeholder="search..." type="text" class="form-control">
         <span *ngIf="inputElt.value.length>0" (click)="deleteSearchText(inputElt)" class="input-group-text"
             id="basic-addon1"><i class="fas fa-times"></i></span>
     </div>
 
+    <!-- zone de résultats de la recherche -->
     <div class="list-group">
         <div *ngIf="this.nbResults>-1" class="row list-group-item">
 
+        <!-- loader -->
         <div *ngIf="isLoadingResults" class="d-flex justify-content-center align-items-center loader">
             <div class="spinner-border" role="status"></div>
          </div>
             {{nbResults}} resultat(s)<span *ngIf="this.nbResults>10"><small><em>(seuls les 10 premiers vous sont proposés)</em></small></span></div>
 
+        <!-- liste des résultats  -->
         <div class="row list-group-item d-flex" *ngFor="let result of results">
+
+            <!-- image et titre -->
             <div class="col-6 search-result">
                 <img [src]="result.imageUrl">
                 {{result.title}}
@@ -61,9 +69,11 @@
 
         </div>
     </div>
+    <!-- fin de la zone de résultats -->
 
-    <!-- TEMPLATE SERIES-->
+    <!-- Liste des series à visionner -->
     <div *ngIf="this.tabGroup.selectedIndex == 0" class="row">
+        <!-- si vide -->
         <div *ngIf="series.length == 0" class="row">
             <div class="col-12 empty-list">
                 <p>Your <b>serie list is empty !</b></p>
@@ -71,33 +81,33 @@
                 <p>Start searching a serie then add it in your list</p>
             </div>
         </div>
-        <!-- TEMPLATE SERIES-->
-        <div class="col-12 col-md-3 col-xl-2" *ngFor="let media of series | paginate: { itemsPerPage: pageSize, currentPage: page, totalItems:countItemSeries };">
-                <div class="card">
+        <!-- sinon: -->
+        <div class="col-xs-12 col-sm-6 col-md-3 col-xl-2" *ngFor="let media of series | paginate: { itemsPerPage: pageSize, currentPage: page, totalItems:countItemSeries };">
+            <div class="card">
                 <img [routerLink]="['/detail',media.imdbId,media.typeMedia]" [src]="media.imageUrl" alt="image du film ou série">
                 <div class="card-body">
+                    <!-- titre, date & rating -->
                     <div class="row" [routerLink]="['/detail',media.imdbId,media.typeMedia]">
                         <h2>{{media.title}}</h2>
                         <span><span *ngIf="media.endYear==null">From </span>{{media.startYear}}<span *ngIf="media.endYear!=null"> - </span>{{media.endYear}} ({{media.numberOfSeason}} season<span *ngIf="media.numberOfSeason>1">s</span>)</span>
                         <app-rating [rating]="media.imdbRating/2" [votes]="media.imdbVotes"></app-rating>
                     </div>
-                    
+                    <!-- status & delete -->
                     <div class="row">
                         <div class="col d-flex">
-                                <span>
-                                        <select class="form-select change-status" name="status" (change)="updateStatusMedia(media.imdbId,media.typeMedia,$event.target.value)">
-                                            <option *ngFor="let status of status_media" 
-                                                    [selected]="status[0]==media.status"
-                                                    [value]="status[0]">{{status[1]}}</option>
-                                        </select>
-                                </span>
-                                <span (click)="deleteMedia(media.imdbId,media.typeMedia)">
-                                    <i class="fa fa-trash fa-2x del-from-list" aria-hidden="true"></i>
-                                </span>
-
+                            <span>
+                                    <select class="form-select change-status" name="status" (change)="updateStatusMedia(media.imdbId,media.typeMedia,$event.target.value)">
+                                        <option *ngFor="let status of status_media" 
+                                                [selected]="status[0]==media.status"
+                                                [value]="status[0]">{{status[1]}}</option>
+                                    </select>
+                            </span>
+                            <span (click)="deleteMedia(media.imdbId,media.typeMedia)">
+                                <i class="fa fa-trash fa-2x del-from-list" aria-hidden="true"></i>
+                            </span>
                         </div>
                     </div>
-
+                    <!-- season in progress -->
                     <div class="row" *ngIf="media.status=='IN_PROGRESS'">
                         <div class="col">
                             <span>I'm watching :</span>
@@ -109,16 +119,18 @@
                             </select>
                         </div>
                     </div>
-
                 </div>
+                <!-- end card-body -->
             </div>
+            <!-- end card -->
+        </div>
+        <!-- end col -->
     </div>
+    <!-- end row list series -->
 
-    </div>
-    <!-- FIN TEMPLATE SERIES-->
-
-    <!-- TEMPLATE MOVIES-->
+    <!-- Liste des movies à visionner -->
     <div *ngIf="this.tabGroup.selectedIndex == 1" class="row">
+        <!-- si vide -->
         <div *ngIf="movies.length == 0" class="row">
             <div class="col-12 empty-list">
                 <p>Your <b>movie list is empty !</b></p>
@@ -126,38 +138,40 @@
                 <p>Start searching a movie then add it in your list</p>
             </div>
         </div>
-    
-        <div class="col-12 col-md-3 col-xl-2" *ngFor="let media of movies | paginate: { itemsPerPage: pageSize, currentPage: page, totalItems:countItemMovies };">
-       
-          <div class="card">
+        <!-- sinon: -->
+        <div class="col-xs-12 col-sm-6 col-md-3 col-xl-2" *ngFor="let media of movies | paginate: { itemsPerPage: pageSize, currentPage: page, totalItems:countItemMovies };">
+            <div class="card">
                 <img [routerLink]="['/detail',media.imdbId,media.typeMedia]" [src]="media.imageUrl" alt="image du film ou série">
                 <div class="card-body">
+                    <!-- titre, date & rating -->
                     <div class="row" [routerLink]="['/detail',media.imdbId,media.typeMedia]">
                         <h2>{{media.title}}</h2>
-                        <p>{{media.startYear}} / {{media.runtime}} min.</p>
+                        <span>{{media.startYear}} / {{media.runtime}} min.</span>
                         <app-rating [rating]="media.imdbRating/2" [votes]="media.imdbVotes"></app-rating>
                     </div>
+                    <!-- status & delete -->
                     <div class="row">
                         <div class="col d-flex">
-                                <span>
-                                        <select class="form-select change-status" name="status" (change)="updateStatusMedia(media.imdbId,media.typeMedia,$event.target.value)">
-                                            <option *ngFor="let status of status_media" 
-                                                    [selected]="status[0]==media.status"
-                                                    [value]="status[0]">{{status[1]}}</option>
-                                        </select>
-                                </span>
-                                <span (click)="deleteMedia(media.imdbId,media.typeMedia)">
-                                    <i class="fa fa-trash fa-2x del-from-list" aria-hidden="true"></i>
-                                </span>
-
+                            <span>
+                                    <select class="form-select change-status" name="status" (change)="updateStatusMedia(media.imdbId,media.typeMedia,$event.target.value)">
+                                        <option *ngFor="let status of status_media" 
+                                                [selected]="status[0]==media.status"
+                                                [value]="status[0]">{{status[1]}}</option>
+                                    </select>
+                            </span>
+                            <span (click)="deleteMedia(media.imdbId,media.typeMedia)">
+                                <i class="fa fa-trash fa-2x del-from-list" aria-hidden="true"></i>
+                            </span>
                         </div>
                     </div>
-
                 </div>
+                <!-- end card-body -->
             </div>
+            <!-- end card -->
         </div>
+        <!-- end col -->
     </div>
-       <!-- FIN TEMPLATE MOVIES-->
+    <!-- end row list movies-->
 
     <!-- Pagination -->
 
