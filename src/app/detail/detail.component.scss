@@ -1,0 +1,21 @@
+.detail-fiche {
+    background: white;
+    height: 100vh;
+    padding-top: 10px;
+}
+
+.synopsis-title {
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.detail-img {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+@media screen and (max-width: 768px){
+    .detail-text>h1 {
+        text-align: center;
+    }
+}

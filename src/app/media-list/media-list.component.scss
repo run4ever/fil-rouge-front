@@ -1,0 +1,118 @@
+.card {
+    margin: 5px;
+    margin-bottom: 50px;
+    .card-body {
+        h2 {
+            //si trop long le titre on coupe et ajoute ...
+            text-overflow: ellipsis;
+            overflow: hidden; // cache le texte si ça dépasse
+            white-space: nowrap; //titre reste sur une ligne
+            font-size: 1.1rem;
+        }
+    }
+    img {
+        max-width: 100%;
+        height: 350px;
+    }
+}
+
+.onglets{
+    margin-top: 20px;
+}
+
+.searchdiv {
+    margin-bottom: 20px;
+}
+
+@media screen and (max-width: 576px) {
+ .card img{height: auto;}
+}
+
+// changer la taille de carte
+.card:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+}
+
+// flouter image au survol
+.card:hover img {
+    filter: blur(0.6px)
+}
+
+.search-result {
+    vertical-align: middle;
+}
+
+.search-result:hover{
+    cursor: pointer;
+}
+
+.search-result>img {
+    max-height: 50px;
+    max-width: 35px;
+}
+
+.list-group-item:hover {
+    background: #cdcdcd !important;
+ }
+
+ .text-right {
+     text-align: right;
+ }
+
+ .empty-list {
+     text-align: center;
+     margin-top: 50px;
+     font-size: 16px;
+ }
+
+ .empty-smile {
+    color:#fecc00;
+}
+
+.fa-search-plus {
+     color: rgba(54, 54, 218, 0.863);
+ }
+
+.see-details {
+    margin: 9px 15px;
+ }
+
+.see-details:hover {
+    color:#3f51b5;
+    
+ }
+
+.change-status {
+    margin: 5px 0px;
+}
+
+.del-from-list, .add-to-my-list {
+    margin: 9px 15px;
+}
+
+.del-from-list {
+    color:tomato;
+}
+
+.add-to-my-list {
+    color:green;
+}
+
+.del-from-list:hover {
+    cursor: pointer;
+}
+
+.add-to-my-list:hover {
+    color:#3f51b5;
+    cursor: pointer;
+}
+
+.card h2 {
+    margin: 0 0 1px !important;
+}
+
+.my-row-flex {
+    display: flex;
+    flex-wrap: wrap;
+  }

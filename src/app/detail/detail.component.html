@@ -1,0 +1,29 @@
+<div class="container detail-fiche">
+    <!-- back button -->
+    <div class="row d-flex">
+        <div class="col-lg-12 text-center">
+            <button (click)="goToMylistPage()" class="btn" style="margin: 20px 0px;"><i class="far fa-arrow-alt-circle-left"></i> Back to my {{this.mediaType}} list</button>
+        </div>
+    </div>
+
+    <!-- image & text -->
+    <div class="row d-flex">
+        <!-- image -->
+        <div class="col-xs-0 col-lg-2"></div>
+        <div class="col-xs-12 col-md-6 col-lg-4 detail-img">
+            <img [src]="media.imageUrl" alt="{{media.title}}">
+        </div>
+        <div class="col-xs-12 col-md-6 col-lg-4 detail-text">
+            <h1>{{media.title}}</h1>
+            <p>{{media.startYear}} <span *ngIf="media.typeMedia=='serie'"> - {{media.endYear}}</span> / 
+                <span *ngIf="media.typeMedia=='movie'">{{media.runtime}} min. / </span>
+                <span *ngIf="media.typeMedia=='serie'">{{media.numberOfSeason}} seasons / </span>
+                    {{media.category | delunderscore}}</p>
+            <p><strong>With :</strong> {{media.actors}}</p>
+            <app-rating [rating]="media.imdbRating/2" [votes]="media.imdbVotes"></app-rating>
+            <div class="synopsis-title">Synopsis :</div>
+            <div class="synopsis-content">{{media.description}}</div>
+        </div>
+        <div class="col-xs-0 col-lg-2"></div>
+    </div>
+</div>
