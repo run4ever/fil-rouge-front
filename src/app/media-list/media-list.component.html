@@ -1,15 +1,13 @@
 <div class="list-body" class="container-fluid">
 
-    <div class="row">
-        <div class="col text-center onglets">
+    
             <mat-tab-group #tabGroup mat-stretch-tabs dynamicHeight [selectedIndex]="selectedIndex" (click)="deleteSearchText(inputElt)">
-                <mat-tab label="Series" class="text-right">
+                <mat-tab label="Series">
                 </mat-tab>
                 <mat-tab label="Movies">
                 </mat-tab>
             </mat-tab-group>
-        </div>
-    </div>
+       
 
     <div class="input-group sticky-top">
         <input #inputElt (keyup)="searchApiAndUserList(this.tabGroup.selectedIndex, inputElt.value)" placeholder="search..." type="text" class="form-control">
@@ -159,13 +157,16 @@
             </div>
         </div>
     </div>
-     <!-- FIN TEMPLATE MOVIES-->
+       <!-- FIN TEMPLATE MOVIES-->
 
     <!-- Pagination -->
 
+  <div class="fixed-bottom bg-info text-center p-2">
         <pagination-controls
             responsive="true"
             previousLabel="Prev"
             nextLabel="Next"
             (pageChange)="onPageChanged($event, this.tabGroup.selectedIndex)">
         </pagination-controls>
+  <div>
+   
