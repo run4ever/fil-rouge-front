@@ -11,7 +11,7 @@ import { AlertService } from './alert.service';
 })
 export class NewUserService {
   private API_URL = environment.apis.API_BACK_URL;
-  newUser$ = new  BehaviorSubject<UserModel>({ firstname: '', lastname: '', birthdayDate: '', email: '',password:'' });
+  newUser$ = new  BehaviorSubject<UserModel>({ firstname: '', lastname: '', birthdayDate: '', email: '',password:'' , role:''});
 
   constructor(private http: HttpClient, private router: Router, private alertService: AlertService) { }
 
@@ -35,15 +35,19 @@ export class NewUserService {
    * @param contactObj 
    */
   postUser(UserObj: UserModel) {
-    console.log('entree avec ', UserObj);
+    UserObj.role = 'ROLE_USER';
     this.http.post(this.API_URL+'/appuser/add', UserObj).subscribe((responseApi: any) => {
       console.log(responseApi);
-      if (responseApi.email) {
-        this.router.navigate(['/login']);
-        this.alertService.show('Your account has been created. You can now connect to your account.');
-
+      if (responseApi.email == UserObj.email) {
+        this.router.navigate(['/login'], { queryParams: { email: UserObj.email, created: 1 } });
       }
-    });
+    },
+    (error)=> {
+      if(error.status==409) {
+          this.router.navigate(['/login'], { queryParams: { email: UserObj.email, error: 409 } });
+      }
+    }
+    );
   }
   
 }
