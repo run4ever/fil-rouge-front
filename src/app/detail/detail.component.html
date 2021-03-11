@@ -13,7 +13,7 @@
                     <p>{{media.startYear}} <span *ngIf="media.typeMedia=='serie'"> - {{media.endYear}}</span> / 
                         <span *ngIf="media.typeMedia=='movie'">{{media.runtime}} min. / </span>
                         <span *ngIf="media.typeMedia=='serie'">{{media.numberOfSeason}} seasons / </span>
-                            {{media.category | lowercase}}</p>
+                            {{media.category | delunderscore}}</p>
                     
                     <p><strong>With :</strong> {{media.actors}}</p>
                     <app-rating [rating]="media.imdbRating/2" [votes]="media.imdbVotes"></app-rating>
