@@ -26,7 +26,8 @@ export class UserService {
           this.router.navigate(['/mylist']);
         },
         err =>{console.log(err)
-          this.alertService.show('Email or password is incorrect !!!'); }
+          this.router.navigate(['/login'], { queryParams: { error: 401 } });
+        }
         );
   }
   
