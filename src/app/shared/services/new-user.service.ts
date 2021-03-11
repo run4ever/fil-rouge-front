@@ -35,14 +35,19 @@ export class NewUserService {
    * @param contactObj 
    */
   postUser(UserObj: UserModel) {
-    console.log('entree avec ', UserObj);
     UserObj.role = 'ROLE_USER';
     this.http.post(this.API_URL+'/appuser/add', UserObj).subscribe((responseApi: any) => {
       console.log(responseApi);
       if (responseApi.email == UserObj.email) {
         this.router.navigate(['/login'], { queryParams: { email: UserObj.email, created: 1 } });
       }
-    });
+    },
+    (error)=> {
+      if(error.status==409) {
+          this.router.navigate(['/login'], { queryParams: { email: UserObj.email, error: 409 } });
+      }
+    }
+    );
   }
   
 }

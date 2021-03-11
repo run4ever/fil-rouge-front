@@ -8,6 +8,11 @@
                <strong>Success!</strong><br /> Your account has been created. You can now login below.
              </div>
          </div>
+         <div *ngIf="this.error==409">
+            <div class="alert alert-danger">
+               <strong>Oops!</strong><br /> You already have an account. You can login below.
+             </div>
+         </div>
          <form (submit)="onLoginSubmit(loginForm)" #loginForm="ngForm">
             <div class="mt-2">
                <label class="form-label">Email</label>

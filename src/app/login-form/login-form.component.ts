@@ -11,6 +11,7 @@ export class LoginFormComponent implements OnInit {
   sub
   email
   created
+  error
  
   constructor(private userService: UserService, private router: Router, private route: ActivatedRoute) { }
 
@@ -21,6 +22,7 @@ export class LoginFormComponent implements OnInit {
       .subscribe(params => {
         this.email = params['email'] || '';
         this.created = params['created'] || '';
+        this.error = params['error'] || '';
       });
   }
 
