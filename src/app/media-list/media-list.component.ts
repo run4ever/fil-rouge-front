@@ -53,20 +53,21 @@ export class MediaListComponent implements OnInit {
 
     this.mediaService.series$.subscribe(
       (dataSeries: MediaModel[]) => {
-                                    this.series = dataSeries;
-                                    this.countItemSeries = this.series.length;
-                                    this.series.splice(0, this.beginRange);
-                                    let countAfterSplice = this.series.length;
-                                    let nbToDelete = countAfterSplice - this.pageSize;
-                                    if (nbToDelete > 0) {
-                                      this.series.splice(this.pageSize, nbToDelete);
-                                      console.log('nb éléments supprimés : ' + nbToDelete);
-                                    } else {
-                                      this.series.splice(this.pageSize, countAfterSplice);
-                                    }
-                                    console.log(this.series);
-                                    }
-    );
+                                      this.series = dataSeries;
+                                      this.countItemSeries = this.series.length;
+                                      this.series.splice(0, this.beginRange);
+                                      let countAfterSplice = this.series.length;
+                                      let nbToDelete = countAfterSplice - this.pageSize;
+                                      if (nbToDelete > 0) {
+                                        this.series.splice(this.pageSize, nbToDelete);
+                                        console.log('nb éléments supprimés : ' + nbToDelete);
+                                      }
+                                      // // else {
+                                      // //   this.series.splice(this.pageSize, countAfterSplice);
+                                      // // }
+                                      // console.log(this.series);
+                                      // }
+      });
 
     this.mediaService.getAllViewingSeries(this.userEmail)  //récupérer les séries
 
@@ -144,7 +145,7 @@ export class MediaListComponent implements OnInit {
   //méthode pour supprimer Serie ou Movie de Viewings
   deleteMedia(imdbId: string, typeMedia: string, inputElt) {
     this.mediaService.deleteMediaByEmailAndIdMedia(this.userEmail, imdbId, typeMedia);
-    this.deleteSearchText(inputElt);
+  //  this.deleteSearchText(inputElt);
   }
 
   //méthode pour ajouter Serie ou Movie dans Viewings
@@ -200,6 +201,7 @@ export class MediaListComponent implements OnInit {
    * @param inputElt
    */
   deleteSearchText(inputElt) {
+    console.log('input', inputElt);
     inputElt.value = '';
     this.mediaService.search$.next([]);
     this.page = 1;
@@ -211,6 +213,7 @@ export class MediaListComponent implements OnInit {
    console.log('page event movies', pageEvent);
    this.isLoading = true;
    this.mediaService.getAllViewingMovies(this.userEmail);
+
   }
 
   onPageSeriesChanged(pageEvent: any) {
@@ -220,11 +223,6 @@ export class MediaListComponent implements OnInit {
     this.mediaService.getAllViewingSeries(this.userEmail);
 
 
-    // for (let index = 0; index < this.series.length) {
-    //   if (index < beginRange ) {
-    //     this.series
-    //   }
-    // }
   }
 
   onPageChanged(pageEvent: any, selectedIndex: number) {
