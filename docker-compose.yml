@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+## on a besoin le serveur WEB NGINX
+  nginx:
+    image: mytcllist-front
+## Map port externe 4200 vers 80 port interne NGINX dans Docker    
+    ports:
+      - "4200:80"
