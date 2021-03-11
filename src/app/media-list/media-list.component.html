@@ -96,22 +96,15 @@
         </div>
         <!-- TEMPLATE SERIES-->
         <div class="col-12 col-md-3 col-xl-2" *ngFor="let media of series | paginate: { itemsPerPage: pageSize, currentPage: page, totalItems:countItemSeries };">
-            <div class="card">
+                <div class="card">
                 <img [routerLink]="['/detail',media.imdbId,media.typeMedia]" [src]="media.imageUrl" alt="image du film ou série">
                 <div class="card-body">
-                    <h2>{{media.title}}</h2>
-                    <app-rating [rating]="media.imdbRating/2" [votes]="media.imdbVotes"></app-rating>
-                    <p>Number of seasons : {{media.numberOfSeason}}
-                        <br>My season :
-                        <select (change)="updateSeason(media.imdbId,media.status,$event.target.value)"
-                            name="saison_encours" id="saison_encours">
-                            <option *ngFor="let item of [].constructor(media.numberOfSeason); let i=index"
-                                [selected]="media.userSeason == (i+1)" [value]="i+1">
-                                {{i+1}}</option>
-                        </select>
-                        <br>Year : {{media.startYear}}-{{media.endYear}}
-                    </p>
-                    <p>
+                    <div class="row" [routerLink]="['/detail',media.imdbId,media.typeMedia]">
+                        <h2>{{media.title}}</h2>
+                        <span><span *ngIf="media.endYear==null">From </span>{{media.startYear}}<span *ngIf="media.endYear!=null"> - </span>{{media.endYear}} ({{media.numberOfSeason}} season<span *ngIf="media.numberOfSeason>1">s</span>)</span>
+                        <app-rating [rating]="media.imdbRating/2" [votes]="media.imdbVotes"></app-rating>
+                    </div>
+                    <!-- <p>
                         <select (change)="updateStatusMedia(media.imdbId,media.typeMedia,$event.target.value)"
                             name="status">
                             <option *ngFor="let status of status_media" [selected]="status[0] === media.status"
@@ -121,11 +114,40 @@
                             aria-label="delete movie ou serie">
                             <mat-icon>delete</mat-icon>
                         </button>
-                    </p>
+                    </p> -->
+                    
+                    <div class="row">
+                        <div class="col d-flex">
+                                <span>
+                                        <select class="form-select change-status" name="status" (change)="updateStatusMedia(media.imdbId,media.typeMedia,$event.target.value)">
+                                            <option *ngFor="let status of status_media" 
+                                                    [selected]="status[0]==media.status"
+                                                    [value]="status[0]">{{status[1]}}</option>
+                                        </select>
+                                </span>
+                                <span (click)="deleteMedia(media.imdbId,media.typeMedia)">
+                                    <i class="fa fa-trash fa-2x del-from-list" aria-hidden="true"></i>
+                                </span>
+
+                        </div>
+                    </div>
+
+                    <div class="row" *ngIf="media.status=='IN_PROGRESS'">
+                        <div class="col">
+                            <span>I'm watching :</span>
+                            <select class="form-select" (change)="updateSeason(media.imdbId,media.status,$event.target.value)"
+                                name="saison_encours" id="saison_encours">
+                                <option *ngFor="let item of [].constructor(media.numberOfSeason); let i=index"
+                                    [selected]="media.userSeason == (i+1)" [value]="i+1">
+                                    Season {{i+1}}</option>
+                            </select>
+                        </div>
+                    </div>
 
                 </div>
             </div>
-        </div>
+    </div>
+
     </div>
     <!-- FIN TEMPLATE SERIES-->
 
@@ -143,10 +165,28 @@
           <div class="card">
                 <img [routerLink]="['/detail',media.imdbId,media.typeMedia]" [src]="media.imageUrl" alt="image du film ou série">
                 <div class="card-body">
-                    <h2>{{media.title}}</h2>
-                    <app-rating [rating]="media.imdbRating/2"></app-rating>
-                    <p>Duration : {{media.runtime}} minutes <br>Year : {{media.startYear}}</p>
-                    <p>
+                    <div class="row" [routerLink]="['/detail',media.imdbId,media.typeMedia]">
+                        <h2>{{media.title}}</h2>
+                        <p>{{media.startYear}} / {{media.runtime}} min.</p>
+                        <app-rating [rating]="media.imdbRating/2" [votes]="media.imdbVotes"></app-rating>
+                    </div>
+                    <div class="row">
+                        <div class="col d-flex">
+                                <span>
+                                        <select class="form-select change-status" name="status" (change)="updateStatusMedia(media.imdbId,media.typeMedia,$event.target.value)">
+                                            <option *ngFor="let status of status_media" 
+                                                    [selected]="status[0]==media.status"
+                                                    [value]="status[0]">{{status[1]}}</option>
+                                        </select>
+                                </span>
+                                <span (click)="deleteMedia(media.imdbId,media.typeMedia)">
+                                    <i class="fa fa-trash fa-2x del-from-list" aria-hidden="true"></i>
+                                </span>
+
+                        </div>
+                    </div>
+
+                    <!-- <p>
                         <select (change)="updateStatusMedia(media.imdbId,media.typeMedia,$event.target.value)"
                             name="status">
                             <option *ngFor="let status of status_media" [selected]="status[0] === media.status"
@@ -156,7 +196,7 @@
                             aria-label="delete movie ou serie">
                             <mat-icon>delete</mat-icon>
                         </button>
-                    </p>
+                    </p> -->
                 </div>
             </div>
         </div>
