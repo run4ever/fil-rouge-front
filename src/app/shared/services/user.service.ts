@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import jwt_decode from 'jwt-decode';
 import { BehaviorSubject } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { UserModel } from '../models/user.model';
 import { AlertService } from './alert.service';
 
 @Injectable({
@@ -12,7 +11,6 @@ import { AlertService } from './alert.service';
 })
 export class UserService {
   
-
   private URL_API_BASE = environment.apis.API_BACK_BASE
   private URL_API_URL  = environment.apis.API_BACK_URL
   user$ =new BehaviorSubject({lastname:'',firstname:'',birhdayDate:'',email:'',role:''})
@@ -35,7 +33,6 @@ export class UserService {
   logout() {
     localStorage.clear();
     this.router.navigate(['/']);
-    this.alertService.show('you are disconnected')
   }
 
   isLogged(): boolean {
