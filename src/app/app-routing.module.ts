@@ -8,6 +8,7 @@ import { RegisterFormComponent } from './register-form/register-form.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
+  { path: 'logout', component: HomeComponent },
   { path: 'mylist', component: MediaListComponent },
   { path: 'login', component: LoginFormComponent },
   { path: 'register', component: RegisterFormComponent },
