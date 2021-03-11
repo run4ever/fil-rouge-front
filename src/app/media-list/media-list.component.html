@@ -26,7 +26,7 @@
         <div *ngIf="isLoadingResults" class="d-flex justify-content-center align-items-center loader">
             <div class="spinner-border" role="status"></div>
          </div>
-            {{nbResults}} resultat(s)<span *ngIf="this.nbResults>10"><small><em>(seuls les 10 premiers vous sont proposés)</em></small></span></div>
+            {{nbResults}} resultat(s)<span *ngIf="this.nbResults>10"><small><em>(only 10 first are displayed)</em></small></span></div>
 
         <!-- liste des résultats  -->
         <div class="row list-group-item d-flex" *ngFor="let result of results">
@@ -183,4 +183,14 @@
             (pageChange)="onPageChanged($event, this.tabGroup.selectedIndex)">
         </pagination-controls>
   <div>
+
+    <!-- toast ajout -->
+    <div class="toast">
+        <div class="toast-header">
+          Toast Header
+        </div>
+        <div class="toast-body">
+          Some text inside the toast body
+        </div>
+      </div>
    

@@ -5,7 +5,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { map } from 'rxjs/operators';
 import { MediaModel } from '../models/media.model';
-import { MediaListComponent } from 'src/app/media-list/media-list.component';
+import { AlertService } from './alert.service';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +23,7 @@ export class MediaService {
   indexTab$ = new BehaviorSubject({choixIndex:0})    //par défaut on affiche Série (tab)
   seachInProgress$ = new BehaviorSubject({value:false});
 
-  constructor(private http:HttpClient, private sanitizer: DomSanitizer) { }
+  constructor(private http:HttpClient, private sanitizer: DomSanitizer, private alertService: AlertService) { }
 
   /*Load movies from backend*/
 
@@ -150,6 +150,7 @@ deleteMediaByEmailAndIdMedia(userEmail: string,imdbId: string,typeMedia: string)
                         tabMedias.forEach((item, index) => {
                           //supprimer l'élément dans series$
                           if (item.imdbId === imdbId ) { tabMedias.splice(index, 1); }
+                          this.alertService.show('This serie has been deleted from your list');
                         });
                       this.series$.next(tabMedias);
                       console.log('tabMedias - Série : ' + tabMedias);
@@ -160,6 +161,7 @@ deleteMediaByEmailAndIdMedia(userEmail: string,imdbId: string,typeMedia: string)
                       tabMedias.forEach((item, index) => {
                         //supprimer l'élément dans movies$
                         if (item.imdbId === imdbId ) { tabMedias.splice(index, 1); }
+                        this.alertService.show('This movie has been deleted from your list');
                       });
                       this.movies$.next(tabMedias);
                       console.log('tabMedias - Movie : ' + tabMedias);
@@ -216,6 +218,7 @@ deleteMediaByEmailAndIdMedia(userEmail: string,imdbId: string,typeMedia: string)
                               //pour ajouter dans series$ on a besoin un objet MediaModel qui nécessite autres données !!!!
                               //le plus simple c'est de rappel API pour avoir la liste
                               this.getAllViewingSeries(userEmail)
+                              this.alertService.show('This serie has been added to your list with status \"To watch\"');
                             },
                             (error)=> {console.log(error)}
                           )
@@ -231,6 +234,7 @@ deleteMediaByEmailAndIdMedia(userEmail: string,imdbId: string,typeMedia: string)
               .subscribe((response:any) => {
                     //this.movies$.next(response)
                     this.getAllViewingMovies(userEmail)
+                    this.alertService.show('This movie has been added to your list with status \"To watch\"');
                    },
                    (error)=> {console.log(error)}
                    )
