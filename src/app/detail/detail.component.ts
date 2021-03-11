@@ -21,13 +21,24 @@ export class DetailComponent implements OnInit {
     if(this.mediaType=== 'serie') {
       this.media = this.mediaService.series$.getValue()
       .find( m => m.imdbId == this.mediaId)
+      if(this.media == null){
+        this.mediaService.getVideoDataFromApi(this.mediaId, 'serie').subscribe((response:any) => {
+          this.media = response;
+          this.media.typeMedia='serie';
+        } );
+      }
     }
     else {
       this.media = this.mediaService.movies$.getValue()
       .find( m => m.imdbId == this.mediaId)
+
+      if(this.media == null){
+        this.mediaService.getVideoDataFromApi(this.mediaId, 'movie').subscribe((response:any) => {
+          this.media = response;
+          this.media.typeMedia='movie';
+        } );
+      }
     }
-    
-    //console.log(this.media)
   }
 
 
