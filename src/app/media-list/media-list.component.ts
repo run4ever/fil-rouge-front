@@ -70,6 +70,23 @@ export class MediaListComponent implements OnInit {
       }
     );
 
+    this.mediaService.seriesAfterDelete$.subscribe(
+      (dataSeries: MediaModel[]) => {
+        this.series = dataSeries.slice();
+        this.countItemSeries = this.series.length;
+        // changement de la page courante si plus d'enregistrements, avec gestion de la liste vide
+        if (this.countItemSeries > 0) {
+          if ((this.page - 1) * this.pageSize >= this.countItemSeries) {
+            console.log('page à redimensionner');
+            this.page --;
+            this.beginRange = (this.page - 1) * this.pageSize;
+            this.endRange = this.beginRange + this.pageSize;
+          }
+        }
+        this.calculPaginationSeries();
+      }
+    );
+
     this.mediaService.series$.subscribe(
       (dataSeries: MediaModel[]) => {
         console.log('mise à jour des séries avec pagination');
