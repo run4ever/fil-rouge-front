@@ -48,12 +48,12 @@
                 <!-- Status listBox -->
                 <span>
                     <select class="form-select change-status" name="status" (change)="updateStatusMedia(result.imdbId,result.typeMedia,$event.target.value)">
-                        <option *ngFor="let status of status_media" 
+                        <option *ngFor="let status of status_media"
                         [selected]="status[0]==result.status"
                         [value]="status[0]">{{status[1]}}</option>
                     </select>
                 </span>
-                    
+
                 <!-- Trash button -->
                 <span (click)="deleteMedia(result.imdbId,result.typeMedia, inputElt)">
                     <i class="fa fa-trash fa-2x del-from-list" aria-hidden="true"></i>
@@ -97,7 +97,7 @@
                         <div class="col d-flex">
                             <span>
                                     <select class="form-select change-status" name="status" (change)="updateStatusMedia(media.imdbId,media.typeMedia,$event.target.value)">
-                                        <option *ngFor="let status of status_media" 
+                                        <option *ngFor="let status of status_media"
                                                 [selected]="status[0]==media.status"
                                                 [value]="status[0]">{{status[1]}}</option>
                                     </select>
@@ -154,7 +154,7 @@
                         <div class="col d-flex">
                             <span>
                                     <select class="form-select change-status" name="status" (change)="updateStatusMedia(media.imdbId,media.typeMedia,$event.target.value)">
-                                        <option *ngFor="let status of status_media" 
+                                        <option *ngFor="let status of status_media"
                                                 [selected]="status[0]==media.status"
                                                 [value]="status[0]">{{status[1]}}</option>
                                     </select>
@@ -184,13 +184,4 @@
         </pagination-controls>
   <div>
 
-    <!-- toast ajout -->
-    <div class="toast">
-        <div class="toast-header">
-          Toast Header
-        </div>
-        <div class="toast-body">
-          Some text inside the toast body
-        </div>
-      </div>
-   
+
