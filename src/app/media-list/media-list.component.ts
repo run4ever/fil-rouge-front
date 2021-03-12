@@ -51,23 +51,48 @@ export class MediaListComponent implements OnInit {
     //userEmail est stocké dans le champ sub de jeton
     this.userEmail = jetonDecode.sub
 
+
+
+    this.mediaService.moviesAfterDelete$.subscribe(
+      (dataMovies: MediaModel[]) => {
+        this.movies = dataMovies.slice();
+        this.countItemMovies = this.movies.length;
+        // changement de la page courante si plus d'enregistrements, avec gestion de la liste vide
+        if (this.countItemMovies > 0) {
+          if ((this.page - 1) * this.pageSize >= this.countItemMovies) {
+            console.log('page à redimensionner');
+            this.page --;
+            this.beginRange = (this.page - 1) * this.pageSize;
+            this.endRange = this.beginRange + this.pageSize;
+          }
+        }
+        this.calculPaginationMovies();
+      }
+    );
+
+    this.mediaService.seriesAfterDelete$.subscribe(
+      (dataSeries: MediaModel[]) => {
+        this.series = dataSeries.slice();
+        this.countItemSeries = this.series.length;
+        // changement de la page courante si plus d'enregistrements, avec gestion de la liste vide
+        if (this.countItemSeries > 0) {
+          if ((this.page - 1) * this.pageSize >= this.countItemSeries) {
+            console.log('page à redimensionner');
+            this.page --;
+            this.beginRange = (this.page - 1) * this.pageSize;
+            this.endRange = this.beginRange + this.pageSize;
+          }
+        }
+        this.calculPaginationSeries();
+      }
+    );
+
     this.mediaService.series$.subscribe(
       (dataSeries: MediaModel[]) => {
-                                      console.log('mise à jour des séries avec pagination');
-                                      this.series = dataSeries.slice();
-                                      this.countItemSeries = this.series.length;
-                                      this.series.splice(0, this.beginRange);
-                                      let countAfterSplice = this.series.length;
-                                      let nbToDelete = countAfterSplice - this.pageSize;
-                                      if (nbToDelete > 0) {
-                                        this.series.splice(this.pageSize, nbToDelete);
-                                        console.log('nb éléments supprimés : ' + nbToDelete);
-                                      }
-                                      else {
-                                        this.series.splice(this.pageSize, countAfterSplice);
-                                      }
-                                      // console.log(this.series);
-
+        console.log('mise à jour des séries avec pagination');
+        this.series = dataSeries.slice();
+        this.countItemSeries = this.series.length;
+        this.calculPaginationSeries();
       });
      this.mediaService.getAllViewingSeries(this.userEmail);
     // this.mediaService.getAllViewingSeries(this.userEmail)  //récupérer les séries
@@ -75,20 +100,12 @@ export class MediaListComponent implements OnInit {
 
     this.mediaService.movies$.subscribe(
       (dataMovies: MediaModel[]) => {
-                                      console.log('mise à jour des movies avec pagination');
-                                      this.movies = dataMovies.slice();
-                                      this.countItemMovies = this.movies.length;
-                                      this.movies.splice(0, this.beginRange);
-                                      let countAfterSplice = this.movies.length;
-                                      let nbToDelete = countAfterSplice - this.pageSize;
-                                      if (nbToDelete > 0) {
-                                        this.movies.splice(this.pageSize, nbToDelete);
-                                        console.log('nb éléments supprimés : ' + nbToDelete);
-                                      } else {
-                                        this.movies.splice(this.pageSize, countAfterSplice);
-                                      }
-                                      console.log(this.movies);
-                                    }
+        console.log('mise à jour des movies avec pagination');
+        this.movies = dataMovies.slice();
+        this.countItemMovies = this.movies.length;
+        this.calculPaginationMovies();
+        console.log(this.movies);
+      }
     );
     this.mediaService.getAllViewingMovies(this.userEmail)  //récupérer les movies
 
@@ -204,10 +221,10 @@ export class MediaListComponent implements OnInit {
     this.nbResults = -1;
   }
 
-  actionToClickToTab(inputElt) {
-    this.page = 1;
-    this.deleteSearchText(inputElt);
-  }
+  // actionToClickToTab(inputElt) {
+  //   this.page = 1;
+  //   this.deleteSearchText(inputElt);
+  // }
 
   onPageMoviesChanged(pageEvent: any) {
 
@@ -225,7 +242,7 @@ export class MediaListComponent implements OnInit {
 
 
   }
-
+  //gestion de pagination
   onPageChanged(pageEvent: any, selectedIndex: number) {
 
     this.page = pageEvent;
@@ -238,6 +255,31 @@ export class MediaListComponent implements OnInit {
     }
     if (selectedIndex === 1) {
       this.onPageMoviesChanged(pageEvent);
+    }
+  }
+
+  calculPaginationSeries() {
+    this.series.splice(0, this.beginRange);
+    let countAfterSplice = this.series.length;
+    let nbToDelete = countAfterSplice - this.pageSize;
+    if (nbToDelete > 0) {
+      this.series.splice(this.pageSize, nbToDelete);
+      console.log('nb éléments supprimés : ' + nbToDelete);
+    }
+    else {
+      this.series.splice(this.pageSize, countAfterSplice);
+    }
+  }
+
+  calculPaginationMovies() {
+    this.movies.splice(0, this.beginRange);
+    let countAfterSplice = this.movies.length;
+    let nbToDelete = countAfterSplice - this.pageSize;
+    if (nbToDelete > 0) {
+      this.movies.splice(this.pageSize, nbToDelete);
+      console.log('nb éléments supprimés : ' + nbToDelete);
+    } else {
+      this.movies.splice(this.pageSize, countAfterSplice);
     }
   }
 

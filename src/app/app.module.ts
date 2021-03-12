@@ -26,7 +26,9 @@ import { RatingComponent } from './shared/rating/rating.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {NgxPaginationModule} from 'ngx-pagination';
-import { DelunderscorePipe } from './shared/mypipes/delunderscore.pipe'; 
+import { DelunderscorePipe } from './shared/mypipes/delunderscore.pipe';
+import { FourOhFourComponent } from './four-oh-four/four-oh-four.component'; 
+import { AuthGuard } from './shared/services/auth-guard.service';
 
 
 
@@ -39,7 +41,8 @@ import { DelunderscorePipe } from './shared/mypipes/delunderscore.pipe';
     RegisterFormComponent,
     HomeComponent,
     RatingComponent,
-    DelunderscorePipe
+    DelunderscorePipe,
+    FourOhFourComponent
   ],
   imports: [
     BrowserModule,
@@ -65,7 +68,7 @@ import { DelunderscorePipe } from './shared/mypipes/delunderscore.pipe';
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: ApiInterceptor, multi: true},
-    
+    AuthGuard
   ],
   bootstrap: [AppComponent]
 })
