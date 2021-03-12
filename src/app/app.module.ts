@@ -28,6 +28,7 @@ import {MatPaginatorModule} from '@angular/material/paginator';
 import {NgxPaginationModule} from 'ngx-pagination';
 import { DelunderscorePipe } from './shared/mypipes/delunderscore.pipe';
 import { FourOhFourComponent } from './four-oh-four/four-oh-four.component'; 
+import { AuthGuard } from './shared/services/auth-guard.service';
 
 
 
@@ -67,7 +68,7 @@ import { FourOhFourComponent } from './four-oh-four/four-oh-four.component';
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: ApiInterceptor, multi: true},
-    
+    AuthGuard
   ],
   bootstrap: [AppComponent]
 })

@@ -13,6 +13,11 @@
                <strong>Oops!</strong><br /> You already have an account. You can login below.
              </div>
          </div>
+         <div *ngIf="this.error==401">
+            <div class="alert alert-danger">
+               <strong>Oops!</strong><br /> Wrong e-mail address or password. Try again
+             </div>
+         </div>
          <form (submit)="onLoginSubmit(loginForm)" #loginForm="ngForm">
             <div class="mt-2">
                <label class="form-label">Email</label>
