@@ -16,10 +16,12 @@ export class MediaService {
 
   medias$ = new BehaviorSubject([]);
   series$ = new BehaviorSubject([]);
+  seriesAfterDelete$ = new BehaviorSubject([]);
+  moviesAfterDelete$ = new BehaviorSubject([]);
   movies$ = new BehaviorSubject([]);
   search$ = new BehaviorSubject<MediaModel[]>([]);
 
-  //gestion selectedIndex pour gérer le retour de detail vers mylist
+  // gestion selectedIndex pour gérer le retour de detail vers mylist
   indexTab$ = new BehaviorSubject({choixIndex:0})    //par défaut on affiche Série (tab)
   seachInProgress$ = new BehaviorSubject({value:false});
 
@@ -27,13 +29,13 @@ export class MediaService {
 
   /*Load movies from backend*/
 
-//méthode pour les viewingserie, mettre le type valeur 'serie'
+// méthode pour les viewingserie, mettre le type valeur 'serie'
 getAllViewingSeries(userEmail:string){
   this.http
   .get(this.API_URL+'/viewing-serie/'+userEmail)
-  //ajouter un mapping qui viendra renseigner la donnée type avec valeur movie via constructeur (pipe / map)
+  // ajouter un mapping qui viendra renseigner la donnée type avec valeur movie via constructeur (pipe / map)
   .pipe(
-    map(//serie
+    map(// serie
         (data:any)=> data.map(
          s => new MediaModel('serie',s.status,s.serieDto.imdbId,s.serieDto.title,s.serieDto.description,s.serieDto.category,
                              s.serieDto.startYear,s.serieDto.imdbRating,s.serieDto.imdbVotes,s.serieDto.actors,
@@ -43,8 +45,8 @@ getAllViewingSeries(userEmail:string){
   )
   .subscribe((response:any) => {
     //this.medias$.next(response)
-    this.series$.next(response)
-  })
+    this.series$.next(response);
+  });
 }
 
 //méthode pour les viewingmovie, mettre le type valeur 'movie'
@@ -52,7 +54,7 @@ getAllViewingMovies(userEmail:string){
     this.http
     .get(this.API_URL+'/viewing-movie/'+userEmail)
     .pipe(
-      map(//movie
+      map(// movie
           (data:any)=> data.map(
           m => new MediaModel('movie',m.status,m.movieDto.imdbId,m.movieDto.title,m.movieDto.description,m.movieDto.category,
                               (m.movieDto.startYear).substring(0,4),m.movieDto.imdbRating,m.movieDto.imdbVotes,m.movieDto.actors,
@@ -62,21 +64,21 @@ getAllViewingMovies(userEmail:string){
       )
     )
     .subscribe((response:any) => {
-      //console.log(response)
-      //let series = this.medias$.getValue() //récupérer les résultats Seris
-      //this.medias$.next([...series, ...response]) //ajoute les series dans media$ avec les movies
-      this.movies$.next(response)
-      })
+      // console.log(response)
+      // let series = this.medias$.getValue() //récupérer les résultats Seris
+      // this.medias$.next([...series, ...response]) //ajoute les series dans media$ avec les movies
+      this.movies$.next(response);
+      });
 
   }
 
-//méthode globale retourne une liste globale qui contient ViewingSerie et ViewingMovie
+// méthode globale retourne une liste globale qui contient ViewingSerie et ViewingMovie
 getAllViewings(userEmail:string) {
   this.getAllViewingSeries(userEmail)
   this.getAllViewingMovies(userEmail)
   }
 
-//méthode pour mettre à jour status d'un film ou série dans ViewingSerie/ViewingMovie
+// méthode pour mettre à jour status d'un film ou série dans ViewingSerie/ViewingMovie
   updateStatusMediaByEmailAndIdMedia(userEmail:string,imdbId:string,typeMedia:string,status:string) {
 
     let httpOptions = {headers: new HttpHeaders({ 'Content-Type': 'application/json' })}
@@ -92,7 +94,7 @@ getAllViewings(userEmail:string) {
                         //mettre à jour status dans l'élément dans series
                         if (item.imdbId === imdbId ) { item.status=status }
                       })
-                      this.series$.next(tabMedias)
+                      this.series$.next(tabMedias);
                 }
                 else {
                       const tabMedias:any[] = this.movies$.getValue()  //récupérer les valeurs de movies$
@@ -100,10 +102,10 @@ getAllViewings(userEmail:string) {
                         //mettre à jour status dans l'élément dans movies$
                         if (item.imdbId === imdbId ) { item.status=status }
                       })
-                  this.movies$.next(tabMedias)
-                }                
+                  this.movies$.next(tabMedias);
+                }
              },
-             (error)=> {console.log(error)}
+             (error) => {console.log(error)}
       )
   }
 
@@ -152,7 +154,7 @@ deleteMediaByEmailAndIdMedia(userEmail: string,imdbId: string,typeMedia: string)
                           if (item.imdbId === imdbId ) { tabMedias.splice(index, 1); }
                           this.alertService.show('This serie has been deleted from your list');
                         });
-                      this.series$.next(tabMedias);
+                      this.seriesAfterDelete$.next(tabMedias);
                       console.log('tabMedias - Série : ' + tabMedias);
                     }
                     else {
@@ -163,7 +165,7 @@ deleteMediaByEmailAndIdMedia(userEmail: string,imdbId: string,typeMedia: string)
                         if (item.imdbId === imdbId ) { tabMedias.splice(index, 1); }
                         this.alertService.show('This movie has been deleted from your list');
                       });
-                      this.movies$.next(tabMedias);
+                      this.moviesAfterDelete$.next(tabMedias);
                       console.log('tabMedias - Movie : ' + tabMedias);
                     }
               },
