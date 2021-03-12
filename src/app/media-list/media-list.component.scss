@@ -116,3 +116,11 @@
     display: flex;
     flex-wrap: wrap;
   }
+
+.bg-pagination {
+    background: #E5E8E8;
+}
+
+.ngx-pagination .current {
+    background: #E5E8E8 !important;
+}
