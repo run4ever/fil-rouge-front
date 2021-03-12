@@ -4,8 +4,6 @@ import { MediaService } from '../shared/services/media.service';
 import { Router } from '@angular/router';
 import { UserService } from '../shared/services/user.service';
 import { PageEvent } from '@angular/material/paginator';
-import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
-import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-media-list',
@@ -120,7 +118,7 @@ export class MediaListComponent implements OnInit {
     //on vide d'abord search$
     this.mediaService.search$.next([])
     // on s'abonne à la source de données search$
-    this.mediaService.search$.subscribe(data => this.results = data)
+    this.mediaService.search$.subscribe(data => {this.results = data;console.log(data)})
 
     this.mediaService.seachInProgress$.subscribe(
       (data:any) => {
@@ -147,6 +145,39 @@ export class MediaListComponent implements OnInit {
     this.mediaService.updateStatusMediaByEmailAndIdMedia(this.userEmail, imdbId, typeMedia, status)
   }
 
+  //méthode pour MAJ like de Serie ou Movie
+  updateLikeMedia(imdbId: string, typeMedia: string, like: boolean) {
+    if(like==true){like=false;}else{like=true;}
+    this.mediaService.updateLikeMediaByEmailAndIdMedia(this.userEmail, imdbId, typeMedia, like)
+  }
+
+  updateMedia(media: MediaModel, updType: string, value: string) {
+    let like: string;
+    let season:number;
+    let status:string;
+    console.log('modif de ', updType)
+    switch (updType) {
+      case 'status':
+        status = value;
+        like = media.likeOrNot;
+        season = media.currentSeason;
+        break;
+      case 'like':
+        status = media.status;
+        if(value=='true'){like="false";}else{like="true";}
+        season = media.currentSeason;
+        break;
+      case 'season':
+        status = media.status;
+        like = media.likeOrNot;
+        season = Number(value);
+        break;
+        }
+
+        this.mediaService.updateViewing(this.userEmail, media.typeMedia, media.imdbId, status, like, season)
+  }
+
+
   //méthode update la saison d'une série
   updateSeason(imdbId: string, status: string, numSeason: number) {
     // console.log("imdbId="+imdbId+";status:"+status+"; nouveau num saison"+numSeason)
@@ -156,9 +187,6 @@ export class MediaListComponent implements OnInit {
   //méthode pour supprimer Serie ou Movie de Viewings
   deleteMedia(imdbId: string, typeMedia: string, inputElt) {
     this.mediaService.deleteMediaByEmailAndIdMedia(this.userEmail, imdbId, typeMedia);
-
-
-
   //  this.deleteSearchText(inputElt);
   }
 
@@ -280,6 +308,17 @@ export class MediaListComponent implements OnInit {
       console.log('nb éléments supprimés : ' + nbToDelete);
     } else {
       this.movies.splice(this.pageSize, countAfterSplice);
+    }
+  }
+
+  boolToStr(b:boolean){
+    switch (b) {
+      case true:
+        return "true";
+        break;
+      default:
+        return "false";
+        break;
     }
   }
 

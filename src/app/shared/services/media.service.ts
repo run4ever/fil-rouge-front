@@ -39,7 +39,7 @@ getAllViewingSeries(userEmail:string){
         (data:any)=> data.map(
          s => new MediaModel('serie',s.status,s.serieDto.imdbId,s.serieDto.title,s.serieDto.description,s.serieDto.category,
                              s.serieDto.startYear,s.serieDto.imdbRating,s.serieDto.imdbVotes,s.serieDto.actors,
-                             s.serieDto.imageUrl,0,s.serieDto.endYear,s.serieDto.numberOfSeason,s.currentSeason,s.serieDto.statusSerie, null)
+                             s.serieDto.imageUrl,0,s.serieDto.endYear,s.serieDto.numberOfSeason,s.currentSeason,s.serieDto.statusSerie, null, s.likeOrNot)
         )
     )
   )
@@ -58,7 +58,7 @@ getAllViewingMovies(userEmail:string){
           (data:any)=> data.map(
           m => new MediaModel('movie',m.status,m.movieDto.imdbId,m.movieDto.title,m.movieDto.description,m.movieDto.category,
                               (m.movieDto.startYear).substring(0,4),m.movieDto.imdbRating,m.movieDto.imdbVotes,m.movieDto.actors,
-                              m.movieDto.imageUrl,m.movieDto.runtime,null,null,null,null, null)
+                              m.movieDto.imageUrl,m.movieDto.runtime,null,null,null,null, null, m.likeOrNot)
 
           )
       )
@@ -76,6 +76,77 @@ getAllViewingMovies(userEmail:string){
 getAllViewings(userEmail:string) {
   this.getAllViewingSeries(userEmail)
   this.getAllViewingMovies(userEmail)
+  }
+
+  updateViewing(userEmail:string, typeMedia:string, imdbId:string, status:string, likeOrNot:string, currentSeason:number){
+    let httpOptions = {headers: new HttpHeaders({ 'Content-Type': 'application/json' })}
+    let corpsBody;
+    let like: boolean;
+    
+    switch (likeOrNot) {
+      case 'true':
+        like = true
+        break;
+      default:
+        like = false
+        break;
+    }
+
+    console.log(userEmail)
+    console.log(typeMedia)
+    console.log(imdbId)
+    console.log(status)
+    console.log(likeOrNot)
+    console.log(currentSeason)
+
+    switch (typeMedia) {
+      case 'serie':
+        corpsBody = {"email":userEmail,
+                        "imdbId":imdbId,
+                        "status":status,
+                        "likeOrNot":likeOrNot,
+                        "currentSeason":currentSeason,
+                        "currentEpisode":"1"}
+        break;
+      case 'movie':
+        corpsBody = {"email":userEmail,
+                        "imdbId":imdbId,
+                        "status":status,
+                        "likeOrNot":likeOrNot}
+        break;
+      }
+
+      console.log('corpsBody', corpsBody)
+
+      this.http
+      .put(this.API_URL+'/viewing-'+typeMedia+'/update',JSON.stringify(corpsBody),httpOptions)
+      .subscribe(
+        ()=> { if(typeMedia==='serie') {
+                      const tabMedias:any[] = this.series$.getValue()  //récupérer les valeurs de movies$
+                      tabMedias.forEach((item, index) => {
+                        //mettre à jour l'élément dans series
+                        if (item.imdbId === imdbId) { 
+                          item.status=status;
+                          item.likeOrNot=like;
+                          item.currentSeason=currentSeason;
+                        }
+                      })
+                      this.series$.next(tabMedias);
+                }
+                else {
+                      const tabMedias:any[] = this.movies$.getValue()  //récupérer les valeurs de movies$
+                      tabMedias.forEach((item, index) => {
+                        //mettre à jour l'élément dans movies$
+                        if (item.imdbId === imdbId ) { 
+                          item.status=status;
+                          item.likeOrNot=like;
+                         }
+                      })
+                  this.movies$.next(tabMedias);
+                }
+             },
+             (error) => {console.log(error)}
+      )
   }
 
 // méthode pour mettre à jour status d'un film ou série dans ViewingSerie/ViewingMovie
@@ -124,7 +195,7 @@ getAllViewings(userEmail:string) {
                 tabMedias.forEach((item, index) => {
                   //mettre à jour Num saison dans l'élément dans medias$
                   if (item.imdbId === imdbId ) {
-                        item.userSeason=numSeason
+                        item.currentSeason=numSeason
                       }
                 });
               this.series$.next(tabMedias);
@@ -210,7 +281,7 @@ deleteMediaByEmailAndIdMedia(userEmail: string,imdbId: string,typeMedia: string)
 
   //ajouter serie dans ViewingSerie
   addSerieByEmailAndIdMedia(userEmail: string,imdbId: string,numSeason: number){
-    let body = {"email":userEmail,"imdbId":imdbId,"status":'TO_WATCH',"currentSeason":numSeason}
+    let body = {"email":userEmail,"imdbId":imdbId,"status":'TO_WATCH',"currentSeason":numSeason, "like":'false'}
       const httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
       }
@@ -228,7 +299,7 @@ deleteMediaByEmailAndIdMedia(userEmail: string,imdbId: string,typeMedia: string)
 
    //ajouter movie dans ViewingMovie
    addMovieByEmailAndIdMedia(userEmail: string,imdbId: string){
-    let body = {"email":userEmail,"imdbId":imdbId,"status":'TO_WATCH'}
+    let body = {"email":userEmail,"imdbId":imdbId,"status":'TO_WATCH', "like":'false'}
       const httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
       }
@@ -273,7 +344,8 @@ deleteMediaByEmailAndIdMedia(userEmail: string,imdbId: string,typeMedia: string)
         null,
         null,
         null,
-        item.alreadyInUserList
+        item.alreadyInUserList,
+        item.likeOrNot
       )
 
     } else {
@@ -292,12 +364,42 @@ deleteMediaByEmailAndIdMedia(userEmail: string,imdbId: string,typeMedia: string)
         item.serieDto.imageUrl,
         item.serieDto.runtime,
         null,
+        Number(item.serieDto.numberOfSeason),
+        Number(item.currentSeason),
         null,
-        null,
-        null,
-        item.alreadyInUserList
+        item.alreadyInUserList,
+        item.likeOrNot
       )
     }
   }
-}
 
+  // méthode pour mettre à jour status d'un film ou série dans ViewingSerie/ViewingMovie
+  updateLikeMediaByEmailAndIdMedia(userEmail:string,imdbId:string,typeMedia:string,like:boolean) {
+
+    let httpOptions = {headers: new HttpHeaders({ 'Content-Type': 'application/json' })}
+    let corpsBody = {"email":userEmail,"imdbId":imdbId,"likeOrNot":like}
+
+      this.http
+      .put(this.API_URL+'/viewing-'+typeMedia+'/update',JSON.stringify(corpsBody),httpOptions)
+      .subscribe(
+        ()=> { if(typeMedia==='serie') {
+                      const tabMedias:any[] = this.series$.getValue()  //récupérer les valeurs de movies$
+                      tabMedias.forEach((item, index) => {
+                        //mettre à jour dans l'élément dans series
+                        if (item.imdbId === imdbId ) { item.likeOrNot=like }
+                      })
+                      this.series$.next(tabMedias);
+                }
+                else {
+                      const tabMedias:any[] = this.movies$.getValue()  //récupérer les valeurs de movies$
+                      tabMedias.forEach((item, index) => {
+                        //mettre à jour status dans l'élément dans movies$
+                        if (item.imdbId === imdbId ) { item.likeOrNot=like }
+                      })
+                  this.movies$.next(tabMedias);
+                }
+             },
+             (error) => {console.log(error)}
+      )
+  }
+}
