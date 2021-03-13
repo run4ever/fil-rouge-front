@@ -5,7 +5,10 @@ import { Router } from '@angular/router';
 import { UserService } from '../shared/services/user.service';
 import { PageEvent } from '@angular/material/paginator';
 import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
-import { BehaviorSubject } from 'rxjs';
+import {BehaviorSubject, Subject} from 'rxjs';
+import {
+  debounceTime, distinctUntilChanged, switchMap
+} from 'rxjs/operators';
 
 @Component({
   selector: 'app-media-list',
@@ -35,6 +38,8 @@ export class MediaListComponent implements OnInit {
   nbResults:number
   isLoadingResults: boolean;
 
+  searchWithDelay$ = new Subject<string>();
+  searchString: string;
 
   //liste status
   status_media = [['TO_WATCH', 'To watch'], ['IN_PROGRESS', 'In progress'], ['WATCHED', 'Watched']]
@@ -68,6 +73,9 @@ export class MediaListComponent implements OnInit {
         }
         this.calculPaginationMovies();
       }
+
+
+
     );
 
     this.mediaService.seriesAfterDelete$.subscribe(
@@ -120,40 +128,68 @@ export class MediaListComponent implements OnInit {
     //on vide d'abord search$
     this.mediaService.search$.next([])
     // on s'abonne à la source de données search$
-    this.mediaService.search$.subscribe(data => this.results = data)
+    this.mediaService.search$.subscribe(data => {
+        this.results = data;
+    });
 
     this.mediaService.seachInProgress$.subscribe(
       (data:any) => {
         this.isLoadingResults = data.value
       }
-    )
+    );
+
+
+    this.searchWithDelay$.pipe(
+      debounceTime(1500),
+      distinctUntilChanged(),
+      // switchMap(
+      //   (value: string) => {
+      //     console.log('changement valeur search : ' + value);
+      //     return value = this.searchString;
+      //   }
+      // )
+    ).subscribe( (value: string) => {
+      console.log('Recherche, valeur actuelle : ' + value);
+      console.log('Recherche, valeur stockée : ' + this.searchString);
+      if (this.searchString.length < 3) {
+        this.nbResults = -1;
+        console.log('pas de recherche pour le string : ' + this.searchString);
+      } else {
+        this.mediaService.getNbResults(this.searchString, this.activeTabLabel).subscribe(
+          data => {
+            this.nbResults = data;
+          });
+        this.mediaService.getSearchResults(this.userEmail, this.searchString, this.activeTabLabel);
+      }
+      console.log('recherche appelée : ' + this.searchString);
+    });
 
   }
 
-  searchSeries(searchText: string) {
-    console.log(searchText);
-    if (searchText.trim().length < 3) {
-      this.mediaService.search$.next([]);
-    }
-    else {
-      this.mediaService.getAllViewingSeries(searchText);
-    }
-  }
+  // searchSeries(searchText: string) {
+  //   console.log(searchText);
+  //   if (searchText.trim().length < 3) {
+  //     this.mediaService.search$.next([]);
+  //   }
+  //   else {
+  //     this.mediaService.getAllViewingSeries(searchText);
+  //   }
+  // }
 
-  //méthode pour MAJ status de Serie ou Movie, la requete d'accès à API est dans media.service
+  // méthode pour MAJ status de Serie ou Movie, la requete d'accès à API est dans media.service
   updateStatusMedia(imdbId: string, typeMedia: string, status: string) {
-    //appel le service pour mettre à jour status de film ou serie
-    //console.log("imdbId="+imdbId+";typeMedia:"+typeMedia+";status:"+status)
-    this.mediaService.updateStatusMediaByEmailAndIdMedia(this.userEmail, imdbId, typeMedia, status)
+    // appel le service pour mettre à jour status de film ou serie
+    // console.log("imdbId="+imdbId+";typeMedia:"+typeMedia+";status:"+status)
+    this.mediaService.updateStatusMediaByEmailAndIdMedia(this.userEmail, imdbId, typeMedia, status);
   }
 
-  //méthode update la saison d'une série
+  // méthode update la saison d'une série
   updateSeason(imdbId: string, status: string, numSeason: number) {
     // console.log("imdbId="+imdbId+";status:"+status+"; nouveau num saison"+numSeason)
-    this.mediaService.updateSeasonSerieByEmailAndIdMedia(this.userEmail, imdbId, status, numSeason)
+    this.mediaService.updateSeasonSerieByEmailAndIdMedia(this.userEmail, imdbId, status, numSeason);
   }
 
-  //méthode pour supprimer Serie ou Movie de Viewings
+  // méthode pour supprimer Serie ou Movie de Viewings
   deleteMedia(imdbId: string, typeMedia: string, inputElt) {
     this.mediaService.deleteMediaByEmailAndIdMedia(this.userEmail, imdbId, typeMedia);
 
@@ -169,7 +205,7 @@ export class MediaListComponent implements OnInit {
     if(typeMedia === 'serie') {
       this.mediaService.addSerieByEmailAndIdMedia(this.userEmail,imdbId,numSeason)
     }
-    if(typeMedia === 'movie') {
+    if (typeMedia === 'movie') {
       this.mediaService.addMovieByEmailAndIdMedia(this.userEmail,imdbId)
     }
     this.deleteSearchText(inputElt);
@@ -183,32 +219,38 @@ export class MediaListComponent implements OnInit {
   */
 
   // search user text in Api and in his movie / serie list
+  // tslint:disable-next-line:typedef
  searchApiAndUserList(activeTab: number, searchText: string) {
-  this.mediaService.search$.next([]);
-  if (searchText.trim().length < 3) {
-    this.mediaService.search$.next([]);
-  }
+
+   this.searchString = searchText;
+   console.log('nb resultats sur' +
+     ' keyup : ' + this.nbResults);
+   this.mediaService.search$.next([]);
+   if (searchText.trim().length < 3) {
+       this.mediaService.search$.next([]);
+       this.nbResults = -1;
+       console.log('entree search: ', this.isLoadingResults);
+      }
   else {
-    //this.isLoadingResults = true;
-    this.mediaService.seachInProgress$.next({value:true})
+     //this.isLoadingResults = true;
+     this.mediaService.seachInProgress$.next({value: true});
 
-    console.log('entree search: ', this.isLoadingResults);
-    switch (activeTab) {
-      case 1:
-        this.activeTabLabel = 'movie';
-        break;
+     console.log('entree search: ', this.isLoadingResults);
+     switch (activeTab) {
+       case 1:
+         this.activeTabLabel = 'movie';
+         break;
 
-      default:
-        this.activeTabLabel = 'serie';
-        break;
-    }
-    this.mediaService.getNbResults(searchText, this.activeTabLabel).subscribe(data => {this.nbResults = data;});
-    this.mediaService.getSearchResults(this.userEmail, searchText, this.activeTabLabel);
+       default:
+         this.activeTabLabel = 'serie';
+         break;
+     }
+     this.searchWithDelay$.next(searchText);
+     console.log('recherche texte dans base: ' + searchText);
+   }
+ }
 
-    console.log('sortie search: ', this.isLoadingResults);
 
-  }
-}
 
 /**
    * Delete search text on userClickEvent
