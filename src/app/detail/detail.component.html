@@ -21,6 +21,7 @@
                     {{media.category | delunderscore}}</p>
             <p><strong>With :</strong> {{media.actors}}</p>
             <app-rating [rating]="media.imdbRating/2" [votes]="media.imdbVotes"></app-rating>
+            <div>Loves : {{this.loves}}</div>
             <div class="synopsis-title">Synopsis :</div>
             <div class="synopsis-content">{{media.description}}</div>
         </div>

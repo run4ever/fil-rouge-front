@@ -58,7 +58,6 @@ export class MediaListComponent implements OnInit {
         // changement de la page courante si plus d'enregistrements, avec gestion de la liste vide
         if (this.countItemMovies > 0) {
           if ((this.page - 1) * this.pageSize >= this.countItemMovies) {
-            console.log('page à redimensionner');
             this.page --;
             this.beginRange = (this.page - 1) * this.pageSize;
             this.endRange = this.beginRange + this.pageSize;
@@ -75,7 +74,6 @@ export class MediaListComponent implements OnInit {
         // changement de la page courante si plus d'enregistrements, avec gestion de la liste vide
         if (this.countItemSeries > 0) {
           if ((this.page - 1) * this.pageSize >= this.countItemSeries) {
-            console.log('page à redimensionner');
             this.page --;
             this.beginRange = (this.page - 1) * this.pageSize;
             this.endRange = this.beginRange + this.pageSize;
@@ -87,7 +85,6 @@ export class MediaListComponent implements OnInit {
 
     this.mediaService.series$.subscribe(
       (dataSeries: MediaModel[]) => {
-        console.log('mise à jour des séries avec pagination');
         this.series = dataSeries.slice();
         this.countItemSeries = this.series.length;
         this.calculPaginationSeries();
@@ -98,11 +95,9 @@ export class MediaListComponent implements OnInit {
 
     this.mediaService.movies$.subscribe(
       (dataMovies: MediaModel[]) => {
-        console.log('mise à jour des movies avec pagination');
         this.movies = dataMovies.slice();
         this.countItemMovies = this.movies.length;
         this.calculPaginationMovies();
-        console.log(this.movies);
       }
     );
     this.mediaService.getAllViewingMovies(this.userEmail)  //récupérer les movies
@@ -112,13 +107,12 @@ export class MediaListComponent implements OnInit {
                       (data:any) =>
                           {
                             this.selectedIndex = data.choixIndex
-                            console.log("selectedIndex=>"+this.selectedIndex)
                           }
     )
     //on vide d'abord search$
     this.mediaService.search$.next([])
     // on s'abonne à la source de données search$
-    this.mediaService.search$.subscribe(data => {this.results = data;console.log(data)})
+    this.mediaService.search$.subscribe(data => this.results = data)
 
     this.mediaService.seachInProgress$.subscribe(
       (data:any) => {
@@ -129,7 +123,6 @@ export class MediaListComponent implements OnInit {
   }
 
   searchSeries(searchText: string) {
-    console.log(searchText);
     if (searchText.trim().length < 3) {
       this.mediaService.search$.next([]);
     }
@@ -138,24 +131,10 @@ export class MediaListComponent implements OnInit {
     }
   }
 
-  //méthode pour MAJ status de Serie ou Movie, la requete d'accès à API est dans media.service
-  updateStatusMedia(imdbId: string, typeMedia: string, status: string) {
-    //appel le service pour mettre à jour status de film ou serie
-    //console.log("imdbId="+imdbId+";typeMedia:"+typeMedia+";status:"+status)
-    this.mediaService.updateStatusMediaByEmailAndIdMedia(this.userEmail, imdbId, typeMedia, status)
-  }
-
-  //méthode pour MAJ like de Serie ou Movie
-  updateLikeMedia(imdbId: string, typeMedia: string, like: boolean) {
-    if(like==true){like=false;}else{like=true;}
-    this.mediaService.updateLikeMediaByEmailAndIdMedia(this.userEmail, imdbId, typeMedia, like)
-  }
-
   updateMedia(media: MediaModel, updType: string, value: string) {
     let like: string;
     let season:number;
     let status:string;
-    console.log('modif de ', updType)
     switch (updType) {
       case 'status':
         status = value;
@@ -177,13 +156,6 @@ export class MediaListComponent implements OnInit {
         this.mediaService.updateViewing(this.userEmail, media.typeMedia, media.imdbId, status, like, season)
   }
 
-
-  //méthode update la saison d'une série
-  updateSeason(imdbId: string, status: string, numSeason: number) {
-    // console.log("imdbId="+imdbId+";status:"+status+"; nouveau num saison"+numSeason)
-    this.mediaService.updateSeasonSerieByEmailAndIdMedia(this.userEmail, imdbId, status, numSeason)
-  }
-
   //méthode pour supprimer Serie ou Movie de Viewings
   deleteMedia(imdbId: string, typeMedia: string, inputElt) {
     this.mediaService.deleteMediaByEmailAndIdMedia(this.userEmail, imdbId, typeMedia);
@@ -203,13 +175,6 @@ export class MediaListComponent implements OnInit {
     this.deleteSearchText(inputElt);
   }
 
-  /*
-  loadNextMedia() {
-    this.isLoading = true;
-   // this.mediaService.g();
-  }
-  */
-
   // search user text in Api and in his movie / serie list
  searchApiAndUserList(activeTab: number, searchText: string) {
   this.mediaService.search$.next([]);
@@ -219,8 +184,6 @@ export class MediaListComponent implements OnInit {
   else {
     //this.isLoadingResults = true;
     this.mediaService.seachInProgress$.next({value:true})
-
-    console.log('entree search: ', this.isLoadingResults);
     switch (activeTab) {
       case 1:
         this.activeTabLabel = 'movie';
@@ -233,8 +196,6 @@ export class MediaListComponent implements OnInit {
     this.mediaService.getNbResults(searchText, this.activeTabLabel).subscribe(data => {this.nbResults = data;});
     this.mediaService.getSearchResults(this.userEmail, searchText, this.activeTabLabel);
 
-    console.log('sortie search: ', this.isLoadingResults);
-
   }
 }
 
@@ -243,32 +204,21 @@ export class MediaListComponent implements OnInit {
    * @param inputElt
    */
   deleteSearchText(inputElt) {
-    console.log('input', inputElt);
     inputElt.value = '';
     this.mediaService.search$.next([]);
     this.nbResults = -1;
   }
 
-  // actionToClickToTab(inputElt) {
-  //   this.page = 1;
-  //   this.deleteSearchText(inputElt);
-  // }
-
   onPageMoviesChanged(pageEvent: any) {
 
-   console.log('page event movies', pageEvent);
    this.isLoading = true;
    this.mediaService.getAllViewingMovies(this.userEmail);
 
   }
 
   onPageSeriesChanged(pageEvent: any) {
-
-    console.log('page event Series', pageEvent);
     this.isLoading = true;
     this.mediaService.getAllViewingSeries(this.userEmail);
-
-
   }
   //gestion de pagination
   onPageChanged(pageEvent: any, selectedIndex: number) {
@@ -276,8 +226,6 @@ export class MediaListComponent implements OnInit {
     this.page = pageEvent;
     this.beginRange = (this.page - 1) * this.pageSize;
     this.endRange = this.beginRange + this.pageSize;
-    console.log('debut de range ' + this.beginRange);
-    console.log('fin de range ' + this.endRange);
     if (selectedIndex === 0) {
       this.onPageSeriesChanged(pageEvent);
     }
@@ -292,7 +240,6 @@ export class MediaListComponent implements OnInit {
     let nbToDelete = countAfterSplice - this.pageSize;
     if (nbToDelete > 0) {
       this.series.splice(this.pageSize, nbToDelete);
-      console.log('nb éléments supprimés : ' + nbToDelete);
     }
     else {
       this.series.splice(this.pageSize, countAfterSplice);
@@ -305,7 +252,6 @@ export class MediaListComponent implements OnInit {
     let nbToDelete = countAfterSplice - this.pageSize;
     if (nbToDelete > 0) {
       this.movies.splice(this.pageSize, nbToDelete);
-      console.log('nb éléments supprimés : ' + nbToDelete);
     } else {
       this.movies.splice(this.pageSize, countAfterSplice);
     }

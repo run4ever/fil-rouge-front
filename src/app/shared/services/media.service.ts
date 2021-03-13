@@ -64,9 +64,6 @@ getAllViewingMovies(userEmail:string){
       )
     )
     .subscribe((response:any) => {
-      // console.log(response)
-      // let series = this.medias$.getValue() //récupérer les résultats Seris
-      // this.medias$.next([...series, ...response]) //ajoute les series dans media$ avec les movies
       this.movies$.next(response);
       });
 
@@ -92,13 +89,6 @@ getAllViewings(userEmail:string) {
         break;
     }
 
-    console.log(userEmail)
-    console.log(typeMedia)
-    console.log(imdbId)
-    console.log(status)
-    console.log(likeOrNot)
-    console.log(currentSeason)
-
     switch (typeMedia) {
       case 'serie':
         corpsBody = {"email":userEmail,
@@ -115,8 +105,6 @@ getAllViewings(userEmail:string) {
                         "likeOrNot":likeOrNot}
         break;
       }
-
-      console.log('corpsBody', corpsBody)
 
       this.http
       .put(this.API_URL+'/viewing-'+typeMedia+'/update',JSON.stringify(corpsBody),httpOptions)
@@ -149,62 +137,6 @@ getAllViewings(userEmail:string) {
       )
   }
 
-// méthode pour mettre à jour status d'un film ou série dans ViewingSerie/ViewingMovie
-  updateStatusMediaByEmailAndIdMedia(userEmail:string,imdbId:string,typeMedia:string,status:string) {
-
-    let httpOptions = {headers: new HttpHeaders({ 'Content-Type': 'application/json' })}
-    let corpsBody = {"email":userEmail,"imdbId":imdbId,"status":status}
-
-      this.http
-      .put(this.API_URL+'/viewing-'+typeMedia+'/update',JSON.stringify(corpsBody),httpOptions)
-      .subscribe(
-        ()=> { console.log('Change status terminé')
-                if(typeMedia==='serie') {
-                      const tabMedias:any[] = this.series$.getValue()  //récupérer les valeurs de movies$
-                      tabMedias.forEach((item, index) => {
-                        //mettre à jour status dans l'élément dans series
-                        if (item.imdbId === imdbId ) { item.status=status }
-                      })
-                      this.series$.next(tabMedias);
-                }
-                else {
-                      const tabMedias:any[] = this.movies$.getValue()  //récupérer les valeurs de movies$
-                      tabMedias.forEach((item, index) => {
-                        //mettre à jour status dans l'élément dans movies$
-                        if (item.imdbId === imdbId ) { item.status=status }
-                      })
-                  this.movies$.next(tabMedias);
-                }
-             },
-             (error) => {console.log(error)}
-      )
-  }
-
-  //méthode pour mettre à jour numéro saison d'une série
-  updateSeasonSerieByEmailAndIdMedia(userEmail:string,imdbId:string,status:string,numSeason:number) {
-    let httpOptions = {headers: new HttpHeaders({ 'Content-Type': 'application/json' })}
-    let corpsBody = {"email":userEmail,"imdbId":imdbId,"status":status,"currentSeason":numSeason,"currentEpisode":1}
-    console.log(corpsBody)
-      this.http
-      .put(this.API_URL+'/viewing-serie/update',JSON.stringify(corpsBody),httpOptions)
-      .subscribe(
-        ()=> { console.log('Change saison pour une série terminé')
-                const tabMedias: MediaModel[] = this.series$.getValue()  //récupérer les valeurs de series$
-                console.log('tab médias update season ' + tabMedias);
-                console.log(tabMedias)
-                tabMedias.forEach((item, index) => {
-                  //mettre à jour Num saison dans l'élément dans medias$
-                  if (item.imdbId === imdbId ) {
-                        item.currentSeason=numSeason
-                      }
-                });
-              this.series$.next(tabMedias);
-             },
-        (error)=> {console.log(error)}
-      )
-
-  }
-
 //méthode pour supprimer Serie ou Movie de Viewings
 deleteMediaByEmailAndIdMedia(userEmail: string,imdbId: string,typeMedia: string) {
       //normalement pas besoin de passer status, saison et epison pour supprimer serie
@@ -216,28 +148,23 @@ deleteMediaByEmailAndIdMedia(userEmail: string,imdbId: string,typeMedia: string)
 
       this.http.delete(this.API_URL+'/viewing-'+typeMedia+'/delete',httpOptions)
       .subscribe(
-        ()=> { console.log('Suppression terminée')
-                    if(typeMedia === 'serie') {
+        ()=> { if(typeMedia === 'serie') {
                         const tabMedias:any[] = this.series$.getValue()  //récupérer les valeurs de series$
-                        console.log('Behavior Subject Series : ' + tabMedias);
                         tabMedias.forEach((item, index) => {
                           //supprimer l'élément dans series$
                           if (item.imdbId === imdbId ) { tabMedias.splice(index, 1); }
                           this.alertService.show('This serie has been deleted from your list');
                         });
                       this.seriesAfterDelete$.next(tabMedias);
-                      console.log('tabMedias - Série : ' + tabMedias);
                     }
                     else {
                       const tabMedias:any[] = this.movies$.getValue()  //récupérer les valeurs de movies$
-                      console.log('Behavior Subject Movies : ' + tabMedias);
                       tabMedias.forEach((item, index) => {
                         //supprimer l'élément dans movies$
                         if (item.imdbId === imdbId ) { tabMedias.splice(index, 1); }
                         this.alertService.show('This movie has been deleted from your list');
                       });
                       this.moviesAfterDelete$.next(tabMedias);
-                      console.log('tabMedias - Movie : ' + tabMedias);
                     }
               },
         (error)=> {console.log(error)}
@@ -250,9 +177,11 @@ deleteMediaByEmailAndIdMedia(userEmail: string,imdbId: string,typeMedia: string)
         title: searchText
       }
     });
+    return this.http.get<string>(this.API_URL + '/' + mediaType + '/external/search-nb-results', { params }) 
+  }
 
-    return this.http.get<string>(this.API_URL + '/' + mediaType + '/external/search-nb-results', { params }) //.pipe(map(data => {return data;}));
-
+  getNbLoves(mediaId:string, mediaType:string): Observable<any>{
+    return this.http.get<string>(this.API_URL + '/' + mediaType + '/loves/' + mediaId) 
   }
 
   getSearchResults(userEmail: string, searchText:string, mediaType:string): void {
@@ -271,7 +200,6 @@ deleteMediaByEmailAndIdMedia(userEmail: string,imdbId: string,typeMedia: string)
           apiResponse.map(movie => this.createMedia(movie, mediaType))
       ))
       .subscribe(response => {
-        console.log(response);
         this.search$.next(response);
         this.seachInProgress$.next({value:false})
               },
@@ -373,33 +301,6 @@ deleteMediaByEmailAndIdMedia(userEmail: string,imdbId: string,typeMedia: string)
     }
   }
 
-  // méthode pour mettre à jour status d'un film ou série dans ViewingSerie/ViewingMovie
-  updateLikeMediaByEmailAndIdMedia(userEmail:string,imdbId:string,typeMedia:string,like:boolean) {
 
-    let httpOptions = {headers: new HttpHeaders({ 'Content-Type': 'application/json' })}
-    let corpsBody = {"email":userEmail,"imdbId":imdbId,"likeOrNot":like}
 
-      this.http
-      .put(this.API_URL+'/viewing-'+typeMedia+'/update',JSON.stringify(corpsBody),httpOptions)
-      .subscribe(
-        ()=> { if(typeMedia==='serie') {
-                      const tabMedias:any[] = this.series$.getValue()  //récupérer les valeurs de movies$
-                      tabMedias.forEach((item, index) => {
-                        //mettre à jour dans l'élément dans series
-                        if (item.imdbId === imdbId ) { item.likeOrNot=like }
-                      })
-                      this.series$.next(tabMedias);
-                }
-                else {
-                      const tabMedias:any[] = this.movies$.getValue()  //récupérer les valeurs de movies$
-                      tabMedias.forEach((item, index) => {
-                        //mettre à jour status dans l'élément dans movies$
-                        if (item.imdbId === imdbId ) { item.likeOrNot=like }
-                      })
-                  this.movies$.next(tabMedias);
-                }
-             },
-             (error) => {console.log(error)}
-      )
-  }
 }
