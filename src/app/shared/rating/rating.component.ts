@@ -9,6 +9,7 @@ export class RatingComponent implements OnInit {
 
   @Input() rating: number;
   @Input() votes: number;
+  @Input() loves: string;
   
   //Array pour utilisation du ngFor (on insère autant d'éléments que de points, pour boucler autant de fois)
   stars:Array<number>;

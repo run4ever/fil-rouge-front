@@ -6,6 +6,8 @@ import { environment } from 'src/environments/environment';
 import { map } from 'rxjs/operators';
 import { MediaModel } from '../models/media.model';
 import { AlertService } from './alert.service';
+import { Router } from '@angular/router';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +27,7 @@ export class MediaService {
   indexTab$ = new BehaviorSubject({choixIndex:0})    //par défaut on affiche Série (tab)
   seachInProgress$ = new BehaviorSubject({value:false});
 
-  constructor(private http:HttpClient, private sanitizer: DomSanitizer, private alertService: AlertService) { }
+  constructor(private http:HttpClient, private sanitizer: DomSanitizer, private alertService: AlertService, private router: Router, private userService: UserService) { }
 
   /*Load movies from backend*/
 
@@ -46,7 +48,13 @@ getAllViewingSeries(userEmail:string){
   .subscribe((response:any) => {
     //this.medias$.next(response)
     this.series$.next(response);
-  });
+  },
+  (error)=> {if(error.status == 401)
+                {
+                  this.userService.logout();
+                this.router.navigate(['/login']);
+              }}
+  )
 }
 
 //méthode pour les viewingmovie, mettre le type valeur 'movie'
