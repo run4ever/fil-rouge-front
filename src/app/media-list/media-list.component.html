@@ -96,10 +96,10 @@
                         <div class="col-9">
                             <app-rating [rating]="media.imdbRating/2" [votes]="media.imdbVotes" [loves]="0"></app-rating>
                         </div>
-                        <div class="col-2 i-do-like" *ngIf="media.likeOrNot == true" (click)="updateMedia(media,'like', boolToStr(media.likeOrNot))">
+                        <div class="col-2 i-do-like" *ngIf="media.love == true" (click)="updateMedia(media,'like', boolToStr(media.love))">
                                 <i class="fa fa-heart fa-2x" aria-hidden="true"></i>
                         </div>
-                        <div class="col-2 i-do-not-like" *ngIf="media.likeOrNot == false" (click)="updateMedia(media,'like', boolToStr(media.likeOrNot))">
+                        <div class="col-2 i-do-not-like" *ngIf="media.love == false" (click)="updateMedia(media,'like', boolToStr(media.love))">
                                 <i class="fa fa-heart fa-2x" aria-hidden="true"></i>
                         </div>
                     </div>
@@ -163,10 +163,10 @@
                         <div class="col-9">
                             <app-rating [rating]="media.imdbRating/2" [votes]="media.imdbVotes" [loves]="0"></app-rating>
                         </div>
-                        <div class="col-2 i-do-like" *ngIf="media.likeOrNot == true" (click)="updateMedia(media,'like',boolToStr(media.likeOrNot))">
+                        <div class="col-2 i-do-like" *ngIf="media.love == true" (click)="updateMedia(media,'like',boolToStr(media.love))">
                                 <i class="fa fa-heart fa-2x" aria-hidden="true"></i>
                         </div>
-                        <div class="col-2 i-do-not-like" *ngIf="media.likeOrNot == false" (click)="updateMedia(media,'like',boolToStr(media.likeOrNot))">
+                        <div class="col-2 i-do-not-like" *ngIf="media.love == false" (click)="updateMedia(media,'like',boolToStr(media.love))">
                                 <i class="fa fa-heart fa-2x" aria-hidden="true"></i>
                         </div>
                     </div>

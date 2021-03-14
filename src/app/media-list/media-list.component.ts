@@ -138,7 +138,7 @@ export class MediaListComponent implements OnInit {
     switch (updType) {
       case 'status':
         status = value;
-        like = media.likeOrNot;
+        like = media.love;
         season = media.currentSeason;
         break;
       case 'like':
@@ -148,7 +148,7 @@ export class MediaListComponent implements OnInit {
         break;
       case 'season':
         status = media.status;
-        like = media.likeOrNot;
+        like = media.love;
         season = Number(value);
         break;
         }

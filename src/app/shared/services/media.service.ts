@@ -41,7 +41,7 @@ getAllViewingSeries(userEmail:string){
         (data:any)=> data.map(
          s => new MediaModel('serie',s.status,s.serieDto.imdbId,s.serieDto.title,s.serieDto.description,s.serieDto.category,
                              s.serieDto.startYear,s.serieDto.imdbRating,s.serieDto.imdbVotes,s.serieDto.actors,
-                             s.serieDto.imageUrl,0,s.serieDto.endYear,s.serieDto.numberOfSeason,s.currentSeason,s.serieDto.statusSerie, null, s.likeOrNot)
+                             s.serieDto.imageUrl,0,s.serieDto.endYear,s.serieDto.numberOfSeason,s.currentSeason,s.serieDto.statusSerie, null, s.love)
         )
     )
   )
@@ -66,7 +66,7 @@ getAllViewingMovies(userEmail:string){
           (data:any)=> data.map(
           m => new MediaModel('movie',m.status,m.movieDto.imdbId,m.movieDto.title,m.movieDto.description,m.movieDto.category,
                               (m.movieDto.startYear).substring(0,4),m.movieDto.imdbRating,m.movieDto.imdbVotes,m.movieDto.actors,
-                              m.movieDto.imageUrl,m.movieDto.runtime,null,null,null,null, null, m.likeOrNot)
+                              m.movieDto.imageUrl,m.movieDto.runtime,null,null,null,null, null, m.love)
 
           )
       )
@@ -83,12 +83,12 @@ getAllViewings(userEmail:string) {
   this.getAllViewingMovies(userEmail)
   }
 
-  updateViewing(userEmail:string, typeMedia:string, imdbId:string, status:string, likeOrNot:string, currentSeason:number){
+  updateViewing(userEmail:string, typeMedia:string, imdbId:string, status:string, love:string, currentSeason:number){
     let httpOptions = {headers: new HttpHeaders({ 'Content-Type': 'application/json' })}
     let corpsBody;
     let like: boolean;
     
-    switch (likeOrNot) {
+    switch (love) {
       case 'true':
         like = true
         break;
@@ -102,7 +102,7 @@ getAllViewings(userEmail:string) {
         corpsBody = {"email":userEmail,
                         "imdbId":imdbId,
                         "status":status,
-                        "likeOrNot":likeOrNot,
+                        "love":love,
                         "currentSeason":currentSeason,
                         "currentEpisode":"1"}
         break;
@@ -110,7 +110,7 @@ getAllViewings(userEmail:string) {
         corpsBody = {"email":userEmail,
                         "imdbId":imdbId,
                         "status":status,
-                        "likeOrNot":likeOrNot}
+                        "love":love}
         break;
       }
 
@@ -123,7 +123,7 @@ getAllViewings(userEmail:string) {
                         //mettre à jour l'élément dans series
                         if (item.imdbId === imdbId) { 
                           item.status=status;
-                          item.likeOrNot=like;
+                          item.love=like;
                           item.currentSeason=currentSeason;
                         }
                       })
@@ -135,7 +135,7 @@ getAllViewings(userEmail:string) {
                         //mettre à jour l'élément dans movies$
                         if (item.imdbId === imdbId ) { 
                           item.status=status;
-                          item.likeOrNot=like;
+                          item.love=like;
                          }
                       })
                   this.movies$.next(tabMedias);
@@ -281,7 +281,7 @@ deleteMediaByEmailAndIdMedia(userEmail: string,imdbId: string,typeMedia: string)
         null,
         null,
         item.alreadyInUserList,
-        item.likeOrNot
+        item.love
       )
 
     } else {
@@ -304,7 +304,7 @@ deleteMediaByEmailAndIdMedia(userEmail: string,imdbId: string,typeMedia: string)
         Number(item.currentSeason),
         null,
         item.alreadyInUserList,
-        item.likeOrNot
+        item.love
       )
     }
   }
