@@ -125,7 +125,7 @@ export class MediaListComponent implements OnInit {
     )
 
     this.searchWithDelay$.pipe(
-      debounceTime(800),
+      debounceTime(500),
       //distinctUntilChanged(),
     ).subscribe( (value: string) => {
       if (this.searchString.length < 3) {
@@ -141,7 +141,7 @@ export class MediaListComponent implements OnInit {
   }
 
   updateMedia(media: MediaModel, updType: string, value: string) {
-    let like: string;
+    let like: boolean;
     let season:number;
     let status:string;
     switch (updType) {
@@ -152,7 +152,11 @@ export class MediaListComponent implements OnInit {
         break;
       case 'like':
         status = media.status;
-        if(value=='true'){like="false";}else{like="true";}
+        if(value=='true'){
+          like=false;
+        }else{
+          like=true;
+        }
         season = media.currentSeason;
         break;
       case 'season':
@@ -170,11 +174,10 @@ export class MediaListComponent implements OnInit {
   }
 
   //méthode pour ajouter Serie ou Movie dans Viewings
-  addMedia(imdbId: string, typeMedia: string, inputElt,numSeason: number) {
+  addMedia(imdbId: string, typeMedia: string, inputElt) {
     //changement : appel addSerieByEmailAndIdMedia ou addMovieByEmailAndIdMedia
-    //this.mediaService.addMediaByEmailAndIdMedia(this.userEmail, imdbId, typeMedia);
     if(typeMedia === 'serie') {
-      this.mediaService.addSerieByEmailAndIdMedia(this.userEmail,imdbId,numSeason)
+      this.mediaService.addSerieByEmailAndIdMedia(this.userEmail,imdbId,1)
     }
     if (typeMedia === 'movie') {
       this.mediaService.addMovieByEmailAndIdMedia(this.userEmail,imdbId)
@@ -183,7 +186,6 @@ export class MediaListComponent implements OnInit {
   }
 
   // search user text in Api and in his movie / serie list
-  // tslint:disable-next-line:typedef
  searchApiAndUserList(activeTab: number, searchText: string) {
 
    this.searchString = searchText;

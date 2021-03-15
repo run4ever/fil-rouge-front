@@ -16,9 +16,9 @@ export class MediaModel {
     currentSeason:number;
     statusSerie: string;
     alreadyInUserList:boolean;
-    love:string;
+    love:boolean;
     
-    constructor(typeMedia: string,status:string,imdbId: string,title: string,description: string, category: string, startYear: number, imdbRating: number, imdbVotes:number,actors: string, imageUrl: string,runtime: number, endYear:number,numberOfSeason: number,currentSeason:number,statusSerie: string, alreadyInUserList:boolean, love:string) {
+    constructor(typeMedia: string,status:string,imdbId: string,title: string,description: string, category: string, startYear: number, imdbRating: number, imdbVotes:number,actors: string, imageUrl: string,runtime: number, endYear:number,numberOfSeason: number,currentSeason:number,statusSerie: string, alreadyInUserList:boolean, love:boolean) {
         this.typeMedia              = typeMedia         ;
         this.status                 = status            ;
         this.imdbId                 = imdbId            ;

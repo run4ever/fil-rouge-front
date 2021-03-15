@@ -16,7 +16,6 @@ export class MediaService {
 
   private API_URL = environment.apis.API_BACK_URL;
 
-  medias$ = new BehaviorSubject([]);
   series$ = new BehaviorSubject([]);
   seriesAfterDelete$ = new BehaviorSubject([]);
   moviesAfterDelete$ = new BehaviorSubject([]);
@@ -46,7 +45,6 @@ getAllViewingSeries(userEmail:string){
     )
   )
   .subscribe((response:any) => {
-    //this.medias$.next(response)
     this.series$.next(response);
   },
   (error)=> {if(error.status == 401)
@@ -83,26 +81,16 @@ getAllViewings(userEmail:string) {
   this.getAllViewingMovies(userEmail)
   }
 
-  updateViewing(userEmail:string, typeMedia:string, imdbId:string, status:string, love:string, currentSeason:number){
+  updateViewing(userEmail:string, typeMedia:string, imdbId:string, status:string, like:boolean, currentSeason:number){
     let httpOptions = {headers: new HttpHeaders({ 'Content-Type': 'application/json' })}
     let corpsBody;
-    let like: boolean;
     
-    switch (love) {
-      case 'true':
-        like = true
-        break;
-      default:
-        like = false
-        break;
-    }
-
     switch (typeMedia) {
       case 'serie':
         corpsBody = {"email":userEmail,
                         "imdbId":imdbId,
                         "status":status,
-                        "love":love,
+                        "love":like,
                         "currentSeason":currentSeason,
                         "currentEpisode":"1"}
         break;
@@ -110,7 +98,7 @@ getAllViewings(userEmail:string) {
         corpsBody = {"email":userEmail,
                         "imdbId":imdbId,
                         "status":status,
-                        "love":love}
+                        "love":like}
         break;
       }
 
@@ -119,7 +107,7 @@ getAllViewings(userEmail:string) {
       .subscribe(
         ()=> { if(typeMedia==='serie') {
                       const tabMedias:any[] = this.series$.getValue()  //récupérer les valeurs de movies$
-                      tabMedias.forEach((item, index) => {
+                      tabMedias.forEach((item) => {
                         //mettre à jour l'élément dans series
                         if (item.imdbId === imdbId) { 
                           item.status=status;
@@ -308,7 +296,4 @@ deleteMediaByEmailAndIdMedia(userEmail: string,imdbId: string,typeMedia: string)
       )
     }
   }
-
-
-
 }
