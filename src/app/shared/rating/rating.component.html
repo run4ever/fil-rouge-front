@@ -1,7 +1,24 @@
-<div class="rating-bloc">
-    <span class="public">Spectactors</span>
-    <i *ngFor="let star of stars" class="fas fa-star yellow-star"></i>
-    <i *ngFor="let star of greyStars" class="fas fa-star gery-star"></i>
-    <span class="notation">{{this.rating}}</span>
-    <span class="votes">{{this.votes}} votes</span>
+<div class="row rating-bloc">
+    <div *ngIf="this.loves!='0'" class="col-6 recul-12">
+        <span class="public">Spectactors</span>
+        <i *ngFor="let star of stars" class="fas fa-star yellow-star"></i>
+        <i *ngFor="let star of greyStars" class="fas fa-star gery-star"></i>
+        <span class="notation">{{this.rating}}</span>
+        <span class="votes">{{this.votes}} votes</span>
+    </div>
+    <span *ngIf="this.loves=='0'" class="serre-a-gauche">
+        <span class="public">Spectactors</span>
+        <i *ngFor="let star of stars" class="fas fa-star yellow-star"></i>
+        <i *ngFor="let star of greyStars" class="fas fa-star gery-star"></i>
+        <span class="notation">{{this.rating}}</span>
+        <span class="votes">{{this.votes}} votes</span>
+    </span>
+    <div *ngIf="this.loves!='0'" class="col-6">
+        <span class="public">Our members</span>
+        <span class="i-do-like"><i class="fa fa-heart fa-2x" aria-hidden="true"></i> ({{this.loves}})</span>
+        <!-- <div class="fa fa-heart fa-2x">
+            <i class="fa-heart-empty"></i>
+            <span class="nb-loves-in-heart">{{this.loves}}</span>
+          </div> -->
+    </div>
 </div>

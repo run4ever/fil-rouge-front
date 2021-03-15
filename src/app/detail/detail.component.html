@@ -20,7 +20,7 @@
                 <span *ngIf="media.typeMedia=='serie'">{{media.numberOfSeason}} seasons / </span>
                     {{media.category | delunderscore}}</p>
             <p><strong>With :</strong> {{media.actors}}</p>
-            <app-rating [rating]="media.imdbRating/2" [votes]="media.imdbVotes"></app-rating>
+            <app-rating [rating]="media.imdbRating/2" [votes]="media.imdbVotes" [loves]="this.loves"></app-rating>
             <div class="synopsis-title">Synopsis :</div>
             <div class="synopsis-content">{{media.description}}</div>
         </div>

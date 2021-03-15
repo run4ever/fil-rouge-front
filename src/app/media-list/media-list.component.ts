@@ -4,10 +4,9 @@ import { MediaService } from '../shared/services/media.service';
 import { Router } from '@angular/router';
 import { UserService } from '../shared/services/user.service';
 import { PageEvent } from '@angular/material/paginator';
-import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
-import {BehaviorSubject, Subject} from 'rxjs';
+import {Subject} from 'rxjs';
 import {
-  debounceTime, distinctUntilChanged, switchMap
+  debounceTime, distinctUntilChanged
 } from 'rxjs/operators';
 
 @Component({
@@ -56,8 +55,6 @@ export class MediaListComponent implements OnInit {
     //userEmail est stocké dans le champ sub de jeton
     this.userEmail = jetonDecode.sub
 
-
-
     this.mediaService.moviesAfterDelete$.subscribe(
       (dataMovies: MediaModel[]) => {
         this.movies = dataMovies.slice();
@@ -72,8 +69,6 @@ export class MediaListComponent implements OnInit {
         }
         this.calculPaginationMovies();
       }
-
-
 
     );
 
@@ -131,6 +126,29 @@ export class MediaListComponent implements OnInit {
       }
     );
 
+  updateMedia(media: MediaModel, updType: string, value: string) {
+    let like: string;
+    let season:number;
+    let status:string;
+    switch (updType) {
+      case 'status':
+        status = value;
+        like = media.love;
+        season = media.currentSeason;
+        break;
+      case 'like':
+        status = media.status;
+        if(value=='true'){like="false";}else{like="true";}
+        season = media.currentSeason;
+        break;
+      case 'season':
+        status = media.status;
+        like = media.love;
+        season = Number(value);
+        break;
+        }
+      this.mediaService.updateViewing(this.userEmail, media.typeMedia, media.imdbId, status, like, season);
+    }
 
     this.searchWithDelay$.pipe(
       debounceTime(800),
@@ -146,19 +164,8 @@ export class MediaListComponent implements OnInit {
         this.mediaService.getSearchResults(this.userEmail, this.searchString, this.activeTabLabel);
       }
     });
-
   }
-
-  // méthode pour MAJ status de Serie ou Movie, la requete d'accès à API est dans media.service
-  updateStatusMedia(imdbId: string, typeMedia: string, status: string) {
-    // appel le service pour mettre à jour status de film ou serie
-    this.mediaService.updateStatusMediaByEmailAndIdMedia(this.userEmail, imdbId, typeMedia, status);
-  }
-
-  // méthode update la saison d'une série
-  updateSeason(imdbId: string, status: string, numSeason: number) {
-    this.mediaService.updateSeasonSerieByEmailAndIdMedia(this.userEmail, imdbId, status, numSeason);
-  }
+  
 
   // méthode pour supprimer Serie ou Movie de Viewings
   deleteMedia(imdbId: string, typeMedia: string, inputElt) {
@@ -189,7 +196,6 @@ export class MediaListComponent implements OnInit {
        this.nbResults = -1;
       }
   else {
-     //this.isLoadingResults = true;
      this.mediaService.seachInProgress$.next({value: true});
      switch (activeTab) {
        case 1:
@@ -204,7 +210,7 @@ export class MediaListComponent implements OnInit {
    }
  }
 
-
+    
 /**
    * Delete search text on userClickEvent
    * @param inputElt
@@ -258,6 +264,17 @@ export class MediaListComponent implements OnInit {
       this.movies.splice(this.pageSize, nbToDelete);
     } else {
       this.movies.splice(this.pageSize, countAfterSplice);
+    }
+  }
+
+  boolToStr(b:boolean){
+    switch (b) {
+      case true:
+        return "true";
+        break;
+      default:
+        return "false";
+        break;
     }
   }
 
