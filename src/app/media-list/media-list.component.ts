@@ -4,6 +4,10 @@ import { MediaService } from '../shared/services/media.service';
 import { Router } from '@angular/router';
 import { UserService } from '../shared/services/user.service';
 import { PageEvent } from '@angular/material/paginator';
+import {Subject} from 'rxjs';
+import {
+  debounceTime, distinctUntilChanged
+} from 'rxjs/operators';
 
 @Component({
   selector: 'app-media-list',
@@ -33,6 +37,8 @@ export class MediaListComponent implements OnInit {
   nbResults:number
   isLoadingResults: boolean;
 
+  searchWithDelay$ = new Subject<string>();
+  searchString: string;
 
   //liste status
   status_media = [['TO_WATCH', 'To watch'], ['IN_PROGRESS', 'In progress'], ['WATCHED', 'Watched']]
@@ -49,8 +55,6 @@ export class MediaListComponent implements OnInit {
     //userEmail est stocké dans le champ sub de jeton
     this.userEmail = jetonDecode.sub
 
-
-
     this.mediaService.moviesAfterDelete$.subscribe(
       (dataMovies: MediaModel[]) => {
         this.movies = dataMovies.slice();
@@ -65,6 +69,7 @@ export class MediaListComponent implements OnInit {
         }
         this.calculPaginationMovies();
       }
+
     );
 
     this.mediaService.seriesAfterDelete$.subscribe(
@@ -90,7 +95,6 @@ export class MediaListComponent implements OnInit {
         this.calculPaginationSeries();
       });
      this.mediaService.getAllViewingSeries(this.userEmail);
-    // this.mediaService.getAllViewingSeries(this.userEmail)  //récupérer les séries
 
 
     this.mediaService.movies$.subscribe(
@@ -112,24 +116,15 @@ export class MediaListComponent implements OnInit {
     //on vide d'abord search$
     this.mediaService.search$.next([])
     // on s'abonne à la source de données search$
-    this.mediaService.search$.subscribe(data => this.results = data)
+    this.mediaService.search$.subscribe(data => {
+        this.results = data;
+    });
 
     this.mediaService.seachInProgress$.subscribe(
       (data:any) => {
         this.isLoadingResults = data.value
       }
-    )
-
-  }
-
-  searchSeries(searchText: string) {
-    if (searchText.trim().length < 3) {
-      this.mediaService.search$.next([]);
-    }
-    else {
-      this.mediaService.getAllViewingSeries(searchText);
-    }
-  }
+    );
 
   updateMedia(media: MediaModel, updType: string, value: string) {
     let like: string;
@@ -152,14 +147,29 @@ export class MediaListComponent implements OnInit {
         season = Number(value);
         break;
         }
+      this.mediaService.updateViewing(this.userEmail, media.typeMedia, media.imdbId, status, like, season);
+    }
 
-        this.mediaService.updateViewing(this.userEmail, media.typeMedia, media.imdbId, status, like, season)
+    this.searchWithDelay$.pipe(
+      debounceTime(800),
+      //distinctUntilChanged(),
+    ).subscribe( (value: string) => {
+      if (this.searchString.length < 3) {
+        this.nbResults = -1;
+      } else {
+        this.mediaService.getNbResults(this.searchString, this.activeTabLabel).subscribe(
+          data => {
+            this.nbResults = data;
+          });
+        this.mediaService.getSearchResults(this.userEmail, this.searchString, this.activeTabLabel);
+      }
+    });
   }
+  
 
-  //méthode pour supprimer Serie ou Movie de Viewings
+  // méthode pour supprimer Serie ou Movie de Viewings
   deleteMedia(imdbId: string, typeMedia: string, inputElt) {
     this.mediaService.deleteMediaByEmailAndIdMedia(this.userEmail, imdbId, typeMedia);
-  //  this.deleteSearchText(inputElt);
   }
 
   //méthode pour ajouter Serie ou Movie dans Viewings
@@ -169,36 +179,38 @@ export class MediaListComponent implements OnInit {
     if(typeMedia === 'serie') {
       this.mediaService.addSerieByEmailAndIdMedia(this.userEmail,imdbId,numSeason)
     }
-    if(typeMedia === 'movie') {
+    if (typeMedia === 'movie') {
       this.mediaService.addMovieByEmailAndIdMedia(this.userEmail,imdbId)
     }
     this.deleteSearchText(inputElt);
   }
 
   // search user text in Api and in his movie / serie list
+  // tslint:disable-next-line:typedef
  searchApiAndUserList(activeTab: number, searchText: string) {
-  this.mediaService.search$.next([]);
-  if (searchText.trim().length < 3) {
-    this.mediaService.search$.next([]);
-  }
+
+   this.searchString = searchText;
+   this.mediaService.search$.next([]);
+   if (searchText.trim().length < 3) {
+       this.mediaService.search$.next([]);
+       this.nbResults = -1;
+      }
   else {
-    //this.isLoadingResults = true;
-    this.mediaService.seachInProgress$.next({value:true})
-    switch (activeTab) {
-      case 1:
-        this.activeTabLabel = 'movie';
-        break;
+     this.mediaService.seachInProgress$.next({value: true});
+     switch (activeTab) {
+       case 1:
+         this.activeTabLabel = 'movie';
+         break;
 
-      default:
-        this.activeTabLabel = 'serie';
-        break;
-    }
-    this.mediaService.getNbResults(searchText, this.activeTabLabel).subscribe(data => {this.nbResults = data;});
-    this.mediaService.getSearchResults(this.userEmail, searchText, this.activeTabLabel);
+       default:
+         this.activeTabLabel = 'serie';
+         break;
+     }
+     this.searchWithDelay$.next(searchText);
+   }
+ }
 
-  }
-}
-
+    
 /**
    * Delete search text on userClickEvent
    * @param inputElt
@@ -210,10 +222,8 @@ export class MediaListComponent implements OnInit {
   }
 
   onPageMoviesChanged(pageEvent: any) {
-
    this.isLoading = true;
    this.mediaService.getAllViewingMovies(this.userEmail);
-
   }
 
   onPageSeriesChanged(pageEvent: any) {
