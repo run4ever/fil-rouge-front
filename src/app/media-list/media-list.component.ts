@@ -116,15 +116,29 @@ export class MediaListComponent implements OnInit {
     //on vide d'abord search$
     this.mediaService.search$.next([])
     // on s'abonne à la source de données search$
-    this.mediaService.search$.subscribe(data => {
-        this.results = data;
-    });
+    this.mediaService.search$.subscribe(data => this.results = data)
 
     this.mediaService.seachInProgress$.subscribe(
       (data:any) => {
         this.isLoadingResults = data.value
       }
-    );
+    )
+
+    this.searchWithDelay$.pipe(
+      debounceTime(800),
+      //distinctUntilChanged(),
+    ).subscribe( (value: string) => {
+      if (this.searchString.length < 3) {
+        this.nbResults = -1;
+      } else {
+        this.mediaService.getNbResults(this.searchString, this.activeTabLabel).subscribe(
+          data => {
+            this.nbResults = data;
+          });
+        this.mediaService.getSearchResults(this.userEmail, this.searchString, this.activeTabLabel);
+      }
+    });
+  }
 
   updateMedia(media: MediaModel, updType: string, value: string) {
     let like: string;
@@ -149,23 +163,6 @@ export class MediaListComponent implements OnInit {
         }
       this.mediaService.updateViewing(this.userEmail, media.typeMedia, media.imdbId, status, like, season);
     }
-
-    this.searchWithDelay$.pipe(
-      debounceTime(800),
-      //distinctUntilChanged(),
-    ).subscribe( (value: string) => {
-      if (this.searchString.length < 3) {
-        this.nbResults = -1;
-      } else {
-        this.mediaService.getNbResults(this.searchString, this.activeTabLabel).subscribe(
-          data => {
-            this.nbResults = data;
-          });
-        this.mediaService.getSearchResults(this.userEmail, this.searchString, this.activeTabLabel);
-      }
-    });
-  }
-  
 
   // méthode pour supprimer Serie ou Movie de Viewings
   deleteMedia(imdbId: string, typeMedia: string, inputElt) {
