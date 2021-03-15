@@ -65,7 +65,6 @@ export class MediaListComponent implements OnInit {
         // changement de la page courante si plus d'enregistrements, avec gestion de la liste vide
         if (this.countItemMovies > 0) {
           if ((this.page - 1) * this.pageSize >= this.countItemMovies) {
-            console.log('page à redimensionner');
             this.page --;
             this.beginRange = (this.page - 1) * this.pageSize;
             this.endRange = this.beginRange + this.pageSize;
@@ -85,7 +84,6 @@ export class MediaListComponent implements OnInit {
         // changement de la page courante si plus d'enregistrements, avec gestion de la liste vide
         if (this.countItemSeries > 0) {
           if ((this.page - 1) * this.pageSize >= this.countItemSeries) {
-            console.log('page à redimensionner');
             this.page --;
             this.beginRange = (this.page - 1) * this.pageSize;
             this.endRange = this.beginRange + this.pageSize;
@@ -97,22 +95,18 @@ export class MediaListComponent implements OnInit {
 
     this.mediaService.series$.subscribe(
       (dataSeries: MediaModel[]) => {
-        console.log('mise à jour des séries avec pagination');
         this.series = dataSeries.slice();
         this.countItemSeries = this.series.length;
         this.calculPaginationSeries();
       });
      this.mediaService.getAllViewingSeries(this.userEmail);
-    // this.mediaService.getAllViewingSeries(this.userEmail)  //récupérer les séries
 
 
     this.mediaService.movies$.subscribe(
       (dataMovies: MediaModel[]) => {
-        console.log('mise à jour des movies avec pagination');
         this.movies = dataMovies.slice();
         this.countItemMovies = this.movies.length;
         this.calculPaginationMovies();
-        console.log(this.movies);
       }
     );
     this.mediaService.getAllViewingMovies(this.userEmail)  //récupérer les movies
@@ -122,7 +116,6 @@ export class MediaListComponent implements OnInit {
                       (data:any) =>
                           {
                             this.selectedIndex = data.choixIndex
-                            console.log("selectedIndex=>"+this.selectedIndex)
                           }
     )
     //on vide d'abord search$
@@ -140,20 +133,11 @@ export class MediaListComponent implements OnInit {
 
 
     this.searchWithDelay$.pipe(
-      debounceTime(1500),
-      distinctUntilChanged(),
-      // switchMap(
-      //   (value: string) => {
-      //     console.log('changement valeur search : ' + value);
-      //     return value = this.searchString;
-      //   }
-      // )
+      debounceTime(800),
+      //distinctUntilChanged(),
     ).subscribe( (value: string) => {
-      console.log('Recherche, valeur actuelle : ' + value);
-      console.log('Recherche, valeur stockée : ' + this.searchString);
       if (this.searchString.length < 3) {
         this.nbResults = -1;
-        console.log('pas de recherche pour le string : ' + this.searchString);
       } else {
         this.mediaService.getNbResults(this.searchString, this.activeTabLabel).subscribe(
           data => {
@@ -161,41 +145,24 @@ export class MediaListComponent implements OnInit {
           });
         this.mediaService.getSearchResults(this.userEmail, this.searchString, this.activeTabLabel);
       }
-      console.log('recherche appelée : ' + this.searchString);
     });
 
   }
 
-  // searchSeries(searchText: string) {
-  //   console.log(searchText);
-  //   if (searchText.trim().length < 3) {
-  //     this.mediaService.search$.next([]);
-  //   }
-  //   else {
-  //     this.mediaService.getAllViewingSeries(searchText);
-  //   }
-  // }
-
   // méthode pour MAJ status de Serie ou Movie, la requete d'accès à API est dans media.service
   updateStatusMedia(imdbId: string, typeMedia: string, status: string) {
     // appel le service pour mettre à jour status de film ou serie
-    // console.log("imdbId="+imdbId+";typeMedia:"+typeMedia+";status:"+status)
     this.mediaService.updateStatusMediaByEmailAndIdMedia(this.userEmail, imdbId, typeMedia, status);
   }
 
   // méthode update la saison d'une série
   updateSeason(imdbId: string, status: string, numSeason: number) {
-    // console.log("imdbId="+imdbId+";status:"+status+"; nouveau num saison"+numSeason)
     this.mediaService.updateSeasonSerieByEmailAndIdMedia(this.userEmail, imdbId, status, numSeason);
   }
 
   // méthode pour supprimer Serie ou Movie de Viewings
   deleteMedia(imdbId: string, typeMedia: string, inputElt) {
     this.mediaService.deleteMediaByEmailAndIdMedia(this.userEmail, imdbId, typeMedia);
-
-
-
-  //  this.deleteSearchText(inputElt);
   }
 
   //méthode pour ajouter Serie ou Movie dans Viewings
@@ -211,31 +178,19 @@ export class MediaListComponent implements OnInit {
     this.deleteSearchText(inputElt);
   }
 
-  /*
-  loadNextMedia() {
-    this.isLoading = true;
-   // this.mediaService.g();
-  }
-  */
-
   // search user text in Api and in his movie / serie list
   // tslint:disable-next-line:typedef
  searchApiAndUserList(activeTab: number, searchText: string) {
 
    this.searchString = searchText;
-   console.log('nb resultats sur' +
-     ' keyup : ' + this.nbResults);
    this.mediaService.search$.next([]);
    if (searchText.trim().length < 3) {
        this.mediaService.search$.next([]);
        this.nbResults = -1;
-       console.log('entree search: ', this.isLoadingResults);
       }
   else {
      //this.isLoadingResults = true;
      this.mediaService.seachInProgress$.next({value: true});
-
-     console.log('entree search: ', this.isLoadingResults);
      switch (activeTab) {
        case 1:
          this.activeTabLabel = 'movie';
@@ -246,10 +201,8 @@ export class MediaListComponent implements OnInit {
          break;
      }
      this.searchWithDelay$.next(searchText);
-     console.log('recherche texte dans base: ' + searchText);
    }
  }
-
 
 
 /**
@@ -257,32 +210,19 @@ export class MediaListComponent implements OnInit {
    * @param inputElt
    */
   deleteSearchText(inputElt) {
-    console.log('input', inputElt);
     inputElt.value = '';
     this.mediaService.search$.next([]);
     this.nbResults = -1;
   }
 
-  // actionToClickToTab(inputElt) {
-  //   this.page = 1;
-  //   this.deleteSearchText(inputElt);
-  // }
-
   onPageMoviesChanged(pageEvent: any) {
-
-   console.log('page event movies', pageEvent);
    this.isLoading = true;
    this.mediaService.getAllViewingMovies(this.userEmail);
-
   }
 
   onPageSeriesChanged(pageEvent: any) {
-
-    console.log('page event Series', pageEvent);
     this.isLoading = true;
     this.mediaService.getAllViewingSeries(this.userEmail);
-
-
   }
   //gestion de pagination
   onPageChanged(pageEvent: any, selectedIndex: number) {
@@ -290,8 +230,6 @@ export class MediaListComponent implements OnInit {
     this.page = pageEvent;
     this.beginRange = (this.page - 1) * this.pageSize;
     this.endRange = this.beginRange + this.pageSize;
-    console.log('debut de range ' + this.beginRange);
-    console.log('fin de range ' + this.endRange);
     if (selectedIndex === 0) {
       this.onPageSeriesChanged(pageEvent);
     }
@@ -306,7 +244,6 @@ export class MediaListComponent implements OnInit {
     let nbToDelete = countAfterSplice - this.pageSize;
     if (nbToDelete > 0) {
       this.series.splice(this.pageSize, nbToDelete);
-      console.log('nb éléments supprimés : ' + nbToDelete);
     }
     else {
       this.series.splice(this.pageSize, countAfterSplice);
@@ -319,7 +256,6 @@ export class MediaListComponent implements OnInit {
     let nbToDelete = countAfterSplice - this.pageSize;
     if (nbToDelete > 0) {
       this.movies.splice(this.pageSize, nbToDelete);
-      console.log('nb éléments supprimés : ' + nbToDelete);
     } else {
       this.movies.splice(this.pageSize, countAfterSplice);
     }
