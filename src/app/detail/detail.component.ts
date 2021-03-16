@@ -12,6 +12,7 @@ export class DetailComponent implements OnInit {
   mediaId:string
   mediaType:string
   media
+  loves:string
 
   constructor(private router:Router,private route:ActivatedRoute,private mediaService:MediaService) { }
 
@@ -27,6 +28,7 @@ export class DetailComponent implements OnInit {
           this.media.typeMedia='serie';
         } );
       }
+      this.mediaService.getNbLoves(this.mediaId, 'serie').subscribe(data => {this.loves = data;});
     }
     else {
       this.media = this.mediaService.movies$.getValue()
@@ -38,6 +40,7 @@ export class DetailComponent implements OnInit {
           this.media.typeMedia='movie';
         } );
       }
+      this.mediaService.getNbLoves(this.mediaId, 'movie').subscribe(data => {this.loves = data;});
     }
   }
 

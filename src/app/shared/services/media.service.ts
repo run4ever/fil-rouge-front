@@ -6,6 +6,8 @@ import { environment } from 'src/environments/environment';
 import { map } from 'rxjs/operators';
 import { MediaModel } from '../models/media.model';
 import { AlertService } from './alert.service';
+import { Router } from '@angular/router';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +16,6 @@ export class MediaService {
 
   private API_URL = environment.apis.API_BACK_URL;
 
-  medias$ = new BehaviorSubject([]);
   series$ = new BehaviorSubject([]);
   seriesAfterDelete$ = new BehaviorSubject([]);
   moviesAfterDelete$ = new BehaviorSubject([]);
@@ -25,7 +26,7 @@ export class MediaService {
   indexTab$ = new BehaviorSubject({choixIndex:0})    //par défaut on affiche Série (tab)
   seachInProgress$ = new BehaviorSubject({value:false});
 
-  constructor(private http:HttpClient, private sanitizer: DomSanitizer, private alertService: AlertService) { }
+  constructor(private http:HttpClient, private sanitizer: DomSanitizer, private alertService: AlertService, private router: Router, private userService: UserService) { }
 
   /*Load movies from backend*/
 
@@ -39,14 +40,19 @@ getAllViewingSeries(userEmail:string){
         (data:any)=> data.map(
          s => new MediaModel('serie',s.status,s.serieDto.imdbId,s.serieDto.title,s.serieDto.description,s.serieDto.category,
                              s.serieDto.startYear,s.serieDto.imdbRating,s.serieDto.imdbVotes,s.serieDto.actors,
-                             s.serieDto.imageUrl,0,s.serieDto.endYear,s.serieDto.numberOfSeason,s.currentSeason,s.serieDto.statusSerie, null)
+                             s.serieDto.imageUrl,0,s.serieDto.endYear,s.serieDto.numberOfSeason,s.currentSeason,s.serieDto.statusSerie, null, s.love)
         )
     )
   )
   .subscribe((response:any) => {
-    //this.medias$.next(response)
     this.series$.next(response);
-  });
+  },
+  (error)=> {if(error.status == 401)
+                {
+                  this.userService.logout();
+                this.router.navigate(['/login']);
+              }}
+  )
 }
 
 //méthode pour les viewingmovie, mettre le type valeur 'movie'
@@ -58,15 +64,12 @@ getAllViewingMovies(userEmail:string){
           (data:any)=> data.map(
           m => new MediaModel('movie',m.status,m.movieDto.imdbId,m.movieDto.title,m.movieDto.description,m.movieDto.category,
                               (m.movieDto.startYear).substring(0,4),m.movieDto.imdbRating,m.movieDto.imdbVotes,m.movieDto.actors,
-                              m.movieDto.imageUrl,m.movieDto.runtime,null,null,null,null, null)
+                              m.movieDto.imageUrl,m.movieDto.runtime,null,null,null,null, null, m.love)
 
           )
       )
     )
     .subscribe((response:any) => {
-      // console.log(response)
-      // let series = this.medias$.getValue() //récupérer les résultats Seris
-      // this.medias$.next([...series, ...response]) //ajoute les series dans media$ avec les movies
       this.movies$.next(response);
       });
 
@@ -78,60 +81,56 @@ getAllViewings(userEmail:string) {
   this.getAllViewingMovies(userEmail)
   }
 
-// méthode pour mettre à jour status d'un film ou série dans ViewingSerie/ViewingMovie
-  updateStatusMediaByEmailAndIdMedia(userEmail:string,imdbId:string,typeMedia:string,status:string) {
-
+  updateViewing(userEmail:string, typeMedia:string, imdbId:string, status:string, like:boolean, currentSeason:number){
     let httpOptions = {headers: new HttpHeaders({ 'Content-Type': 'application/json' })}
-    let corpsBody = {"email":userEmail,"imdbId":imdbId,"status":status}
+    let corpsBody;
+    
+    switch (typeMedia) {
+      case 'serie':
+        corpsBody = {"email":userEmail,
+                        "imdbId":imdbId,
+                        "status":status,
+                        "love":like,
+                        "currentSeason":currentSeason,
+                        "currentEpisode":"1"}
+        break;
+      case 'movie':
+        corpsBody = {"email":userEmail,
+                        "imdbId":imdbId,
+                        "status":status,
+                        "love":like}
+        break;
+      }
 
       this.http
       .put(this.API_URL+'/viewing-'+typeMedia+'/update',JSON.stringify(corpsBody),httpOptions)
       .subscribe(
-        ()=> { console.log('Change status terminé')
-                if(typeMedia==='serie') {
+        ()=> { if(typeMedia==='serie') {
                       const tabMedias:any[] = this.series$.getValue()  //récupérer les valeurs de movies$
-                      tabMedias.forEach((item, index) => {
-                        //mettre à jour status dans l'élément dans series
-                        if (item.imdbId === imdbId ) { item.status=status }
+                      tabMedias.forEach((item) => {
+                        //mettre à jour l'élément dans series
+                        if (item.imdbId === imdbId) { 
+                          item.status=status;
+                          item.love=like;
+                          item.currentSeason=currentSeason;
+                        }
                       })
                       this.series$.next(tabMedias);
                 }
                 else {
                       const tabMedias:any[] = this.movies$.getValue()  //récupérer les valeurs de movies$
                       tabMedias.forEach((item, index) => {
-                        //mettre à jour status dans l'élément dans movies$
-                        if (item.imdbId === imdbId ) { item.status=status }
+                        //mettre à jour l'élément dans movies$
+                        if (item.imdbId === imdbId ) { 
+                          item.status=status;
+                          item.love=like;
+                         }
                       })
                   this.movies$.next(tabMedias);
                 }
              },
              (error) => {console.log(error)}
       )
-  }
-
-  //méthode pour mettre à jour numéro saison d'une série
-  updateSeasonSerieByEmailAndIdMedia(userEmail:string,imdbId:string,status:string,numSeason:number) {
-    let httpOptions = {headers: new HttpHeaders({ 'Content-Type': 'application/json' })}
-    let corpsBody = {"email":userEmail,"imdbId":imdbId,"status":status,"currentSeason":numSeason,"currentEpisode":1}
-    console.log(corpsBody)
-      this.http
-      .put(this.API_URL+'/viewing-serie/update',JSON.stringify(corpsBody),httpOptions)
-      .subscribe(
-        ()=> { console.log('Change saison pour une série terminé')
-                const tabMedias: MediaModel[] = this.series$.getValue()  //récupérer les valeurs de series$
-                console.log('tab médias update season ' + tabMedias);
-                console.log(tabMedias)
-                tabMedias.forEach((item, index) => {
-                  //mettre à jour Num saison dans l'élément dans medias$
-                  if (item.imdbId === imdbId ) {
-                        item.userSeason=numSeason
-                      }
-                });
-              this.series$.next(tabMedias);
-             },
-        (error)=> {console.log(error)}
-      )
-
   }
 
 //méthode pour supprimer Serie ou Movie de Viewings
@@ -145,28 +144,23 @@ deleteMediaByEmailAndIdMedia(userEmail: string,imdbId: string,typeMedia: string)
 
       this.http.delete(this.API_URL+'/viewing-'+typeMedia+'/delete',httpOptions)
       .subscribe(
-        ()=> { console.log('Suppression terminée')
-                    if(typeMedia === 'serie') {
+        ()=> { if(typeMedia === 'serie') {
                         const tabMedias:any[] = this.series$.getValue()  //récupérer les valeurs de series$
-                        console.log('Behavior Subject Series : ' + tabMedias);
                         tabMedias.forEach((item, index) => {
                           //supprimer l'élément dans series$
                           if (item.imdbId === imdbId ) { tabMedias.splice(index, 1); }
                           this.alertService.show('This serie has been deleted from your list');
                         });
                       this.seriesAfterDelete$.next(tabMedias);
-                      console.log('tabMedias - Série : ' + tabMedias);
                     }
                     else {
                       const tabMedias:any[] = this.movies$.getValue()  //récupérer les valeurs de movies$
-                      console.log('Behavior Subject Movies : ' + tabMedias);
                       tabMedias.forEach((item, index) => {
                         //supprimer l'élément dans movies$
                         if (item.imdbId === imdbId ) { tabMedias.splice(index, 1); }
                         this.alertService.show('This movie has been deleted from your list');
                       });
                       this.moviesAfterDelete$.next(tabMedias);
-                      console.log('tabMedias - Movie : ' + tabMedias);
                     }
               },
         (error)=> {console.log(error)}
@@ -179,9 +173,11 @@ deleteMediaByEmailAndIdMedia(userEmail: string,imdbId: string,typeMedia: string)
         title: searchText
       }
     });
+    return this.http.get<string>(this.API_URL + '/' + mediaType + '/external/search-nb-results', { params }) 
+  }
 
-    return this.http.get<string>(this.API_URL + '/' + mediaType + '/external/search-nb-results', { params }) //.pipe(map(data => {return data;}));
-
+  getNbLoves(mediaId:string, mediaType:string): Observable<any>{
+    return this.http.get<string>(this.API_URL + '/' + mediaType + '/loves/' + mediaId) 
   }
 
   getSearchResults(userEmail: string, searchText:string, mediaType:string): void {
@@ -200,7 +196,6 @@ deleteMediaByEmailAndIdMedia(userEmail: string,imdbId: string,typeMedia: string)
           apiResponse.map(movie => this.createMedia(movie, mediaType))
       ))
       .subscribe(response => {
-        console.log(response);
         this.search$.next(response);
         this.seachInProgress$.next({value:false})
               },
@@ -210,7 +205,7 @@ deleteMediaByEmailAndIdMedia(userEmail: string,imdbId: string,typeMedia: string)
 
   //ajouter serie dans ViewingSerie
   addSerieByEmailAndIdMedia(userEmail: string,imdbId: string,numSeason: number){
-    let body = {"email":userEmail,"imdbId":imdbId,"status":'TO_WATCH',"currentSeason":numSeason}
+    let body = {"email":userEmail,"imdbId":imdbId,"status":'TO_WATCH',"currentSeason":numSeason, "like":'false'}
       const httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
       }
@@ -228,7 +223,7 @@ deleteMediaByEmailAndIdMedia(userEmail: string,imdbId: string,typeMedia: string)
 
    //ajouter movie dans ViewingMovie
    addMovieByEmailAndIdMedia(userEmail: string,imdbId: string){
-    let body = {"email":userEmail,"imdbId":imdbId,"status":'TO_WATCH'}
+    let body = {"email":userEmail,"imdbId":imdbId,"status":'TO_WATCH', "like":'false'}
       const httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
       }
@@ -273,7 +268,8 @@ deleteMediaByEmailAndIdMedia(userEmail: string,imdbId: string,typeMedia: string)
         null,
         null,
         null,
-        item.alreadyInUserList
+        item.alreadyInUserList,
+        item.love
       )
 
     } else {
@@ -292,12 +288,12 @@ deleteMediaByEmailAndIdMedia(userEmail: string,imdbId: string,typeMedia: string)
         item.serieDto.imageUrl,
         item.serieDto.runtime,
         null,
+        Number(item.serieDto.numberOfSeason),
+        Number(item.currentSeason),
         null,
-        null,
-        null,
-        item.alreadyInUserList
+        item.alreadyInUserList,
+        item.love
       )
     }
   }
 }
-

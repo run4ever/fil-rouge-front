@@ -91,6 +91,11 @@
     margin: 9px 15px;
 }
 
+.del-from-card {
+    margin-top: 9px;
+    color:tomato;
+}
+
 .del-from-list {
     color:tomato;
 }
@@ -99,7 +104,7 @@
     color:green;
 }
 
-.del-from-list:hover {
+.del-from-list:hover, .del-from-card:hover {
     cursor: pointer;
 }
 
@@ -123,4 +128,17 @@
 
 .ngx-pagination .current {
     background: #E5E8E8 !important;
+}
+
+.i-do-not-like, .i-do-like {
+    // margin-right: 5px;
+    padding-top: 5px;
+}
+
+.i-do-like {
+    color: rgb(236, 9, 115);
+}
+
+.i-do-not-like {
+    color: #f1f0f2;
 }
